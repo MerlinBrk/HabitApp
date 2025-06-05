@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
-
-type Habit = {
-  id: string;
-  user_id: string;
-  created_at: string;
-  title: string;
-  is_public: boolean;
-};
+import { db, type Habit, type HabitLog } from "../lib/db";
+import ColorPicker from "./ColorPicker";
+import { v4 as uuidv4 } from "uuid";
+import { useUserId } from "../services/useUserId";
+import IconButton from "../elements/IconButton";
+import { deleteHabit } from "../services/dexieServices";
+import { FaCheck } from "react-icons/fa";
+import Calendar from "../elements/Calender"; // Assuming you have a Calendar component
 
 type CheckInMap = {
   [habitId: string]: boolean;
 };
 
-export default function HabitList({
+export function HabitList({
   onNavigateToUser,
 }: {
   onNavigateToUser: () => void;
@@ -22,6 +21,11 @@ export default function HabitList({
   const [newHabit, setNewHabit] = useState("");
   const [isPublic, setIsPublic] = useState(false);
   const [checkInsToday, setCheckInsToday] = useState<CheckInMap>({});
+  const [selectedDays, setSelectedDays] = useState<String[]>([]);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [activeCalender, setActiveCalendar] = useState(false);
+
+  const USER_ID = useUserId();
 
   useEffect(() => {
     loadHabits();
@@ -29,48 +33,25 @@ export default function HabitList({
   }, []);
 
   const loadHabits = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { data, error } = await supabase
-      .from("Habits")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Fehler beim Laden der Habits:", error);
-      return;
-    }
-
-    setHabits(data || []);
+    const data = await db.habits
+      .where("user_id")
+      .equals(USER_ID)
+      .reverse()
+      .sortBy("created_at");
+    setHabits(data);
   };
 
   const loadTodayCheckIns = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-
     const today = new Date().toISOString().split("T")[0];
-
-    const { data, error } = await supabase
-      .from("Habit_logs")
-      .select("habit_id, is_done")
-      .eq("user_id", user.id)
-      .gte("date", `${today}T00:00:00`)
-      .lt("date", `${today}T23:59:59`);
-
-    if (error) {
-      console.error("Fehler beim Laden der Check-ins:", error);
-      return;
-    }
+    const logs = await db.habit_logs
+      .where("user_id")
+      .equals(USER_ID)
+      .filter((log) => log.date.startsWith(today))
+      .toArray();
 
     const map: CheckInMap = {};
-    data?.forEach((entry) => {
-      map[entry.habit_id] = entry.is_done;
+    logs.forEach((log) => {
+      map[log.habit_id] = log.is_done;
     });
 
     setCheckInsToday(map);
@@ -79,52 +60,41 @@ export default function HabitList({
   const addHabit = async () => {
     if (!newHabit.trim()) return;
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
+    const habit: Habit = {
+      id: uuidv4(),
+      user_id: USER_ID,
+      title: newHabit,
+      created_at: new Date().toISOString(),
+      is_public: isPublic,
+      synced: false,
+      days: selectedDays,
+    };
 
-    const { error } = await supabase.from("Habits").insert([
-      {
-        user_id: user.id,
-        title: newHabit,
-        is_public: isPublic,
-      },
-    ]);
-
-    if (error) {
-      console.error("Fehler beim Hinzufügen des Habits:", error);
-      return;
-    }
-
+    await db.habits.add(habit);
     setNewHabit("");
     setIsPublic(false);
+    setSelectedDays([]);
     loadHabits();
   };
 
   const toggleCheckIn = async (habitId: string, isNowDone: boolean) => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-
     const today = new Date().toISOString().split("T")[0];
 
-    const { error } = await supabase.from("Habit_logs").upsert(
-      [
-        {
-          user_id: user.id,
-          habit_id: habitId,
-          date: `${today}T00:00:00`,
-          is_done: isNowDone,
-        },
-      ],
-      { onConflict: "user_id,habit_id,date" }
-    );
+    const existing = await db.habit_logs
+      .where({ user_id: USER_ID, habit_id: habitId, date: `${today}T00:00:00` })
+      .first();
 
-    if (error) {
-      console.error("Fehler beim Speichern des Check-Ins:", error);
-      return;
+    if (existing) {
+      await db.habit_logs.update(existing.id!, { is_done: isNowDone });
+    } else {
+      await db.habit_logs.add({
+        id: uuidv4(),
+        user_id: USER_ID,
+        habit_id: habitId,
+        date: `${today}T00:00:00`,
+        synced: false,
+        is_done: isNowDone,
+      });
     }
 
     setCheckInsToday((prev) => ({
@@ -133,84 +103,103 @@ export default function HabitList({
     }));
   };
 
-  return (<main className="min-h-screen bg-gray-100 p-8 flex items-center justify-center">
-  <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-6 relative">
-    <div className="flex justify-between items-center mb-4">
-      <h1 className="text-2xl font-bold text-center flex-grow">Meine Habits</h1>
-      <button
-        onClick={onNavigateToUser}
-        className="absolute top-4 right-6 text-sm text-blue-600 hover:underline"
-      >
-        Mein Profil
-      </button>
-    </div>
+  const handleDeleteClick = (habit_id, user_id) => {
+    deleteHabit(habit_id, user_id);
+    setHabits((prev) => prev.filter((habit) => habit.id !== habit_id));
+  };
 
-    <div className="mb-4">
-      <input
-        type="text"
-        value={newHabit}
-        onChange={(e) => setNewHabit(e.target.value)}
-        placeholder="Neues Habit"
-        className="w-full px-3 py-2 border rounded mb-2"
-      />
-      <label className="flex items-center gap-2 mb-2">
-        <input
-          type="checkbox"
-          checked={isPublic}
-          onChange={() => setIsPublic(!isPublic)}
-        />
-        Öffentlich sichtbar
-      </label>
-      <button
-        onClick={addHabit}
-        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-      >
-        Hinzufügen
-      </button>
-    </div>
-    <br />
-    <table className="min-w-full table-auto border-separate border-spacing-y-2">
-      <thead>
-        <tr className="text-left text-gray-600 text-sm">
-          <th className="px-4 py-2">Titel</th>
-          <th className="px-4 py-2">Status</th>
-          <th className="px-4 py-2">Öffentlich</th>
-        </tr>
-      </thead>
-      <tbody>
-        {habits.map((habit) => (
-          <tr
-            key={habit.id}
-            className="bg-white shadow rounded hover:shadow-md transition-shadow"
+  return (
+    <main className="bg-gray-300 h-screen w-screen p-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] flex items-center justify-center">
+      
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-6 relative">
+        
+    
+
+    <Calendar
+      isActive={activeCalender}
+      selected={selectedDate}
+      onSelect={setSelectedDate}
+      onClose={() => setActiveCalendar(false)}
+    />
+
+        {!activeCalender ? 
+        <>
+        <button
+          onClick={onNavigateToUser}
+          className="absolute top-4 right-4 bg-black text-white text-sm px-3 py-1 rounded-xl shadow hover:bg-gray-800 transition"
+        >
+          Mein Profil
+        </button>
+
+        <ColorPicker />
+
+        <div className="mb-6">
+          <input
+            type="text"
+            value={newHabit}
+            onChange={(e) => setNewHabit(e.target.value)}
+            placeholder="Neues Habit"
+            className="w-full bg-black text-white text-base placeholder-gray-400 px-4 py-2 rounded-xl mb-2 focus:outline-none"
+          />
+          <label className="flex items-center gap-2 mb-3 text-sm text-gray-700">
+            <input
+              type="checkbox"
+              checked={isPublic}
+              onChange={() => setIsPublic(!isPublic)}
+              className="w-4 h-4 color-white rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+            />
+            Öffentlich sichtbar
+          </label>
+          <button
+            onClick={addHabit}
+            className="w-full bg-primary text-white py-2 rounded-xl font-semibold hover:bg-purple-700 transition"
           >
-            <td className="px-4 py-3 font-medium text-gray-800">{habit.title}</td>
-            <td className="px-4 py-3">
-              <button
-                onClick={() => toggleCheckIn(habit.id, !checkInsToday[habit.id])}
-                className={`px-3 py-1 rounded text-sm font-semibold transition-colors ${
-                  checkInsToday[habit.id]
-                    ? "bg-green-500 text-white hover:bg-green-600"
-                    : "bg-gray-300 text-gray-800 hover:bg-gray-400"
-                }`}
-              >
-                {checkInsToday[habit.id] ? "Erledigt" : "Noch offen"}
-              </button>
-            </td>
-            <td className="px-4 py-3">
-              {habit.is_public ? (
-                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                  öffentlich
-                </span>
-              ) : (
-                <span className="text-xs text-gray-400 italic">privat</span>
-              )}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-</main>
+            Hinzufügen
+          </button>
+        </div>
 
+        <div className="space-y-3">
+          {habits.map((habit) => (
+            
+            <div
+              key={habit.id}
+              className="flex items-center justify-between bg-gray-50 p-4 rounded-xl shadow-sm"
+              onClick={() => setActiveCalendar(!activeCalender)}
+            >
+              
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary text-white font-bold text-sm flex items-center justify-center">
+                  {habit.title.charAt(0).toUpperCase()}
+                </div>
+                <span className="text-gray-900 font-medium text-sm truncate max-w-[160px]">
+                  {habit.title}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <IconButton
+                  onClick={() => handleDeleteClick(habit.id, USER_ID)}
+                />
+                <div
+                  onClick={() =>
+                    toggleCheckIn(habit.id, !checkInsToday[habit.id])
+                  }
+                  className={`w-6 h-6 rounded-full flex items-center justify-center border transition-colors cursor-pointer ${
+                    checkInsToday[habit.id]
+                      ? "bg-green-500 border-green-500 text-white"
+                      : "bg-gray-300 border-gray-300 hover:bg-gray-400 text-transparent"
+                  }`}
+                >
+                  {checkInsToday[habit.id] && <FaCheck size={12} />}
+                </div>
+
+                
+              </div>
+            </div>
+          ))}
+        </div>
+        </>:""
+}
+      </div>
+    </main>
   );
 }

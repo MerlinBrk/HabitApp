@@ -1,37 +1,52 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { VitePWA } from 'vite-plugin-pwa'
-
-// https://vite.dev/config/
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate', // Service Worker automatisch updaten
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.svg', 'robots.txt', 'apple-touch-icon.png'],
       manifest: {
         name: 'Habit Tracker',
         short_name: 'Habits',
         start_url: '/',
-        display: 'standalone', // wie native App
+        display: 'standalone',
         background_color: '#ffffff',
-        theme_color: '#4f46e5', // z.B. Tailwind Indigo-600
+        theme_color: '#42b883',
         icons: [
           {
-            src: 'icon-192.png', // Diese Icons musst du anlegen
+            src: 'pwa-192x192.png',
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: 'icon-512.png',
+            src: 'pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png',
           },
         ],
       },
       workbox: {
-        // Optional: anpassen wie Caching funktioniert
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.destination === 'document',
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'pages',
+            },
+          },
+          {
+            urlPattern: ({ request }) => request.destination === 'script' || request.destination === 'style',
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'assets',
+            },
+          },
+        ],
       },
     }),
   ],
-})
+});

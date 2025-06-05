@@ -5,7 +5,11 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}", // wichtig!
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: "rgb(var(--primary-color) / <alpha-value>)", // 🟣 das ist der wichtige Teil
+      },
+    },
   },
   plugins: [],
 };

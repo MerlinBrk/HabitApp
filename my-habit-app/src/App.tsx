@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./lib/supabase";
 import Login from "./components/Login";
-import HabitList from "./components/HabitList";
+import {HabitList} from "./components/HabitList";
 import UserPage from "./components/UserPage";
 
 export default function App() {
