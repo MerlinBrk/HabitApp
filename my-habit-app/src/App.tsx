@@ -3,6 +3,8 @@ import { supabase } from "./lib/supabase";
 import Login from "./components/Login";
 import {HabitList} from "./components/HabitList";
 import UserPage from "./components/UserPage";
+import AppNotInstalled from "./components/AppNotInstalled";
+
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,6 +26,29 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+
+  const isStartetAsApp = window.matchMedia('(display-mode: standalone)').matches;
+
+
+  if((isMobile || true) && !isStartetAsApp) {
+    return (
+      <AppNotInstalled />
+
+    );
+  }
+
   if (loading) return <div className="p-6 text-center">Lade...</div>;
 
   if (!isLoggedIn) return <Login onLogin={() => setIsLoggedIn(true)} />;
@@ -32,5 +57,6 @@ export default function App() {
     <HabitList onNavigateToUser={() => setCurrentView("user")} />
   ) : (
     <UserPage onBack={() => setCurrentView("habits")} />
+
   );
 }
