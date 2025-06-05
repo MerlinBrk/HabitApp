@@ -45,7 +45,7 @@ const AppNotInstalled: React.FC = () => {
   })();
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-red-100 via-white to-indigo-200 min-h-screen" >
+    <div className="inset-0 flex items-center justify-center bg-gradient-to-br from-red-100 via-white to-indigo-200 min-h-screen" >
         <br /><br /><br />
       <div className="backdrop-blur-lg border border-indigo-200 shadow-2xl rounded-3xl p-8 max-w-lg w-full animate-fade-in" style={{backgroundColor: 'rgb(248, 254, 255)'}}>
       <br /><br />
