@@ -45,8 +45,10 @@ const AppNotInstalled: React.FC = () => {
   })();
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-indigo-200 min-h-screen">
-      <div className="backdrop-blur-lg bg-white/70 border border-indigo-200 shadow-2xl rounded-3xl p-8 max-w-lg w-full animate-fade-in">
+    <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-red-100 via-white to-indigo-200 min-h-screen" >
+        <br /><br /><br />
+      <div className="backdrop-blur-lg border border-indigo-200 shadow-2xl rounded-3xl p-8 max-w-lg w-full animate-fade-in" style={{backgroundColor: 'rgb(248, 254, 255)'}}>
+      <br /><br />
         <div className="flex flex-col items-center gap-2">
           <img
             src="https://img.icons8.com/ios-filled/100/4f46e5/rocket--v1.png"

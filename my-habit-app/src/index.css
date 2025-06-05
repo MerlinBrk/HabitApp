@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 
+
 :root {
     --primary-color: #8b5cf6; /* default purple */
 
@@ -12,7 +13,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: rgb(227, 232, 253);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
