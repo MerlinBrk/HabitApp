@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { db, type Habit, type HabitLog } from "../lib/db";
-import ColorPicker from "./ColorPicker";
 import { v4 as uuidv4 } from "uuid";
 import { useUserId } from "../services/useUserId";
 import IconButton from "../elements/IconButton";
@@ -8,6 +7,7 @@ import { deleteHabit } from "../services/dexieServices";
 import { FaCheck } from "react-icons/fa";
 import Calendar from "../elements/Calender"; // Assuming you have a Calendar component
 import SideBar from "../elements/SideBar";
+import { syncAll } from "../lib/sync";
 
 type CheckInMap = {
   [habitId: string]: boolean;
@@ -32,6 +32,7 @@ export function HabitList({
   useEffect(() => {
     loadHabits();
     loadTodayCheckIns();
+    syncAll();
   }, []);
 
   const loadHabits = async () => {
@@ -77,6 +78,7 @@ export function HabitList({
     setIsPublic(false);
     setSelectedDays([]);
     loadHabits();
+    syncAll();
   };
 
   const toggleCheckIn = async (habitId: string, isNowDone: boolean) => {
@@ -103,6 +105,8 @@ export function HabitList({
       ...prev,
       [habitId]: isNowDone,
     }));
+    syncAll();
+    loadTodayCheckIns();
   };
 
   const handleDeleteClick = (habit_id, user_id) => {

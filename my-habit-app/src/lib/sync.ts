@@ -1,6 +1,20 @@
 // lib/sync.ts
 import { supabase } from "./supabase";
 import { db } from "./db";
+import { useUserId } from "../services/useUserId";
+
+
+export async function syncAll() {
+  const userId = useUserId();
+  if (!userId) return;
+
+  await syncHabitsWithSupabase(userId);         // Dexie → Supabase
+  await syncHabitLogsWithSupabase(userId);
+  await pullHabitsFromSupabase(userId);   // Supabase → Dexie
+  await pullHabitLogsFromSupabase(userId);
+}
+
+
 
 //Sync Habits from Indexed DB -> SupaBase / only unsynced Habits
 export async function syncHabitsWithSupabase(userId: string) {
@@ -33,7 +47,6 @@ export async function syncHabitsWithSupabase(userId: string) {
 //Sync HabitLogs from Indexed DB -> SupaBase / only unsynced HabitsLogs
 export async function syncHabitLogsWithSupabase(userId: string) {
   try {
-    // 🟢 Unsynced HabitLogs holen
     /*const unsyncedHabitLogs = await db.habit_logs
       .where({ user_id: userId, synced: false })
       .toArray();*/
