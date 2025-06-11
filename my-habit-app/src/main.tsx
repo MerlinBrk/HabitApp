@@ -14,13 +14,13 @@ import { useUserId } from './services/useUserId.ts';
 
 setInterval(() => {
   if (navigator.onLine) {
-    syncAll();
+    //syncAll();
   }
 }, 60 * 1000); // jede Minuten
 
 // Bei Internetverbindung
 window.addEventListener('online', () => {
-  syncAll();
+  //syncAll();
 });
 
 registerSW();

@@ -3,11 +3,19 @@ import { db, type Habit, type HabitLog } from "../lib/db";
 import { v4 as uuidv4 } from "uuid";
 import { useUserId } from "../services/useUserId";
 import IconButton from "../elements/IconButton";
-import { deleteHabit } from "../services/dexieServices";
+import {
+  getHabits,
+  deleteHabit,
+  getTodaysHabitLogsByUserId,
+  getTodaysHabitsByUserId,
+  getNotTodayHabitsByUserId,
+} from "../services/dexieServices";
 import { FaCheck } from "react-icons/fa";
 import Calendar from "../elements/Calender"; // Assuming you have a Calendar component
 import SideBar from "../elements/SideBar";
 import { syncAll } from "../lib/sync";
+import NewHabitModal from "../elements/NewHabitModal";
+import SelectDaysCalendar from "../elements/SelectDays";
 
 type CheckInMap = {
   [habitId: string]: boolean;
@@ -18,39 +26,55 @@ export function HabitList({
 }: {
   onNavigateToUser: () => void;
 }) {
+  const [showNotTodaysHabits, setShowNotTodaysHabits] = useState(false);
+  const [notTodaysHabits, setNotTodaysHabits] = useState<Habit[]>([]);
   const [habits, setHabits] = useState<Habit[]>([]);
-  const [newHabit, setNewHabit] = useState("");
-  const [isPublic, setIsPublic] = useState(false);
   const [checkInsToday, setCheckInsToday] = useState<CheckInMap>({});
-  const [selectedDays, setSelectedDays] = useState<String[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [activeCalender, setActiveCalendar] = useState(false);
-  const [currentCalenderHabitId, SetCurrentCalenderHabitId] = useState<String | null>(null);
+  const [newHabitModalState, setNewHabitModalState] = useState(false);
+  const [currentCalenderHabitId, SetCurrentCalenderHabitId] = useState<
+    string | null
+  >(null);
 
   const USER_ID = useUserId();
 
   useEffect(() => {
     loadHabits();
     loadTodayCheckIns();
-    syncAll();
+    loadNotTodaysHabits();
+    //syncAll();
   }, []);
 
+
+
+  useEffect(() => {
+    if(activeCalender && !showNotTodaysHabits) {
+      setActiveCalendar(false);
+      SetCurrentCalenderHabitId(null);
+    }
+
+  }, [showNotTodaysHabits]);
+
+  
+
   const loadHabits = async () => {
-    const data = await db.habits
-      .where("user_id")
-      .equals(USER_ID)
-      .reverse()
-      .sortBy("created_at");
+    const data = await getTodaysHabitsByUserId(USER_ID);
     setHabits(data);
+    await loadNotTodaysHabits(); // Load not today's habits after loading today's habits
+    // Load not today's habits after loading today's habits
+  };
+
+  const loadNotTodaysHabits = async () => {
+    const Habits = await getNotTodayHabitsByUserId(USER_ID);
+    setNotTodaysHabits(Habits);
+    if(Habits.length === 0){
+      setShowNotTodaysHabits(false);
+    }
   };
 
   const loadTodayCheckIns = async () => {
-    const today = new Date().toISOString().split("T")[0];
-    const logs = await db.habit_logs
-      .where("user_id")
-      .equals(USER_ID)
-      .filter((log) => log.date.startsWith(today))
-      .toArray();
+    const logs = await getTodaysHabitLogsByUserId(USER_ID);
 
     const map: CheckInMap = {};
     logs.forEach((log) => {
@@ -60,42 +84,29 @@ export function HabitList({
     setCheckInsToday(map);
   };
 
-  const addHabit = async () => {
-    if (!newHabit.trim()) return;
-
-    const habit: Habit = {
-      id: uuidv4(),
-      user_id: USER_ID,
-      title: newHabit,
-      created_at: new Date().toISOString(),
-      is_public: isPublic,
-      synced: false,
-      days: selectedDays,
-    };
-
-    await db.habits.add(habit);
-    setNewHabit("");
-    setIsPublic(false);
-    setSelectedDays([]);
-    loadHabits();
-    syncAll();
-  };
-
   const toggleCheckIn = async (habitId: string, isNowDone: boolean) => {
-    const today = new Date().toISOString().split("T")[0];
-
+    const restart = activeCalender;
+    if (restart) {
+      setActiveCalendar(false);
+    }
+    const today = new Date();
+    const todayIsoWithOffset =
+      today.toISOString().split("T")[0] + "T00:00:00+00:00";
     const existing = await db.habit_logs
-      .where({ user_id: USER_ID, habit_id: habitId, date: `${today}T00:00:00` })
+      .where({ habit_id: habitId, user_id: USER_ID, date: todayIsoWithOffset })
       .first();
 
     if (existing) {
-      await db.habit_logs.update(existing.id!, { is_done: isNowDone });
+      await db.habit_logs.update(existing.id, {
+        synced: false,
+        is_done: isNowDone,
+      });
     } else {
       await db.habit_logs.add({
         id: uuidv4(),
         user_id: USER_ID,
         habit_id: habitId,
-        date: `${today}T00:00:00`,
+        date: todayIsoWithOffset,
         synced: false,
         is_done: isNowDone,
       });
@@ -105,198 +116,307 @@ export function HabitList({
       ...prev,
       [habitId]: isNowDone,
     }));
-    syncAll();
+    //syncAll();
     loadTodayCheckIns();
+    if (restart) {
+      setActiveCalendar(true);
+    }
   };
 
-  const handleDeleteClick = (habit_id, user_id) => {
+  const handleDeleteClick = async (habit_id, user_id) => {
+    
     deleteHabit(habit_id, user_id);
     setHabits((prev) => prev.filter((habit) => habit.id !== habit_id));
+    setActiveCalendar(false);
+    await loadHabits();
   };
 
+  const handleCalenderOpenClick = (habit_id) => {
+    if (currentCalenderHabitId === habit_id) {
+      setActiveCalendar(!activeCalender);
+      SetCurrentCalenderHabitId(null);
+    } else {
+      setActiveCalendar(true);
+      SetCurrentCalenderHabitId(habit_id);
+    }
+  };
+
+  const handleCalenderCloseClick = () => {
+    setActiveCalendar(false);
+    SetCurrentCalenderHabitId(null);
+  };
+
+  const handleNewHabitClick = () => {
+    setNewHabitModalState(true);
+  };
+  const handleNewHabitClose = () => {
+    setNewHabitModalState(false);
+    loadHabits(); // Reload habits after adding a new one
+    loadNotTodaysHabits(); // Reload not today's habits
+  };
+
+  const handleSelectDaysClick = async () => {
+    loadHabits();
+    loadNotTodaysHabits();
+    setActiveCalendar(false);
+  };
 
   return (
-  <div className="flex h-screen w-screen">
-  <SideBar isOpen={true} onClose={() => {}} />
+    <div className="flex h-screen w-screen">
+      <SideBar isOpen={true} onClose={() => {}} />
 
-  <div className="p-4 sm:ml-64 flex-1 bg-white p-6 overflow-auto border-l border-gray-300">
-    <div className="w-full h-full bg-white rounded-none shadow-none p-6 relative">
-      <button
-        onClick={onNavigateToUser}
-        className="absolute top-4 right-4 bg-black text-white text-sm px-3 py-1 rounded-xl shadow hover:bg-gray-800 transition"
-      >
-        Mein Profil
-      </button>
-
-      {activeCalender ? (
-        <div className="flex gap-8">
-          {/* Linke Seite: Habits */}
-          <div className="flex-1 space-y-3">
-            {/* ...Input und Habit-Liste wie gehabt... */}
-            <div className="mb-6">
-              <input
-                type="text"
-                value={newHabit}
-                onChange={(e) => setNewHabit(e.target.value)}
-                placeholder="Neues Habit"
-                className="w-full bg-black text-white text-base placeholder-gray-400 px-4 py-2 rounded-xl mb-2 focus:outline-none"
-              />
-              <label className="flex items-center gap-2 mb-3 text-sm text-gray-700">
-                <input
-                  type="checkbox"
-                  checked={isPublic}
-                  onChange={() => setIsPublic(!isPublic)}
-                  className="w-4 h-4 color-white rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-                />
-                Öffentlich sichtbar
-              </label>
-              <button
-                onClick={addHabit}
-                className="w-full bg-primary text-white py-2 rounded-xl font-semibold hover:bg-purple-700 transition"
-              >
-                Hinzufügen
-              </button>
-            </div>
-            <div className="space-y-3">
-              {habits.map((habit) => (
-                <div
-                  key={habit.id}
-                  className="flex items-center justify-between bg-gray-50 p-4 rounded-xl shadow-sm hover:shadow-lg hover:scale-[1.01] transition transform cursor-pointer"
-                  onClick={() => setActiveCalendar(!activeCalender)}
-                >
-                  <div className="flex items-center gap-3 ">
-                    <div className="w-8 h-8 rounded-full bg-primary text-white font-bold text-sm flex items-center justify-center">
-                      {habit.title.charAt(0).toUpperCase()}
-                    </div>
-                    <span className="text-gray-900 font-medium text-sm truncate max-w-[160px]">
-                      {habit.title}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <IconButton
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteClick(habit.id, USER_ID);
-                      }}
-                    />
+      <div className="p-4 sm:ml-64 flex-1 bg-white p-6 overflow-auto border-l border-gray-300">
+        <div className="w-full h-full bg-white rounded-none shadow-none p-6 relative">
+          {activeCalender ? (
+            <div className="flex gap-8">
+              {/* Linke Seite: Habits */}
+              <div className="flex-1 space-y-3">
+                {/* ...Input und Habit-Liste wie gehabt... */}
+                <div className="space-y-3">
+                  {habits.map((habit) => (
                     <div
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleCheckIn(habit.id, !checkInsToday[habit.id]);
-                      }}
-                      className={`w-6 h-6 rounded-full flex items-center justify-center border transition-colors cursor-pointer ${
-                        checkInsToday[habit.id]
-                          ? "bg-green-500 border-green-500 text-white"
-                          : "bg-gray-300 border-gray-300 hover:bg-gray-400 text-transparent"
-                      }`}
+                      key={habit.id}
+                      className="flex items-center justify-between bg-gray-50 p-4 rounded-xl shadow-sm hover:shadow-lg hover:scale-[1.01] transition transform cursor-pointer"
+                      onClick={() => handleCalenderOpenClick(habit.id)}
                     >
-                      {checkInsToday[habit.id] && <FaCheck size={12} />}
+                      <div className="flex items-center gap-3 ">
+                        <div className="w-8 h-8 rounded-full bg-primary text-white font-bold text-sm flex items-center justify-center">
+                          {habit.title.charAt(0).toUpperCase()}
+                        </div>
+                        <span className="text-gray-900 font-medium text-sm truncate max-w-[160px]">
+                          {habit.title}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteClick(habit.id, USER_ID);
+                          }}
+                        />
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleCheckIn(habit.id, !checkInsToday[habit.id]);
+                          }}
+                          className={`w-6 h-6 rounded-full flex items-center justify-center border transition-colors cursor-pointer ${
+                            checkInsToday[habit.id]
+                              ? "bg-green-500 border-green-500 text-white"
+                              : "bg-gray-300 border-gray-300 hover:bg-gray-400 text-transparent"
+                          }`}
+                        >
+                          {checkInsToday[habit.id] && <FaCheck size={12} />}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          {/* Vertikale Linie zur Trennung */}
-          <div className="w-px bg-gray-300 h-auto self-stretch" />
-          {/* Rechte Seite: Kalender */}
-          <div className="flex-1 flex items-start justify-center">
-            <Calendar
-              isActive={activeCalender}
-              selected={selectedDate}
-              habitId={currentCalenderHabitId || ""}
-              onSelect={setSelectedDate}
-              onClose={() => setActiveCalendar(false)}
-            />
-          </div>
-        </div>
-      ) : (
-        // Normalansicht ohne Split-Screen
-        <>
-          <Calendar
-            isActive={activeCalender}
-            selected={selectedDate}
-            habitId={currentCalenderHabitId || ""}
-            onSelect={setSelectedDate}
-            onClose={() => setActiveCalendar(false)}
-          />
-          {/* ...Input und Habit-Liste wie gehabt... */}
-          <div className="mb-6">
-            <input
-              type="text"
-              value={newHabit}
-              onChange={(e) => setNewHabit(e.target.value)}
-              placeholder="Neues Habit"
-              className="w-full bg-black text-white text-base placeholder-gray-400 px-4 py-2 rounded-xl mb-2 focus:outline-none"
-            />
-            <label className="flex items-center gap-2 mb-3 text-sm text-gray-700">
-              <input
-                type="checkbox"
-                checked={isPublic}
-                onChange={() => setIsPublic(!isPublic)}
-                className="w-4 h-4 color-white rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-              />
-              Öffentlich sichtbar
-            </label>
-            <button
-              onClick={addHabit}
-              className="w-full bg-primary text-white py-2 rounded-xl font-semibold hover:bg-purple-700 transition"
-            >
-              Hinzufügen
-            </button>
-          </div>
-          <div className="space-y-3">
-            {habits.map((habit) => (
-              <div
-                key={habit.id}
-                className="flex items-center justify-between bg-gray-50 p-4 rounded-xl shadow-sm hover:shadow-lg hover:scale-[1.01] transition transform cursor-pointer"
-                onClick={() => {setActiveCalendar(!activeCalender); SetCurrentCalenderHabitId(habit.id);}}
-              >
-                <div className="flex items-center gap-3 ">
-                  <div className="w-8 h-8 rounded-full bg-primary text-white font-bold text-sm flex items-center justify-center">
-                    {habit.title.charAt(0).toUpperCase()}
-                  </div>
-                  <span className="text-gray-900 font-medium text-sm truncate max-w-[160px]">
-                    {habit.title}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <IconButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteClick(habit.id, USER_ID);
-                    }}
-                  />
-                  <div
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleCheckIn(habit.id, !checkInsToday[habit.id]);
-                    }}
-                    className={`w-6 h-6 rounded-full flex items-center justify-center border transition-colors cursor-pointer ${
-                      checkInsToday[habit.id]
-                        ? "bg-green-500 border-green-500 text-white"
-                        : "bg-gray-300 border-gray-300 hover:bg-gray-400 text-transparent"
-                    }`}
+                  ))}
+                  <div className="my-2">
+                  <button
+                    className="flex items-center gap-2 text-sm bg-white text-black border border-gray-300 rounded px-3 py-1 shadow hover:bg-gray-100 focus:outline-none"
+                    onClick={() => setShowNotTodaysHabits((prev) => !prev)}
+                    type="button"
                   >
-                    {checkInsToday[habit.id] && <FaCheck size={12} />}
-                  </div>
+                    {showNotTodaysHabits ? "▼" : "►"} Nicht heutige Habits
+                  </button>
+                  {showNotTodaysHabits && (
+                    <div className="mt-2 space-y-2">
+                      {notTodaysHabits.map((habit) => (
+                        <div
+                          key={habit.id}
+                          className="flex items-center justify-between bg-gray-50 p-4 rounded-xl shadow-sm hover:shadow-lg hover:scale-[1.01] transition transform cursor-pointer"
+                          onClick={() => handleCalenderOpenClick(habit.id)}
+                        >
+                          <div className="flex items-center gap-3 ">
+                            <div className="w-8 h-8 rounded-full bg-primary text-white font-bold text-sm flex items-center justify-center">
+                              {habit.title.charAt(0).toUpperCase()}
+                            </div>
+                            <span className="text-gray-900 font-medium text-sm truncate max-w-[160px]">
+                              {habit.title}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <IconButton
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteClick(habit.id, USER_ID);
+                              }}
+                            />
+                            <div
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleCheckIn(
+                                  habit.id,
+                                  !checkInsToday[habit.id]
+                                );
+                              }}
+                              className={`w-6 h-6 rounded-full flex items-center justify-center border transition-colors cursor-pointer ${
+                                checkInsToday[habit.id]
+                                  ? "bg-green-500 border-green-500 text-white"
+                                  : "bg-gray-300 border-gray-300 hover:bg-gray-400 text-transparent"
+                              }`}
+                            >
+                              {checkInsToday[habit.id] && <FaCheck size={12} />}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </>
-      )}
+              {/* Vertikale Linie zur Trennung */}
+              <div className="h-auto w-px bg-gray-300 self-stretch" />
+
+              <div className="flex-1 flex flex-col items-center justify-start gap-4">
+                <Calendar
+                  isActive={activeCalender}
+                  selected={selectedDate}
+                  habitId={currentCalenderHabitId || ""}
+                  onSelect={setSelectedDate}
+                  onClose={handleCalenderCloseClick}
+                />
+                <SelectDaysCalendar
+                  habitId={currentCalenderHabitId || ""}
+                  onClick={loadHabits}
+                />
+              </div>
+            </div>
+          ) : (
+            // Normalansicht ohne Split-Screen
+            <>
+              {/* ...Input und Habit-Liste wie gehabt... */}
+              <div className="space-y-3">
+                {habits.map((habit) => (
+                  <div
+                    key={habit.id}
+                    className="flex items-center justify-between bg-gray-50 p-4 rounded-xl shadow-sm hover:shadow-lg hover:scale-[1.01] transition transform cursor-pointer"
+                    onClick={() => {
+                      setActiveCalendar(!activeCalender);
+                      SetCurrentCalenderHabitId(habit.id);
+                    }}
+                  >
+                    <div className="flex items-center gap-3 ">
+                      <div className="w-8 h-8 rounded-full bg-primary text-white font-bold text-sm flex items-center justify-center">
+                        {habit.title.charAt(0).toUpperCase()}
+                      </div>
+                      <span className="text-gray-900 font-medium text-sm truncate max-w-[160px]">
+                        {habit.title}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteClick(habit.id, USER_ID);
+                        }}
+                      />
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleCheckIn(habit.id, !checkInsToday[habit.id]);
+                        }}
+                        className={`w-6 h-6 rounded-full flex items-center justify-center border transition-colors cursor-pointer ${
+                          checkInsToday[habit.id]
+                            ? "bg-green-500 border-green-500 text-white"
+                            : "bg-gray-300 border-gray-300 hover:bg-gray-400 text-transparent"
+                        }`}
+                      >
+                        {checkInsToday[habit.id] && <FaCheck size={12} />}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                <div className="my-2">
+                  <button
+                    className="flex items-center gap-2 text-sm bg-white text-black border border-gray-300 rounded px-3 py-1 shadow hover:bg-gray-100 focus:outline-none"
+                    onClick={() => setShowNotTodaysHabits((prev) => !prev)}
+                    type="button"
+                  >
+                    {showNotTodaysHabits ? "▼" : "►"} Nicht heutige Habits
+                  </button>
+                  {showNotTodaysHabits && (
+                    <div className="mt-2 space-y-2">
+                      {notTodaysHabits.map((habit) => (
+                        <div
+                          key={habit.id}
+                          className="flex items-center justify-between bg-gray-50 p-4 rounded-xl shadow-sm hover:shadow-lg hover:scale-[1.01] transition transform cursor-pointer"
+                          onClick={() => handleCalenderOpenClick(habit.id)}
+                        >
+                          <div className="flex items-center gap-3 ">
+                            <div className="w-8 h-8 rounded-full bg-primary text-white font-bold text-sm flex items-center justify-center">
+                              {habit.title.charAt(0).toUpperCase()}
+                            </div>
+                            <span className="text-gray-900 font-medium text-sm truncate max-w-[160px]">
+                              {habit.title}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <IconButton
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteClick(habit.id, USER_ID);
+                              }}
+                            />
+                            <div
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleCheckIn(
+                                  habit.id,
+                                  !checkInsToday[habit.id]
+                                );
+                              }}
+                              className={`w-6 h-6 rounded-full flex items-center justify-center border transition-colors cursor-pointer ${
+                                checkInsToday[habit.id]
+                                  ? "bg-green-500 border-green-500 text-white"
+                                  : "bg-gray-300 border-gray-300 hover:bg-gray-400 text-transparent"
+                              }`}
+                            >
+                              {checkInsToday[habit.id] && <FaCheck size={12} />}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+          {/* NewHabitModal Overlay */}
+          {newHabitModalState && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+              {/* Ersetze dies durch dein echtes Modal */}
+              <div className="bg-white rounded-xl shadow-2xl p-8 relative min-w-[320px]">
+                {/* Hier sollte dein NewHabitModal-Komponent rein */}
+                {/* <NewHabitModal onClose={handleNewHabitClose} /> */}
+                <button
+                  onClick={handleNewHabitClose}
+                  className="absolute top-2 right-2 text-gray-500 hover:text-black"
+                >
+                  ×
+                </button>
+                <NewHabitModal
+                  isActive={newHabitModalState}
+                  onClose={handleNewHabitClose}
+                />
+                {/* Modal-Inhalt hier */}
+                {/* ... */}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="fixed bottom-8 right-8 z-40">
+          <button
+            onClick={handleNewHabitClick}
+            className="bg-primary bg-purple-700 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg text-2xl hover:bg-purple-800 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
+            aria-label="Neues Habit hinzufügen"
+          >
+            +
+          </button>
+        </div>
+      </div>
     </div>
-    <div className="fixed bottom-8 right-8 z-50">
-      <button
-        onClick={() => {}}
-        className="bg-primary hover:bg-purple-700 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg text-2xl"
-        aria-label="Neues Habit hinzufügen"
-      >
-        +
-      </button>
-    </div>
-  </div>
-</div>
   );
 }

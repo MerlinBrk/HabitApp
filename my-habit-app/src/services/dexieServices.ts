@@ -1,11 +1,11 @@
 import { db } from "../lib/db";
 import { supabase } from "../lib/supabase";
 
-export async function getHabitById(habitId: string, userId: string) {
+export async function getHabitById(habitId: string) {
   try {
     // Suche das Habit lokal in IndexedDB
     const habit = await db.habits
-      .where({ id: habitId, user_id: userId })
+      .where({ id: habitId})
       .first();
     return habit; // Gibt das gefundene Habit zurück (oder undefined, falls nicht gefunden)
   } catch (err) {
@@ -14,6 +14,8 @@ export async function getHabitById(habitId: string, userId: string) {
   }
 }
 
+
+
 export async function getHabits(userId: string) {
   try {
     // Suche alle Habits des Benutzers lokal in IndexedDB
@@ -21,6 +23,44 @@ export async function getHabits(userId: string) {
     return habits; // Gibt die Liste der Habits zurück
   } catch (err) {
     console.error("❌ Fehler beim Abrufen der Habits:", err);
+    return [];
+  }
+}
+
+export async function getTodaysHabitsByUserId(userId: string) {
+  try {
+    // Ermittle den heutigen Wochentag als String wie in "days" gespeichert ("Mo", "Di", ...)
+    const weekdays = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+    const todayWeekday = weekdays[new Date().getDay()];
+
+    const habits = await db.habits
+      .where("user_id")
+      .equals(userId)
+      .filter((habit) => habit.days?.includes(todayWeekday))
+      .toArray();
+    return habits; // Gibt die Liste der Habits für heute zurück
+  } catch (err) {
+    console.error("Fehler beim Abrufen der Habits für heute:", err);
+    return [];
+  }
+}
+
+export async function getNotTodayHabitsByUserId(userId: string) {
+  try {
+
+    // Ermittle den heutigen Wochentag als String wie in "days" gespeichert ("Mo", "Di", ...)
+    const weekdays = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+    const todayWeekday = weekdays[new Date().getDay()];
+
+    const habits = await db.habits
+      .where("user_id")
+      .equals(userId)
+      .filter((habit) => !habit.days?.includes(todayWeekday))
+      .toArray();
+    return habits; // Gibt die Liste der Habits zurück, die nicht für heute sind
+  }
+ catch (err) {
+    console.error("Fehler beim Abrufen der Habits, die nicht für heute sind:", err);
     return [];
   }
 }
@@ -42,10 +82,39 @@ export async function getHabitLogByHabitId(habitId: number) {
     const habitLog = await db.habit_logs.where({ habit_id: habitId }).toArray();
     return habitLog; // Gibt den gefundenen HabitLog zurück (oder undefined, falls nicht gefunden)
   } catch (err) {
-    console.error("❌ Fehler beim Abrufen des HabitLogs:", err);
+    console.error("Fehler beim Abrufen des HabitLogs:", err);
     return [];
   }
 }
+
+export async function getTodaysHabitLogsByUserId(userId: string) {
+  try {
+    const today = new Date().toISOString().split("T")[0];
+    const logs = await db.habit_logs
+      .where("user_id")
+      .equals(userId)
+      .filter((log) => log.date.startsWith(today))
+      .toArray();
+    return logs; // Gibt die Liste der HabitLogs für heute zurück
+  } catch (err) {
+    console.error("Fehler beim Abrufen der HabitLogs für heute:", err);
+    return [];
+  }
+}
+
+export async function getTrueHabitLogByHabitId(habitId: number) {
+  try {
+    // Suche den HabitLog lokal in IndexedDB
+    const habitLog = await db.habit_logs.where({ habit_id: habitId}).toArray();
+    const filteredHabitLog = habitLog.filter(log => log.is_done === true);
+    return filteredHabitLog;
+    return habitLog; // Gibt den gefundenen HabitLog zurück (oder undefined, falls nicht gefunden)
+  } catch (err) {
+    console.error("Fehler beim Abrufen des HabitLogs:", err);
+    return [];
+  }
+}
+
 
 export async function getHabitLogByHabitLogId(
   habitLogId: number,
@@ -60,6 +129,29 @@ export async function getHabitLogByHabitLogId(
   } catch (err) {
     console.error("❌ Fehler beim Abrufen des HabitLogs:", err);
     return null;
+  }
+}
+
+export async function addHabitToDB(
+  title: string,
+  userId: string,
+  isPublic: boolean,
+  days: string[]
+) {
+  try {
+    const newHabit = {
+      id: crypto.randomUUID(), // Generiere eine eindeutige ID
+      user_id: userId,
+      title,
+      created_at: new Date().toISOString(),
+      is_public: isPublic,
+      synced: false, // Markiere es als unsynchronisiert
+      days,
+    };  
+
+    await db.habits.add(newHabit); // Füge das Habit lokal in IndexedDB hinzu
+  } catch (err) {
+    console.error("Fehler beim Hinzufügen des Habits:", err);
   }
 }
 

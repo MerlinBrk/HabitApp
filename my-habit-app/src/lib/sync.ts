@@ -49,23 +49,25 @@ export async function syncHabitLogsWithSupabase(userId: string) {
   try {
     /*const unsyncedHabitLogs = await db.habit_logs
       .where({ user_id: userId, synced: false })
-      .toArray();*/
-
-    const allHabitLogs = await db.habit_logs
-      .where("user_id")
-      .equals(userId)
       .toArray();
-    const unsyncedHabitLogs = allHabitLogs.filter((h) => h.synced === false);
+*/
+    const unsyncedHabitLogs = await db.habit_logs
+      .where('[user_id+synced]')
+      .equals([userId, false]) // Filtere nach user_id und synced = false
+      .toArray();
+
+
 
     for (const habitLog of unsyncedHabitLogs) {
       const { synced, ...habitLogWithoutSynced } = habitLog;
+     
       const { error } = await supabase
         .from("Habit_logs")
-        .insert([habitLogWithoutSynced]);
+        .upsert([habitLogWithoutSynced], { onConflict: "id" }); 
       if (!error) {
-        await db.habit_logs.update(habitLog.id!, { synced: true }); // Wir setzen die ID hier als non-optional
+        await db.habit_logs.update(habitLog.id, { synced: true }); 
       } else {
-        console.error("Fehler beim Sync eines HabitLogs:", error);
+        console.error("Fehler beim Sync eines HabitLogs:", error, habitLogWithoutSynced);
       }
     }
   } catch (err) {

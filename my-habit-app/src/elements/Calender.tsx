@@ -1,45 +1,62 @@
 // components/Calendar.tsx
-import React, { useEffect } from 'react';
-import { useState } from 'react';
-import { DayPicker } from 'react-day-picker';
-import 'react-day-picker/dist/style.css';
-import { FaTimes } from 'react-icons/fa';
-import { getHabitLogByHabitId } from "../services/dexieServices";
-import { type HabitLog } from '../lib/db';
+import { useEffect } from "react";
+import { useState } from "react";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
+import { FaTimes } from "react-icons/fa";
+import {
+  getHabitById,
+  getTrueHabitLogByHabitId,
+} from "../services/dexieServices";
+import { type HabitLog, type Habit } from "../lib/db";
 
-export default function Calendar({ isActive,selected, habitId, onSelect,onClose }: {
-    isActive: boolean;
+export default function Calendar({
+  isActive,
+  selected,
+  habitId,
+  onSelect,
+  onClose,
+}: {
+  isActive: boolean;
   selected: Date | undefined;
-  habitId: String;
+  habitId: string;
   onSelect: (date: Date | undefined) => void;
   onClose: () => void;
 }) {
+  const [habitLogs, setHabitLogs] = useState<HabitLog[]>([]);
+  const [habit, setHabit] = useState<Habit>(); // Typ anpassen, wenn Habit-Objekt bekannt ist
 
-    const [habitLogs, setHabitLogs] = useState<HabitLog[]>([]);
+  const loadHabit = async (habitId: string) => {
+    const currentHabit = await getHabitById(habitId);
+    if (!currentHabit) {
+      console.error("Habit nicht gefunden für Habit ID:", habitId);
+      return;
+    }
+    
+    setHabit(currentHabit);
+    
+  };
 
-    const loadHabitLogs = async (habitId: string) => {
-    const currentHabitLogs = await getHabitLogByHabitId(habitId);
-    console.log("Aktuelle Habit Logs:", currentHabitLogs);
+  const loadHabitLogs = async (habitId: string) => {
+    const currentHabitLogs = await getTrueHabitLogByHabitId(habitId.toString());
+   
     if (currentHabitLogs) {
-        setHabitLogs(currentHabitLogs);
-      console.log(habitLogs);
-
-    } else {
-      console.log("Keine Habit Logs gefunden für Habit ID:", habitId);
+      setHabitLogs(currentHabitLogs);
+     
     }
   };
-  
-    useEffect(() => {
+
+  useEffect(() => {
     if (habitId) {
       loadHabitLogs(habitId);
+      loadHabit(habitId);
     }
-  }, [habitId]);
+  }, [isActive, habitId]);
 
-
-    if (!isActive) return null;
+  if (!isActive) return null;
   return (
     <div className="relative p-4 bg-white rounded-xl shadow">
-    <h1>{habitLogs.length}</h1>
+      <h1>{habit?.title.toString()}</h1>
       {/* Schließen-Kreuz */}
       <button
         onClick={onClose}
@@ -53,7 +70,23 @@ export default function Calendar({ isActive,selected, habitId, onSelect,onClose 
         mode="single"
         selected={selected}
         onSelect={onSelect}
+        modifiers={{
+          completed: habitLogs.map((log) => new Date(log.date)),
+        }}
+        modifiersClassNames={{
+          completed: "rdp-day_completed",
+        }}
+        weekStartsOn={1}
       />
+      <style>
+        {`
+        .rdp-day_completed {
+        background:rgb(119, 10, 228) !important;
+        color: white !important;
+        border-radius: 9999px !important;
+        }
+      `}
+      </style>
     </div>
   );
 }
