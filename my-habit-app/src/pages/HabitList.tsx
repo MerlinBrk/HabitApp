@@ -7,9 +7,8 @@ import {
   getHabits,
   deleteHabit,
   getTodaysHabitLogsByUserId,
-  getDaysHabitsByUserId,
-  getNotDaysHabitsByUserId,
-  getHabitLogsByDateAndUserId,
+  getTodaysHabitsByUserId,
+  getNotTodayHabitsByUserId,
 } from "../services/dexieServices";
 import { FaCheck } from "react-icons/fa";
 import Calendar from "../elements/Calender"; // Assuming you have a Calendar component
@@ -17,7 +16,6 @@ import SideBar from "../elements/SideBar";
 import { syncAll } from "../lib/sync";
 import NewHabitModal from "../elements/NewHabitModal";
 import SelectDaysCalendar from "../elements/SelectDays";
-import DateSelector from "../elements/DateSelector";
 
 type CheckInMap = {
   [habitId: string]: boolean;
@@ -28,7 +26,7 @@ export function HabitList({
 }: {
   onNavigateToUser: () => void;
 }) {
-  const [showNotTodaysHabits, setShowNotTodaysHabits] = useState(true);
+  const [showNotTodaysHabits, setShowNotTodaysHabits] = useState(false);
   const [notTodaysHabits, setNotTodaysHabits] = useState<Habit[]>([]);
   const [habits, setHabits] = useState<Habit[]>([]);
   const [checkInsToday, setCheckInsToday] = useState<CheckInMap>({});
@@ -38,54 +36,45 @@ export function HabitList({
   const [currentCalenderHabitId, SetCurrentCalenderHabitId] = useState<
     string | null
   >(null);
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
 
   const USER_ID = useUserId();
 
   useEffect(() => {
-    loadAllData();
+    loadHabits();
+    loadTodayCheckIns();
+    loadNotTodaysHabits();
     //syncAll();
   }, []);
 
+
+
   useEffect(() => {
-    if (activeCalender && !showNotTodaysHabits) {
+    if(activeCalender && !showNotTodaysHabits) {
       setActiveCalendar(false);
       SetCurrentCalenderHabitId(null);
     }
+
   }, [showNotTodaysHabits]);
 
-
-  const loadAllData = async () => {
-    await loadHabits();
-    await loadTodayCheckIns();
-    await loadNotTodaysHabits();
-  };
-  const handleDateChange = (newDate) => {
-    setCurrentDate(newDate);
-    loadAllData(); // Lade alle Daten neu, wenn das Datum geändert wird
-
-    // Du kannst hier auch API-Calls, Filter oder andere Logik ausführen
-  };
+  
 
   const loadHabits = async () => {
-    const data = await getDaysHabitsByUserId(USER_ID, currentDate);
+    const data = await getTodaysHabitsByUserId(USER_ID);
     setHabits(data);
     await loadNotTodaysHabits(); // Load not today's habits after loading today's habits
     // Load not today's habits after loading today's habits
   };
 
   const loadNotTodaysHabits = async () => {
-    const Habits = await getNotDaysHabitsByUserId(USER_ID,currentDate);
+    const Habits = await getNotTodayHabitsByUserId(USER_ID);
     setNotTodaysHabits(Habits);
-    if (Habits.length === 0) {
+    if(Habits.length === 0){
+      setShowNotTodaysHabits(false);
     }
   };
 
   const loadTodayCheckIns = async () => {
-    const today = new Date();
-    const logs = await getHabitLogsByDateAndUserId(USER_ID, currentDate
-
-    );
+    const logs = await getTodaysHabitLogsByUserId(USER_ID);
 
     const map: CheckInMap = {};
     logs.forEach((log) => {
@@ -100,13 +89,11 @@ export function HabitList({
     if (restart) {
       setActiveCalendar(false);
     }
-    ;
-    const dateIsoWithOffset =
-      currentDate
-      .toISOString().split("T")[0] + "T00:00:00+00:00";
+    const today = new Date();
+    const todayIsoWithOffset =
+      today.toISOString().split("T")[0] + "T00:00:00+00:00";
     const existing = await db.habit_logs
-      .where({ habit_id: habitId, user_id: USER_ID, date: dateIsoWithOffset
-       })
+      .where({ habit_id: habitId, user_id: USER_ID, date: todayIsoWithOffset })
       .first();
 
     if (existing) {
@@ -119,7 +106,7 @@ export function HabitList({
         id: uuidv4(),
         user_id: USER_ID,
         habit_id: habitId,
-        date: dateIsoWithOffset,
+        date: todayIsoWithOffset,
         synced: false,
         is_done: isNowDone,
       });
@@ -129,18 +116,19 @@ export function HabitList({
       ...prev,
       [habitId]: isNowDone,
     }));
+    //syncAll();
     loadTodayCheckIns();
     if (restart) {
       setActiveCalendar(true);
     }
-    SetCurrentCalenderHabitId(habitId);
   };
 
   const handleDeleteClick = async (habit_id, user_id) => {
+    
     deleteHabit(habit_id, user_id);
     setHabits((prev) => prev.filter((habit) => habit.id !== habit_id));
     setActiveCalendar(false);
-    await loadAllData();
+    await loadHabits();
   };
 
   const handleCalenderOpenClick = (habit_id) => {
@@ -178,7 +166,6 @@ export function HabitList({
       <SideBar isOpen={true} onClose={() => {}} />
 
       <div className="p-4 sm:ml-64 flex-1 bg-white p-6 overflow-auto border-l border-gray-300">
-        <DateSelector onDateChange={handleDateChange} />
         <div className="w-full h-full bg-white rounded-none shadow-none p-6 relative">
           {activeCalender ? (
             <div className="flex gap-8">
@@ -224,62 +211,58 @@ export function HabitList({
                     </div>
                   ))}
                   <div className="my-2">
-                    {notTodaysHabits.length !== 0 && (
-                      <button
-                        className="flex items-center gap-2 text-sm bg-white text-black border border-gray-300 rounded px-3 py-1 shadow hover:bg-gray-100 focus:outline-none"
-                        onClick={() => setShowNotTodaysHabits((prev) => !prev)}
-                        type="button"
-                      >
-                        {showNotTodaysHabits ? "▼" : "►"} Nicht heutige Habits
-                      </button>
-                    )}
-                    {showNotTodaysHabits && (
-                      <div className="mt-2 space-y-2">
-                        {notTodaysHabits.map((habit) => (
-                          <div
-                            key={habit.id}
-                            className="flex items-center justify-between bg-gray-50 p-4 rounded-xl shadow-sm hover:shadow-lg hover:scale-[1.01] transition transform cursor-pointer"
-                            onClick={() => handleCalenderOpenClick(habit.id)}
-                          >
-                            <div className="flex items-center gap-3 ">
-                              <div className="w-8 h-8 rounded-full bg-primary text-white font-bold text-sm flex items-center justify-center">
-                                {habit.title.charAt(0).toUpperCase()}
-                              </div>
-                              <span className="text-gray-900 font-medium text-sm truncate max-w-[160px]">
-                                {habit.title}
-                              </span>
+                  <button
+                    className="flex items-center gap-2 text-sm bg-white text-black border border-gray-300 rounded px-3 py-1 shadow hover:bg-gray-100 focus:outline-none"
+                    onClick={() => setShowNotTodaysHabits((prev) => !prev)}
+                    type="button"
+                  >
+                    {showNotTodaysHabits ? "▼" : "►"} Nicht heutige Habits
+                  </button>
+                  {showNotTodaysHabits && (
+                    <div className="mt-2 space-y-2">
+                      {notTodaysHabits.map((habit) => (
+                        <div
+                          key={habit.id}
+                          className="flex items-center justify-between bg-gray-50 p-4 rounded-xl shadow-sm hover:shadow-lg hover:scale-[1.01] transition transform cursor-pointer"
+                          onClick={() => handleCalenderOpenClick(habit.id)}
+                        >
+                          <div className="flex items-center gap-3 ">
+                            <div className="w-8 h-8 rounded-full bg-primary text-white font-bold text-sm flex items-center justify-center">
+                              {habit.title.charAt(0).toUpperCase()}
                             </div>
-                            <div className="flex items-center gap-2">
-                              <IconButton
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDeleteClick(habit.id, USER_ID);
-                                }}
-                              />
-                              <div
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  toggleCheckIn(
-                                    habit.id,
-                                    !checkInsToday[habit.id]
-                                  );
-                                }}
-                                className={`w-6 h-6 rounded-full flex items-center justify-center border transition-colors cursor-pointer ${
-                                  checkInsToday[habit.id]
-                                    ? "bg-green-500 border-green-500 text-white"
-                                    : "bg-gray-300 border-gray-300 hover:bg-gray-400 text-transparent"
-                                }`}
-                              >
-                                {checkInsToday[habit.id] && (
-                                  <FaCheck size={12} />
-                                )}
-                              </div>
+                            <span className="text-gray-900 font-medium text-sm truncate max-w-[160px]">
+                              {habit.title}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <IconButton
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteClick(habit.id, USER_ID);
+                              }}
+                            />
+                            <div
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleCheckIn(
+                                  habit.id,
+                                  !checkInsToday[habit.id]
+                                );
+                              }}
+                              className={`w-6 h-6 rounded-full flex items-center justify-center border transition-colors cursor-pointer ${
+                                checkInsToday[habit.id]
+                                  ? "bg-green-500 border-green-500 text-white"
+                                  : "bg-gray-300 border-gray-300 hover:bg-gray-400 text-transparent"
+                              }`}
+                            >
+                              {checkInsToday[habit.id] && <FaCheck size={12} />}
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 </div>
               </div>
               {/* Vertikale Linie zur Trennung */}
@@ -346,15 +329,13 @@ export function HabitList({
                 ))}
 
                 <div className="my-2">
-                  {notTodaysHabits.length !== 0 && (
-                    <button
-                      className="flex items-center gap-2 text-sm bg-white text-black border border-gray-300 rounded px-3 py-1 shadow hover:bg-gray-100 focus:outline-none"
-                      onClick={() => setShowNotTodaysHabits((prev) => !prev)}
-                      type="button"
-                    >
-                      {showNotTodaysHabits ? "▼" : "►"} Nicht heutige Habits
-                    </button>
-                  )}
+                  <button
+                    className="flex items-center gap-2 text-sm bg-white text-black border border-gray-300 rounded px-3 py-1 shadow hover:bg-gray-100 focus:outline-none"
+                    onClick={() => setShowNotTodaysHabits((prev) => !prev)}
+                    type="button"
+                  >
+                    {showNotTodaysHabits ? "▼" : "►"} Nicht heutige Habits
+                  </button>
                   {showNotTodaysHabits && (
                     <div className="mt-2 space-y-2">
                       {notTodaysHabits.map((habit) => (

@@ -27,11 +27,11 @@ export async function getHabits(userId: string) {
   }
 }
 
-export async function getDaysHabitsByUserId(userId: string,date: Date) {
+export async function getTodaysHabitsByUserId(userId: string) {
   try {
     // Ermittle den heutigen Wochentag als String wie in "days" gespeichert ("Mo", "Di", ...)
     const weekdays = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
-    const todayWeekday = weekdays[date.getDay()];
+    const todayWeekday = weekdays[new Date().getDay()];
 
     const habits = await db.habits
       .where("user_id")
@@ -45,12 +45,12 @@ export async function getDaysHabitsByUserId(userId: string,date: Date) {
   }
 }
 
-export async function getNotDaysHabitsByUserId(userId: string,date: Date) {
+export async function getNotTodayHabitsByUserId(userId: string) {
   try {
 
     // Ermittle den heutigen Wochentag als String wie in "days" gespeichert ("Mo", "Di", ...)
     const weekdays = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
-    const todayWeekday = weekdays[date.getDay()];
+    const todayWeekday = weekdays[new Date().getDay()];
 
     const habits = await db.habits
       .where("user_id")
@@ -98,31 +98,6 @@ export async function getTodaysHabitLogsByUserId(userId: string) {
     return logs; // Gibt die Liste der HabitLogs für heute zurück
   } catch (err) {
     console.error("Fehler beim Abrufen der HabitLogs für heute:", err);
-    return [];
-  }
-}
-
-export async function getHabitLogsByDateAndUserId(
-   // Tag kann entweder ein Date-Objekt oder ein ISO-Datum-String sein
-  userId: string,
-  day: Date,
-) {
-  try {
-    console.log("getHabitLogsByDateAndUserId", day, userId,typeof day);
-    const formattedDate =
-      day instanceof Date
-        ? day.toISOString().split("T")[0]
-        : day.split("T")[0]; // Formatieren des Datums als "YYYY-MM-DD"
-        console.log("getHabitLogsByDateAndUserId", formattedDate, userId);
-    // Suche den HabitLog lokal in IndexedDB nach habitId und Datum
-    const habitLogs = await db.habit_logs
-      .where("user_id")
-      .equals(userId)
-      .filter((log) => log.date.startsWith(formattedDate))
-      .toArray();
-    return habitLogs; // Gibt die gefundenen HabitLogs zurück (oder leeres Array, falls nicht gefunden)
-  } catch (err) {
-    console.error("Fehler beim Abrufen der HabitLogs:", err);
     return [];
   }
 }
