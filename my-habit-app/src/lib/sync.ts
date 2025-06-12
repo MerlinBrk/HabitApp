@@ -1,6 +1,20 @@
 // lib/sync.ts
 import { supabase } from "./supabase";
 import { db } from "./db";
+import { useUserId } from "../services/useUserId";
+
+
+export async function syncAll() {
+  const userId = useUserId();
+  if (!userId) return;
+
+  await syncHabitsWithSupabase(userId);         // Dexie → Supabase
+  await syncHabitLogsWithSupabase(userId);
+  await pullHabitsFromSupabase(userId);   // Supabase → Dexie
+  await pullHabitLogsFromSupabase(userId);
+}
+
+
 
 //Sync Habits from Indexed DB -> SupaBase / only unsynced Habits
 export async function syncHabitsWithSupabase(userId: string) {
@@ -33,26 +47,27 @@ export async function syncHabitsWithSupabase(userId: string) {
 //Sync HabitLogs from Indexed DB -> SupaBase / only unsynced HabitsLogs
 export async function syncHabitLogsWithSupabase(userId: string) {
   try {
-    // 🟢 Unsynced HabitLogs holen
     /*const unsyncedHabitLogs = await db.habit_logs
       .where({ user_id: userId, synced: false })
-      .toArray();*/
-
-    const allHabitLogs = await db.habit_logs
-      .where("user_id")
-      .equals(userId)
       .toArray();
-    const unsyncedHabitLogs = allHabitLogs.filter((h) => h.synced === false);
+*/
+    const unsyncedHabitLogs = await db.habit_logs
+      .where('[user_id+synced]')
+      .equals([userId, false]) // Filtere nach user_id und synced = false
+      .toArray();
+
+
 
     for (const habitLog of unsyncedHabitLogs) {
       const { synced, ...habitLogWithoutSynced } = habitLog;
+     
       const { error } = await supabase
         .from("Habit_logs")
-        .insert([habitLogWithoutSynced]);
+        .upsert([habitLogWithoutSynced], { onConflict: "id" }); 
       if (!error) {
-        await db.habit_logs.update(habitLog.id!, { synced: true }); // Wir setzen die ID hier als non-optional
+        await db.habit_logs.update(habitLog.id, { synced: true }); 
       } else {
-        console.error("Fehler beim Sync eines HabitLogs:", error);
+        console.error("Fehler beim Sync eines HabitLogs:", error, habitLogWithoutSynced);
       }
     }
   } catch (err) {

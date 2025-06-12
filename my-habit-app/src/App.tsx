@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./lib/supabase";
-import Login from "./components/Login";
-import {HabitList} from "./components/HabitList";
-import UserPage from "./components/UserPage";
+
+import Login from "./pages/Login";
+import {HabitList} from "./pages/HabitList";
+import UserPage from "./pages/UserPage";
+import { Statistics } from "./pages/Statistics";
+import { Community } from "./pages/Community";
 import AppNotInstalled from "./components/AppNotInstalled";
 
 
@@ -54,7 +57,9 @@ export default function App() {
   if (!isLoggedIn) return <Login onLogin={() => setIsLoggedIn(true)} />;
 
   return currentView === "habits" ? (
-    <HabitList onNavigateToUser={() => setCurrentView("user")} />
+    /*<HabitList onNavigateToUser={() => setCurrentView("user")} />*/
+    /*<Statistics />*/
+    <Community />
   ) : (
     <UserPage onBack={() => setCurrentView("habits")} />
 

@@ -5,7 +5,7 @@ interface IconButtonProps {
   onClick: () => void;
 }
 
-const IconButton: React.FC<IconButtonProps> = ({ onClick}) => {
+const IconButton: React.FC<IconButtonProps> = ({onClick}) => {
   return (
     <button
       onClick={onClick}
