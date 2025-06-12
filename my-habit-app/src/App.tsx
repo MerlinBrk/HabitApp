@@ -3,6 +3,8 @@ import { supabase } from "./lib/supabase";
 import Login from "./pages/Login";
 import {HabitList} from "./pages/HabitList";
 import UserPage from "./pages/UserPage";
+import { Statistics } from "./pages/Statistics";
+import { Community } from "./pages/Community";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -29,7 +31,9 @@ export default function App() {
   if (!isLoggedIn) return <Login onLogin={() => setIsLoggedIn(true)} />;
 
   return currentView === "habits" ? (
-    <HabitList onNavigateToUser={() => setCurrentView("user")} />
+    /*<HabitList onNavigateToUser={() => setCurrentView("user")} />*/
+    /*<Statistics />*/
+    <Community />
   ) : (
     <UserPage onBack={() => setCurrentView("habits")} />
   );
