@@ -160,7 +160,7 @@ export function HabitList() {
                       handleCalenderOpenClick={() =>
                         handleCalenderOpenClick(habit.id)
                       }
-                      handleDeleteHabit={() =>
+                      handleDeleteClick={() =>
                         handleDeleteHabit(habit.id, USER_ID)
                       }
                       toggleCheckIn={() =>
@@ -184,7 +184,7 @@ export function HabitList() {
                           handleCalenderOpenClick={() =>
                             handleCalenderOpenClick(habit.id)
                           }
-                          handleDeleteHabit={() =>
+                          handleDeleteClick={() =>
                             handleDeleteHabit(habit.id, USER_ID)
                           }
                           toggleCheckIn={() =>
@@ -226,7 +226,7 @@ export function HabitList() {
                     handleCalenderOpenClick={() =>
                       handleCalenderOpenClick(habit.id)
                     }
-                    handleDeleteHabit={() =>
+                    handleDeleteClick={() =>
                       handleDeleteHabit(habit.id, USER_ID)
                     }
                     toggleCheckIn={() =>
@@ -252,7 +252,7 @@ export function HabitList() {
                         handleCalenderOpenClick={() =>
                           handleCalenderOpenClick(habit.id)
                         }
-                        handleDeleteHabit={() =>
+                        handleDeleteClick={() =>
                           handleDeleteHabit(habit.id, USER_ID)
                         }
                         toggleCheckIn={() =>
