@@ -57,7 +57,7 @@ export default function App() {
   if (!isLoggedIn) return <Login onLogin={() => setIsLoggedIn(true)} />;
 
   return currentView === "habits" ? (
-    <HabitList onNavigateToUser={() => setCurrentView("user")} />
+    <HabitList />
     /*<Statistics />*/
     /*<Community />*/
   ) : (

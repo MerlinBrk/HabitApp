@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { format, addDays, subDays } from "date-fns";
 
-const DateSelector = ({ onDateChange }) => {
+interface DateSelectorProps {
+  onDateChange: (date: Date) => void;
+}
+
+
+export default function DateSelector({ onDateChange }: DateSelectorProps) {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [isToday, setIsToday] = useState(false);
     const [showCalendar, setShowCalendar] = useState(false); // Kalender-Visibility-Status
@@ -61,4 +66,3 @@ const DateSelector = ({ onDateChange }) => {
     );
 };
 
-export default DateSelector;
