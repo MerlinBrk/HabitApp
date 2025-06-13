@@ -44,22 +44,22 @@ export default function App() {
 
   const isStartetAsApp = window.matchMedia('(display-mode: standalone)').matches;
 
-
+  /*
   if((isMobile || true) && !isStartetAsApp) {
     return (
       <AppNotInstalled />
 
     );
-  }
+  }*/
 
   if (loading) return <div className="p-6 text-center">Lade...</div>;
 
   if (!isLoggedIn) return <Login onLogin={() => setIsLoggedIn(true)} />;
 
   return currentView === "habits" ? (
-    /*<HabitList onNavigateToUser={() => setCurrentView("user")} />*/
+    <HabitList onNavigateToUser={() => setCurrentView("user")} />
     /*<Statistics />*/
-    <Community />
+    /*<Community />*/
   ) : (
     <UserPage onBack={() => setCurrentView("habits")} />
 

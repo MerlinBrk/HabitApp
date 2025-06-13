@@ -54,6 +54,11 @@ export function HabitList({
     }
   }, [showNotTodaysHabits]);
 
+  useEffect(() => {
+    // Wenn das aktuelle Datum geändert wird, lade alle Daten neu
+    loadAllData();
+  }, [currentDate]);
+
 
   const loadAllData = async () => {
     await loadHabits();
@@ -61,8 +66,7 @@ export function HabitList({
     await loadNotTodaysHabits();
   };
   const handleDateChange = (newDate) => {
-    setCurrentDate(newDate);
-    loadAllData(); // Lade alle Daten neu, wenn das Datum geändert wird
+    setCurrentDate(newDate);// Lade alle Daten neu, wenn das Datum geändert wird
 
     // Du kannst hier auch API-Calls, Filter oder andere Logik ausführen
   };
