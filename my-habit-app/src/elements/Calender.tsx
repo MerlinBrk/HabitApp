@@ -10,39 +10,34 @@ import {
 } from "../services/dexieServices";
 import { type HabitLog, type Habit } from "../lib/db";
 
+
+interface CalendarProps {
+  isActive: boolean;
+  selected: Date | undefined;
+  habitId: string;
+  onSelect: (date: Date | undefined) => void;
+  onClose: () => void;
+}
+
 export default function Calendar({
   isActive,
   selected,
   habitId,
   onSelect,
   onClose,
-}: {
-  isActive: boolean;
-  selected: Date | undefined;
-  habitId: string;
-  onSelect: (date: Date | undefined) => void;
-  onClose: () => void;
-}) {
+}: CalendarProps) {
   const [habitLogs, setHabitLogs] = useState<HabitLog[]>([]);
   const [habit, setHabit] = useState<Habit>(); // Typ anpassen, wenn Habit-Objekt bekannt ist
 
   const loadHabit = async (habitId: string) => {
     const currentHabit = await getHabitById(habitId);
-    if (!currentHabit) {
-      console.error("Habit nicht gefunden für Habit ID:", habitId);
-      return;
-    }
-    
-    setHabit(currentHabit);
-    
+    setHabit(currentHabit); 
   };
 
   const loadHabitLogs = async (habitId: string) => {
     const currentHabitLogs = await getTrueHabitLogByHabitId(habitId.toString());
-   
     if (currentHabitLogs) {
       setHabitLogs(currentHabitLogs);
-     
     }
   };
 

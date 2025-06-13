@@ -1,9 +1,14 @@
 import React, { useState , useEffect} from "react";
 import { db } from "../lib/db"; // Adjust the import path as necessary
+import { WEEKDAYS } from "../utils/constants";
 
-const daysOfWeek = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 
-export default function SelectDaysCalendar({habitId, onClick}: { habitId: string, onClick: () => void }) {
+interface SelectDaysCalendarProps {
+  habitId: string;
+  onClick: () => void; // Callback function to close the modal or perform any other action
+}
+
+export default function SelectDaysCalendar({habitId, onClick}: SelectDaysCalendarProps) {
   const [selectedDays, setSelectedDays] = useState([]);
 
 
@@ -42,7 +47,7 @@ const toggleDay = async(day) => {
 
   return (
     <div className="flex gap-2 p-4">
-      {daysOfWeek.map((day) => (
+      {WEEKDAYS.map((day) => (
         <button
           key={day}
           onClick={() => toggleDay(day)}

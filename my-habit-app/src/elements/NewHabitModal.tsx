@@ -6,20 +6,21 @@ import { type HabitLog } from "../lib/db";
 import { useUserId } from "../services/useUserId";
 import { db } from "../lib/db";
 import { addHabitToDB } from "../services/dexieServices";
+import { WEEKDAYS } from "../utils/constants";
 
-const daysOfWeek = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+interface NewHabitModalProps {
+  isActive: boolean;
+  onClose: () => void;
+}
 
 export default function NewHabitModal({
   isActive,
   onClose,
-}: {
-  isActive: boolean;
-  onClose: () => void;
-}) {
+}: NewHabitModalProps) {
   const [newHabit, setNewHabit] = useState("");
   const [isPublic, setIsPublic] = useState(false);
   const [selectedDays, setSelectedDays] = useState<string[]>(
-    daysOfWeek.slice(0, 7)
+    WEEKDAYS.slice(0, 7)
   ); // Standardmäßig alle Tage ausgewählt
 
   const USER_ID = useUserId();
@@ -74,7 +75,7 @@ export default function NewHabitModal({
             Öffentlich sichtbar
           </label>
           <div className="flex gap-1 p-2">
-            {daysOfWeek.map((day) => (
+            {WEEKDAYS.map((day) => (
               <button
                 key={day}
                 onClick={() => toggleDay(day)}
