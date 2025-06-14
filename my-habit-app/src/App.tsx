@@ -2,14 +2,15 @@ import {useEffect, useState} from "react";
 import {supabase} from "./lib/supabase";
 import Login from "./components/Login";
 import {HabitList} from "./components/HabitList";
-import UserPage from "./components/UserPage";
-import Layout from "./responsive/Layout";
-import { BrowserRouter as Router, Routes, Route } from "react-router";
+import ProfilePage from "./components/ProfilePage.tsx";
+import SideBar from "./elements/SideBar";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import TestPage from "./components/TestPage.tsx";
 
 export default function App() {
     //const [isLoggedIn, setIsLoggedIn] = useState(false);
     //const [loading, setLoading] = useState(true);
-    const [currentView, setCurrentView] = useState<"habits" | "user">("habits");
+    //const [currentView, setCurrentView] = useState<"habits" | "user">("habits");
 
     /*
     useEffect(() => {
@@ -33,9 +34,12 @@ export default function App() {
 */
     return (
         <Router>
-            <div className={"App"}>
+            <SideBar/>
+            <div className="ml-64 p-6">
                 <Routes>
-                    <Route path={"/"} element={<HabitList onNavigateToUser={() => setCurrentView("user")}/>} />
+                    <Route path="/" element={<HabitList/>} />
+                    <Route path="/test" element={<TestPage />} />
+                    <Route path="/profile" element={<ProfilePage/>} />
                 </Routes>
             </div>
         </Router>

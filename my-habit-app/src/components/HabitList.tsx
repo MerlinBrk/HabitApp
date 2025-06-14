@@ -12,11 +12,7 @@ type CheckInMap = {
     [habitId: string]: boolean;
 };
 
-export function HabitList({
-                              onNavigateToUser,
-                          }: {
-    onNavigateToUser: () => void;
-}) {
+export function HabitList() {
     const [habits, setHabits] = useState<Habit[]>([]);
     const [newHabit, setNewHabit] = useState("");
     const [isPublic, setIsPublic] = useState(false);
@@ -115,7 +111,6 @@ export function HabitList({
         <div className="p-4 sm:ml-64 flex-1 bg-white p-6 overflow-auto border-l border-gray-300">
             <div className="w-full h-full bg-white rounded-none shadow-none p-6 relative">
                 <button
-                    onClick={onNavigateToUser}
                     className="absolute top-4 right-4 bg-black text-white text-sm px-3 py-1 rounded-xl shadow hover:bg-gray-800 transition"
                 >
                     Mein Profil
