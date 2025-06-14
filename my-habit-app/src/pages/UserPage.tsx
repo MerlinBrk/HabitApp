@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabase";
+import React from "react";
 
 export default function UserPage({ onBack }: { onBack: () => void }) {
   const handleLogout = async () => {

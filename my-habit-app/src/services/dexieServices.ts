@@ -188,7 +188,7 @@ export async function addHabitLog(userId:string, habitId:number, date: Date, isD
       });
     }
     catch(err){
-      console.error("Fehler beim Hinzufügen eines Habit Logs")
+      console.error("Fehler beim Hinzufügen eines Habit Logs",err)
     }
 }
 

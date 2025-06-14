@@ -1,18 +1,7 @@
 import React, { useState } from "react";
 
-const data = [
-  "Apfel",
-  "Banane",
-  "Birne",
-  "Orange",
-  "Mango",
-  "Mandarine",
-  "Kiwi",
-  "Kirsche",
-  "Ananas",
-];
 
-export default function SearchBar() {
+export default function SearchBar({data}:{data: string[]}) {
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 

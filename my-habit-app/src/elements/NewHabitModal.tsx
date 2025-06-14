@@ -1,10 +1,8 @@
 // components/Calendar.tsx
-import React, { useEffect } from "react";
+import React from "react";
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import { type HabitLog } from "../lib/db";
 import { useUserId } from "../services/useUserId";
-import { db } from "../lib/db";
 import { addHabitToDB } from "../services/dexieServices";
 import { WEEKDAYS } from "../utils/constants";
 

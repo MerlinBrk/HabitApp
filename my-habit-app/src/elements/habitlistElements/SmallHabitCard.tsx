@@ -13,7 +13,6 @@ interface Props{
 };
 
 export default function SmallHabitCard({
-  habit,
   title,
   checked,
   handleCalenderOpenClick,

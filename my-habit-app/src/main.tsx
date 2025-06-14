@@ -1,13 +1,10 @@
 // main.tsx
-import { StrictMode } from 'react';
+import React,{ StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.tsx';
 import { syncUserIdToLocalStorage } from './lib/auth';
 import { registerSW } from 'virtual:pwa-register';
-import { syncHabitsWithSupabase, syncHabitLogsWithSupabase, syncAll} from './lib/sync';
-import { pullHabitsFromSupabase, pullHabitLogsFromSupabase } from './lib/sync';
-import { useUserId } from './services/useUserId.ts';
 
 
 

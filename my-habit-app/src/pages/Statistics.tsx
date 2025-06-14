@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React from "react";
 import SideBar from "../elements/SideBar";
 
 // Beispiel-Daten: Anzahl der Aktionen pro Tag (Datum: Count)

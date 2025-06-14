@@ -1,10 +1,7 @@
-import { useEffect, useState } from "react";
-import { db, type Habit, type HabitLog } from "../lib/db";
-import { v4 as uuidv4 } from "uuid";
+import React, { useEffect, useState } from "react";
+import { type Habit} from "../lib/db";
 import { useUserId } from "../services/useUserId";
-import IconButton from "../elements/IconButton";
 import {
-  getHabits,
   deleteHabit,
   getDaysHabitsByUserId,
   getNotDaysHabitsByUserId,
@@ -13,7 +10,6 @@ import {
   updateHabitLogIsDoneById,
   addHabitLog,
 } from "../services/dexieServices";
-import { FaCheck } from "react-icons/fa";
 import Calendar from "../elements/Calender"; // Assuming you have a Calendar component
 import SideBar from "../elements/SideBar";
 import { syncAll } from "../lib/sync";
@@ -35,7 +31,7 @@ export function HabitList() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [activeCalender, setActiveCalendar] = useState(false);
   const [newHabitModalState, setNewHabitModalState] = useState(false);
-  const [currentCalenderHabitId, SetCurrentCalenderHabitId] = useState<
+  const [currentCalenderHabitId, setCurrentCalenderHabitId] = useState<
     string | null
   >(null);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -50,7 +46,7 @@ export function HabitList() {
   useEffect(() => {
     if (activeCalender && !showNotTodaysHabits) {
       setActiveCalendar(false);
-      SetCurrentCalenderHabitId(null);
+      setCurrentCalenderHabitId(null);
     }
   }, [showNotTodaysHabits]);
 
@@ -109,7 +105,7 @@ export function HabitList() {
     loadDaysCheckIns();
     if (restart) setActiveCalendar(true);
 
-    SetCurrentCalenderHabitId(habitId);
+    setCurrentCalenderHabitId(habitId);
   };
 
   const handleDeleteHabit = async (habit_id, user_id) => {
@@ -124,13 +120,13 @@ export function HabitList() {
       handleCalenderCloseClick();
     } else {
       setActiveCalendar(true);
-      SetCurrentCalenderHabitId(habit_id);
+      setCurrentCalenderHabitId(habit_id);
     }
   };
 
   const handleCalenderCloseClick = () => {
     setActiveCalendar(false);
-    SetCurrentCalenderHabitId(null);
+    setCurrentCalenderHabitId(null);
   };
 
   const handleNewHabitModalClick = () => {
