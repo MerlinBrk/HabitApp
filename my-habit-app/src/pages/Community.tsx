@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import {
   getAllCommunities,
   getAllCommunityMessages,
-  addNewCommunity
+  addNewCommunity,
 } from "../services/communityServices";
 import { supabase } from "../lib/supabase";
 import MessageCard from "../elements/communityElements/MessageCard";
@@ -12,6 +12,9 @@ import NewCommunityModal from "../elements/communityElements/NewCommunityModal";
 import AddButton from "../elements/AddButton";
 import { type Community, type CommunityMessage } from "../utils/types";
 import { useUserId } from "../services/useUserId";
+import PostButton from "../elements/communityElements/PostButton";
+import NewMessageModal from "../elements/communityElements/NewMessageModal";
+import { addNewMessage } from "../services/messageServices";
 
 export function CommunityPage() {
   const [communities, setCommunities] = useState<Community[]>([]);
@@ -20,8 +23,9 @@ export function CommunityPage() {
   >([]);
   const [communityTitles, setCommunityTitles] = useState<string[]>([]);
   const [stateNewCommunityModal, setStateNewCommunityModal] = useState(false);
+  const [stateNewMessageModal, setStateNewMessageModal] = useState(false);
 
-   const USER_ID = useUserId();
+  const USER_ID = useUserId();
 
   useEffect(() => {
     fetchCommunities();
@@ -30,8 +34,8 @@ export function CommunityPage() {
     const Communities = supabase
       .channel("name")
       .on(
-        "POSTGRES_CHANGE",
-        { event: "INSERT", schema: "public", table: "Communities" },
+        'postgres_changes',
+        { event: "*", schema: "public", table: "Communities" },
         (payload) => {
           console.log("Change received!", payload);
         }
@@ -54,13 +58,31 @@ export function CommunityPage() {
     setCommunityMessages(data);
   };
 
-  const addANewCommunity = async (title: string, description:string)=>{
-      await addNewCommunity(USER_ID,title,description);
+  const addANewCommunity = async (title: string, description: string) => {
+    await addNewCommunity(USER_ID, title, description);
   };
 
-  const handleAddNewCommunityButton = async (title: string, description:string)=>{
-    addANewCommunity(title,description);
-  }
+  const handleAddNewCommunityButton = async (
+    title: string,
+    description: string
+  ) => {
+    addANewCommunity(title, description);
+  };
+
+  const handleAddNewMessageButton = async (
+    communityId: string,
+    title: string,
+    description: string,
+    habitId: string
+  ) => {
+    await addNewMessage(communityId, title, description, USER_ID);
+  };
+
+  const getCommunityNameById = (communityId: string) => {
+    const community = communities.find((c) => c.id === communityId);
+    const communityTitle = community ? community.title : "Unknown Community";
+    return communityTitle;
+  };
   return (
     <div className="flex h-screen w-screen">
       <SideBar isOpen={true} onClose={() => {}} />
@@ -69,16 +91,28 @@ export function CommunityPage() {
         <div className="w-full h-full bg-white rounded-none shadow-none p-4 relative">
           {/* Statistik-Inhalte kommen hier hin */}
           <NewCommunityModal
-          currentTitles={communityTitles}
+            currentTitles={communityTitles}
             isActive={stateNewCommunityModal}
             onClose={() => {
               setStateNewCommunityModal(false);
             }}
-            onAddButton={
-              handleAddNewCommunityButton
-            }
+            onAddButton={handleAddNewCommunityButton}
           />
-          <div className="text-gray-700 text-lg"></div>
+          <NewMessageModal
+            isActive={stateNewMessageModal}
+            communities={communities}
+            onClose={() => {
+              setStateNewMessageModal(false);
+            }}
+            onAddButton={handleAddNewMessageButton}
+          />
+          <div className="fixed z-40">
+            <PostButton
+              onClick={() => {
+                setStateNewMessageModal(true);
+              }}
+            />
+          </div>
           <SearchBar data={communityTitles} />
           <div className="fixed top-8 right-16 z-40">
             <AddButton
@@ -88,14 +122,19 @@ export function CommunityPage() {
             />
           </div>
           <div className="mt-4">
-            {communityMessages.map((communityMessage) => (
-              <MessageCard
-                key={communityMessage.id}
-                userId={communityMessage.user_id}
-                communityId={communityMessage.community_id}
-                message={communityMessage.message || "No description available"}
-              />
-            ))}
+            {communityMessages.map((communityMessage) => {
+              return (
+                <MessageCard
+                  key={communityMessage.id}
+                  userId={communityMessage.user_id}
+                  communityId={getCommunityNameById(communityMessage.community_id)}
+                  title={communityMessage.title}
+                  message={
+                    communityMessage.message || "No description available"
+                  }
+                />
+              );
+            })}
           </div>
         </div>
       </div>

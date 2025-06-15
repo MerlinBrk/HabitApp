@@ -2,10 +2,11 @@ import React from 'react';
 interface MessageCardProps {
   userId: string;
   communityId: string;
+  title:string;
   message: string;
 }
 
-export default function MessageCard({ userId,communityId,message }: MessageCardProps) {
+export default function MessageCard({ userId,communityId,title,message }: MessageCardProps) {
 
 
     return (
@@ -22,7 +23,9 @@ export default function MessageCard({ userId,communityId,message }: MessageCardP
                     </span>
                 </div>
                 <div className="text-gray-800 font-semibold">{userId}</div>
-            </div>  <p className="text-gray-700">{message}</p>
+            </div>  
+            <p className="text-xl font-bold mb-1">{title}</p>
+            <p className="text-gray-700">{message}</p>
             <div className="text-sm text-gray-500 mt-2">Community ID: {communityId}</div>
         </div>
     );
