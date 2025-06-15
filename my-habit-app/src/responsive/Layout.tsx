@@ -2,7 +2,7 @@ import useIsMobile from "./useIsMobile";
 import SideBar from "../elements/SideBar";
 import MobileNavBar from "../elements/MobileNavBar";
 
-export default function Layout({children}: never) {
+export default function Layout({children}) {
     const isMobile = useIsMobile();
 
     return (
