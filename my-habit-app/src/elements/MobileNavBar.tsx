@@ -1,24 +1,40 @@
-
-interface MobileNavbarProps {
-    currentView: "habits" | "user";
-    setCurrentView: (view: "habits" | "user") => void;
-}
-
-export default function MobileNavbar({ currentView, setCurrentView }: MobileNavbarProps) {
+export default function BottomNavBar() {
     return (
-        <div className="w-full bg-white border-t p-2 flex justify-around fixed bottom-0 left-0 right-0 md:hidden">
-            <button
-                onClick={() => setCurrentView("habits")}
-                className={currentView === "habits" ? "text-blue-700 font-bold" : "text-blue-500"}
-            >
-                Habits
-            </button>
-            <button
-                onClick={() => setCurrentView("user")}
-                className={currentView === "user" ? "text-blue-700 font-bold" : "text-blue-500"}
-            >
-                User
-            </button>
+        <div className="fixed bottom-0 left-0 w-full bg-gray-100 p-2 shadow-inner">
+            <ul className="flex justify-around">
+                <li>
+                    <a
+                        href="/"
+                        className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors text-center"
+                    >
+                        Habits
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="/test"
+                        className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors text-center"
+                    >
+                        Test
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="/community"
+                        className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors text-center"
+                    >
+                        Community
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="/profile"
+                        className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors text-center"
+                    >
+                        Profile
+                    </a>
+                </li>
+            </ul>
         </div>
     );
 }

@@ -4,8 +4,9 @@ import Login from "./components/Login";
 import {HabitList} from "./components/HabitList";
 import ProfilePage from "./components/ProfilePage.tsx";
 import SideBar from "./elements/SideBar";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import TestPage from "./components/TestPage.tsx";
+import Layout from "./responsive/Layout.tsx";
 
 export default function App() {
     //const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -34,15 +35,15 @@ export default function App() {
 */
     return (
         <Router>
-            <SideBar/>
-            <div className="ml-64 p-6">
-                <Routes>
-                    <Route path="/" element={<HabitList/>} />
-                    <Route path="/test" element={<TestPage />} />
-                    <Route path="/profile" element={<ProfilePage/>} />
-                </Routes>
-            </div>
+            <Layout>
+                <div className="ml-64 p-6">
+                    <Routes>
+                        <Route path="/" element={<HabitList/>}/>
+                        <Route path="/test" element={<TestPage/>}/>
+                        <Route path="/profile" element={<ProfilePage/>}/>
+                    </Routes>
+                </div>
+            </Layout>
         </Router>
-
     );
 }
