@@ -75,7 +75,7 @@ export function CommunityPage() {
     description: string,
     habitId: string
   ) => {
-    await addNewMessage(communityId, title, description, USER_ID);
+    await addNewMessage(communityId, title, description, USER_ID,habitId);
   };
 
   const getCommunityNameById = (communityId: string) => {
@@ -84,60 +84,46 @@ export function CommunityPage() {
     return communityTitle;
   };
   return (
-    <div className="flex h-screen w-screen">
-      <SideBar isOpen={true} onClose={() => {}} />
+  <div className="flex h-screen w-screen">
+    <SideBar isOpen={true} onClose={() => {}} />
 
-      <div className="sm:ml-64 p-4 flex-1 bg-white overflow-auto border-l border-gray-300">
-        <div className="w-full h-full bg-white rounded-none shadow-none p-4 relative">
-          {/* Statistik-Inhalte kommen hier hin */}
-          <NewCommunityModal
-            currentTitles={communityTitles}
-            isActive={stateNewCommunityModal}
-            onClose={() => {
-              setStateNewCommunityModal(false);
-            }}
-            onAddButton={handleAddNewCommunityButton}
-          />
-          <NewMessageModal
-            isActive={stateNewMessageModal}
-            communities={communities}
-            onClose={() => {
-              setStateNewMessageModal(false);
-            }}
-            onAddButton={handleAddNewMessageButton}
-          />
-          <div className="fixed z-40">
-            <PostButton
-              onClick={() => {
-                setStateNewMessageModal(true);
-              }}
+    <div className="sm:ml-64 flex-1 bg-white overflow-auto border-l border-gray-300 flex flex-col">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-40 bg-white flex items-center py-2 px-4 w-full">
+        <PostButton
+          onClick={() => setStateNewMessageModal(true)}
+        />
+        <SearchBar className="" data={communityTitles} />
+        <AddButton
+          onClick={() => setStateNewCommunityModal(true)}
+        />
+      </div>
+      <div className="flex-1 p-4">
+        <NewCommunityModal
+          currentTitles={communityTitles}
+          isActive={stateNewCommunityModal}
+          onClose={() => setStateNewCommunityModal(false)}
+          onAddButton={handleAddNewCommunityButton}
+        />
+        <NewMessageModal
+          isActive={stateNewMessageModal}
+          communities={communities}
+          onClose={() => setStateNewMessageModal(false)}
+          onAddButton={handleAddNewMessageButton}
+        />
+        <div className="mt-4">
+          {communityMessages.map((communityMessage) => (
+            <MessageCard
+              key={communityMessage.id}
+              userId={communityMessage.user_id}
+              communityId={getCommunityNameById(communityMessage.community_id)}
+              title={communityMessage.title}
+              message={communityMessage.message || "No description available"}
             />
-          </div>
-          <SearchBar data={communityTitles} />
-          <div className="fixed top-8 right-16 z-40">
-            <AddButton
-              onClick={() => {
-                setStateNewCommunityModal(true);
-              }}
-            />
-          </div>
-          <div className="mt-4">
-            {communityMessages.map((communityMessage) => {
-              return (
-                <MessageCard
-                  key={communityMessage.id}
-                  userId={communityMessage.user_id}
-                  communityId={getCommunityNameById(communityMessage.community_id)}
-                  title={communityMessage.title}
-                  message={
-                    communityMessage.message || "No description available"
-                  }
-                />
-              );
-            })}
-          </div>
+          ))}
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 }
