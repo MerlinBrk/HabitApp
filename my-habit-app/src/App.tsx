@@ -1,66 +1,77 @@
-import React,{ useEffect, useState } from "react";
-import { supabase } from "./lib/supabase";
+import {useEffect, useState} from "react";
+import {supabase} from "./lib/supabase";
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+
 import Login from "./pages/Login";
 import {HabitList} from "./pages/HabitList";
-import UserPage from "./pages/UserPage";
-import { Statistics } from "./pages/Statistics";
-import { CommunityPage } from "./pages/Community";
+import ProfilePage from "./pages/ProfilePage.tsx";
+import {ProgressPage} from "./pages/ProgressPage.tsx";
+import {Community} from "./pages/Community";
 import AppNotInstalled from "./components/AppNotInstalled";
 
+import Layout from "./responsive/Layout.tsx";
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [currentView, setCurrentView] = useState<"habits" | "user">("habits");
+    /*
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsLoggedIn(!!session);
-      setLoading(false);
-    });
+    useEffect(() => {
+        supabase.auth.getSession().then(({data: {session}}) => {
+            setIsLoggedIn(!!session);
+            setLoading(false);
+        });
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsLoggedIn(!!session);
-    });
+        const {
+            data: {subscription},
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+            setIsLoggedIn(!!session);
+        });
 
-    return () => subscription.unsubscribe();
-  }, []);
+        return () => subscription.unsubscribe();
+    }, []);
+
+    if (loading) return <div className="p-6 text-center">Lade...</div>;
+
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 469);
+        };
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
 
 
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+    const isStartetAsApp = window.matchMedia('(display-mode: standalone)').matches;
 
 
-  const isStartetAsApp = window.matchMedia('(display-mode: standalone)').matches;
+     */
+    /*
+    if ((isMobile || true) && !isStartetAsApp) {
+        return (
+            <AppNotInstalled/>
 
-  /*
-  if((isMobile || true) && !isStartetAsApp) {
+        );
+    }
+     */
+
+    //if (loading) return <div className="p-6 text-center">Lade...</div>;
+    //if (!isLoggedIn) return <Login onLogin={() => setIsLoggedIn(true)}/>;
     return (
-      <AppNotInstalled />
-
+        <Router>
+            <Layout>
+                <div className="ml-64 p-6">
+                    <Routes>
+                        <Route path="/" element={<HabitList/>}/>
+                        <Route path="/stats" element={<ProgressPage/>}/>
+                        <Route path="/community" element={<Community/>}/>
+                        <Route path="/profile" element={<ProfilePage/>}/>
+                    </Routes>
+                </div>
+            </Layout>
+        </Router>
     );
-  }*/
-
-  if (loading) return <div className="p-6 text-center">Lade...</div>;
-
-  if (!isLoggedIn) return <Login onLogin={() => setIsLoggedIn(true)} />;
-
-  return currentView === "habits" ? (
-    /*<HabitList />*/
-    /*<Statistics />*/
-    <CommunityPage />
-  ) : (
-    <UserPage onBack={() => setCurrentView("habits")} />
-
-  );
 }

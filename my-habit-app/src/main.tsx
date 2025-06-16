@@ -7,8 +7,6 @@ import { syncUserIdToLocalStorage } from './lib/auth';
 import { registerSW } from 'virtual:pwa-register';
 
 
-
-
 setInterval(() => {
   if (navigator.onLine) {
     //syncAll();
