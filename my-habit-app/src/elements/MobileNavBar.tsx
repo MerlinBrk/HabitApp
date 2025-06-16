@@ -1,12 +1,12 @@
 
-export default function SideBar() {
+export default function MobileNavBar() {
     return (
-        <div className="fixed top-0 left-0 h-screen w-64 bg-gray-100 p-6 shadow-lg overflow-y-auto">
-            <ul className="flex flex-col space-y-4">
+        <div className="fixed bottom-0 left-0 w-full bg-gray-100 p-2 shadow-inner">
+            <ul className="flex justify-around">
                 <li>
                     <a
                         href="/"
-                        className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors"
+                        className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors text-center"
                     >
                         Habits
                     </a>
@@ -14,7 +14,7 @@ export default function SideBar() {
                 <li>
                     <a
                         href="/test"
-                        className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors"
+                        className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors text-center"
                     >
                         Test
                     </a>
@@ -22,7 +22,7 @@ export default function SideBar() {
                 <li>
                     <a
                         href="/community"
-                        className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors"
+                        className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors text-center"
                     >
                         Community
                     </a>
@@ -30,14 +30,12 @@ export default function SideBar() {
                 <li>
                     <a
                         href="/profile"
-                        className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors"
+                        className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors text-center"
                     >
                         Profile
                     </a>
                 </li>
             </ul>
         </div>
-
-
     );
 }
