@@ -36,22 +36,7 @@ export async function getCommunityNameById(communityId: string) {
   }
 }
 
-export async function getAllCommunityMessages(){
-  try {
-    const { data, error } = await supabase
-      .from("Community_messages")
-      .select("*");
 
-    if (error) {
-      throw error;
-    }
-
-    return data || [];
-  } catch (error) {
-    console.error("Fehler beim Abrufen der Community-Nachrichten:", error);
-    return [];
-  } 
-}
 
 export async function addNewCommunity(userId: string, newTitle:string, newDescription:string){
   try{

@@ -1,13 +1,28 @@
-import React from 'react';
+
+
+import React, { useEffect, useState } from 'react';
+import { type Habit } from "../../lib/db";
+
 interface MessageCardProps {
   userId: string;
   communityId: string;
-  title:string;
+  title: string;
   message: string;
+  habit: Habit | Promise<Habit>;
 }
 
-export default function MessageCard({ userId,communityId,title,message }: MessageCardProps) {
+export default function MessageCard({ userId, communityId, title, message, habit }: MessageCardProps) {
+    const [resolvedHabit, setResolvedHabit] = useState<Habit | null>(null);
 
+    useEffect(() => {
+        if (habit instanceof Promise) {
+            habit.then(setResolvedHabit);
+        } else {
+            setResolvedHabit(habit);
+        }
+    }, [habit]);
+
+    
 
     return (
         <div className="bg-white shadow-md rounded-lg p-4 mb-4">
@@ -23,10 +38,12 @@ export default function MessageCard({ userId,communityId,title,message }: Messag
                     </span>
                 </div>
                 <div className="text-gray-800 font-semibold">{userId}</div>
-            </div>  
+            </div>
             <p className="text-xl font-bold mb-1">{title}</p>
             <p className="text-gray-700">{message}</p>
-            <div className="text-sm text-gray-500 mt-2">Community ID: {communityId}</div>
+            <div className="text-sm text-gray-500 mt-2">Community: {communityId}</div>
+            
+            <div className="text-sm text-gray-500 mt-2">HabitId: {resolvedHabit.title}</div>
         </div>
     );
 }

@@ -3,9 +3,9 @@ import SideBar from "../elements/SideBar";
 import React, { useEffect, useState } from "react";
 import {
   getAllCommunities,
-  getAllCommunityMessages,
   addNewCommunity,
 } from "../services/communityServices";
+import {getAllCommunityMessages} from "../services/messageServices";
 import { supabase } from "../lib/supabase";
 import MessageCard from "../elements/communityElements/MessageCard";
 import NewCommunityModal from "../elements/communityElements/NewCommunityModal";
@@ -15,12 +15,12 @@ import { useUserId } from "../services/useUserId";
 import PostButton from "../elements/communityElements/PostButton";
 import NewMessageModal from "../elements/communityElements/NewMessageModal";
 import { addNewMessage } from "../services/messageServices";
+import { getHabitById } from "../services/dexieServices";
+import {type Habit } from "../lib/db";
 
 export function CommunityPage() {
   const [communities, setCommunities] = useState<Community[]>([]);
-  const [communityMessages, setCommunityMessages] = useState<
-    CommunityMessage[]
-  >([]);
+  const [communityMessages, setCommunityMessages] = useState<CommunityMessage[]>([]);
   const [communityTitles, setCommunityTitles] = useState<string[]>([]);
   const [stateNewCommunityModal, setStateNewCommunityModal] = useState(false);
   const [stateNewMessageModal, setStateNewMessageModal] = useState(false);
@@ -62,6 +62,15 @@ export function CommunityPage() {
     await addNewCommunity(USER_ID, title, description);
   };
 
+  const fetchHabitByHabitId = async (habitId:string) => {
+
+    //vorrübergend mit dexie später mit supabase
+    if(habitId) return await getHabitById(habitId);
+    else{
+      return "";
+    } 
+  }
+
   const handleAddNewCommunityButton = async (
     title: string,
     description: string
@@ -83,6 +92,16 @@ export function CommunityPage() {
     const communityTitle = community ? community.title : "Unknown Community";
     return communityTitle;
   };
+
+  const openCommunityFeed = (communityId:string)=>{
+
+
+  }
+
+  const handleOpenCommunityFeed = (communityId:string) =>{
+    openCommunityFeed(communityId);
+  }
+
   return (
   <div className="flex h-screen w-screen">
     <SideBar isOpen={true} onClose={() => {}} />
@@ -93,7 +112,7 @@ export function CommunityPage() {
         <PostButton
           onClick={() => setStateNewMessageModal(true)}
         />
-        <SearchBar className="" data={communityTitles} />
+        <SearchBar data={communities} onClick={handleOpenCommunityFeed} />
         <AddButton
           onClick={() => setStateNewCommunityModal(true)}
         />
@@ -119,6 +138,7 @@ export function CommunityPage() {
               communityId={getCommunityNameById(communityMessage.community_id)}
               title={communityMessage.title}
               message={communityMessage.message || "No description available"}
+              habit={fetchHabitByHabitId(communityMessage.habit_id)}
             />
           ))}
         </div>
