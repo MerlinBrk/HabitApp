@@ -1,4 +1,3 @@
-
 export default function MobileNavBar() {
     return (
         <div className="fixed bottom-0 left-0 w-full bg-gray-100 p-2 shadow-inner">

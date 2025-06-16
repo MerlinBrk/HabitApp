@@ -1,4 +1,3 @@
-
 export default function SideBar() {
     return (
         <div className="fixed top-0 left-0 h-screen w-64 bg-gray-100 p-6 shadow-lg overflow-y-auto">
@@ -13,10 +12,10 @@ export default function SideBar() {
                 </li>
                 <li>
                     <a
-                        href="/test"
+                        href="/progress"
                         className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors"
                     >
-                        Test
+                        Progress
                     </a>
                 </li>
                 <li>

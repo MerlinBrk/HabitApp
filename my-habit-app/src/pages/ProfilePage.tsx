@@ -1,6 +1,6 @@
 import { supabase } from "../lib/supabase";
 
-export default function UserPage({ onBack }: { onBack: () => void }) {
+export default function ProfilePage({ onBack }: { onBack: () => void }) {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     window.location.reload(); // Optional: erzwingt Neu-Login

@@ -4,17 +4,17 @@ import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 
 import Login from "./pages/Login";
 import {HabitList} from "./pages/HabitList";
-import UserPage from "./pages/UserPage";
-import {Statistics} from "./pages/Statistics";
+import ProfilePage from "./pages/ProfilePage.tsx";
+import {ProgressPage} from "./pages/ProgressPage.tsx";
 import {Community} from "./pages/Community";
 import AppNotInstalled from "./components/AppNotInstalled";
 
 import Layout from "./responsive/Layout.tsx";
 
 export default function App() {
+    /*
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [currentView, setCurrentView] = useState<"habits" | "user">("habits");
 
     useEffect(() => {
         supabase.auth.getSession().then(({data: {session}}) => {
@@ -47,24 +47,28 @@ export default function App() {
 
     const isStartetAsApp = window.matchMedia('(display-mode: standalone)').matches;
 
+
+     */
+    /*
     if ((isMobile || true) && !isStartetAsApp) {
         return (
             <AppNotInstalled/>
 
         );
     }
+     */
 
-    if (loading) return <div className="p-6 text-center">Lade...</div>;
-    if (!isLoggedIn) return <Login onLogin={() => setIsLoggedIn(true)}/>;
+    //if (loading) return <div className="p-6 text-center">Lade...</div>;
+    //if (!isLoggedIn) return <Login onLogin={() => setIsLoggedIn(true)}/>;
     return (
         <Router>
             <Layout>
                 <div className="ml-64 p-6">
                     <Routes>
                         <Route path="/" element={<HabitList/>}/>
-                        <Route path="/stats" element={<Statistics/>}/>
+                        <Route path="/stats" element={<ProgressPage/>}/>
                         <Route path="/community" element={<Community/>}/>
-                        <Route path="/profile" element={<UserPage/>}/>
+                        <Route path="/profile" element={<ProfilePage/>}/>
                     </Routes>
                 </div>
             </Layout>

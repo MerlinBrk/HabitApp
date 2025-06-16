@@ -15,7 +15,6 @@ import {
 } from "../services/dexieServices";
 import { FaCheck } from "react-icons/fa";
 import Calendar from "../elements/Calender"; // Assuming you have a Calendar component
-import SideBar from "../elements/SideBar";
 import { syncAll } from "../lib/sync";
 import NewHabitModal from "../elements/NewHabitModal";
 import SelectDaysCalendar from "../elements/SelectDays";
@@ -143,7 +142,6 @@ export function HabitList() {
 
   return (
     <div className="flex h-screen w-screen">
-      <SideBar isOpen={true} onClose={() => {}} />
         {/*Seite mit Splitscreen */}
       <div className="p-4 sm:ml-64 flex-1 bg-white p-6 overflow-auto border-l border-gray-300">
         <DateSelector onDateChange={handleDateChange} />
