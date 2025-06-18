@@ -15,6 +15,8 @@ export async function getHabitById(habitId: string) {
   }
 }
 
+
+
 // Gibt alle Habits eines Benutzers zurück
 export async function getHabits(userId: string) {
   try {

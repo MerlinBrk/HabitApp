@@ -17,12 +17,14 @@ import SelectDaysCalendar from "../elements/SelectDays";
 import DateSelector from "../elements/DateSelector";
 import SmallHabitCard from "../elements/habitlistElements/SmallHabitCard";
 import DropDownButton from "../elements/habitlistElements/DropDownButton";
+import {USER_ID} from "../utils/constants";
+
 
 type CheckInMap = {
   [habitId: string]: boolean;
 };
 
-export function HabitList() {
+export default function HabitList() {
   const [showNotTodaysHabits, setShowNotTodaysHabits] = useState(true);
   const [notTodaysHabits, setNotTodaysHabits] = useState<Habit[]>([]);
   const [habits, setHabits] = useState<Habit[]>([]);
@@ -35,7 +37,6 @@ export function HabitList() {
   >(null);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
 
-  const USER_ID = useUserId();
 
   useEffect(() => {
     loadAllData();
@@ -137,11 +138,11 @@ export function HabitList() {
   };
 
   return (
-    <div className="flex h-screen w-screen">
+    <div className="flex h-screen w-full">
         {/*Seite mit Splitscreen */}
-      <div className="p-4 sm:ml-64 flex-1 bg-white p-6 overflow-auto border-l border-gray-300">
+      <div className="p-4 flex-1 p-6 overflow-auto">
         <DateSelector onDateChange={handleDateChange} />
-        <div className="w-full h-full bg-white rounded-none shadow-none p-6 relative">
+        <div className="w-full h-full rounded-none shadow-none p-6 relative">
           {activeCalender ? (
             <div className="flex gap-8">
               <div className="flex-1 space-y-3">

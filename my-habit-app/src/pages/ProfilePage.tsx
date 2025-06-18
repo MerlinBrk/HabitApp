@@ -8,7 +8,7 @@ export default function ProfilePage({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <main className="min-h-screen bg-gray-100 p-6">
+    <main className="min-h-screen bg-white p-6">
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg p-6 space-y-4">
         <h1 className="text-2xl font-bold">Mein Profil</h1>
 

@@ -1,10 +1,6 @@
 
-<<<<<<< HEAD:my-habit-app/src/pages/Statistics.tsx
 import React from "react";
 import SideBar from "../elements/SideBar";
-=======
-import React, { useState } from "react";
->>>>>>> main:my-habit-app/src/pages/ProgressPage.tsx
 
 // Beispiel-Daten: Anzahl der Aktionen pro Tag (Datum: Count)
 const generateRandomData = (startDate, daysCount) => {
@@ -89,14 +85,14 @@ const ContributionCalendar = ({ data, startDate, weeks }) => {
 
 
 
-export function ProgressPage() {
+export default function ProgressPage() {
    const startDate = new Date();
   startDate.setFullYear(startDate.getFullYear() - 1); // vor 1 Jahr
   const weeks = 53; // ca. 1 Jahr in Wochen
   const data = generateRandomData(startDate, weeks * 7);
   return (
     <div className="flex h-screen w-screen">
-      <div className="p-4 sm:ml-64 flex-1 bg-white p-6 overflow-auto border-l border-gray-300">
+      <div className="p-4 flex-1 bg-white p-6 overflow-auto border-l border-gray-300">
         <div className="w-full h-full bg-white rounded-none shadow-none p-6 relative">
           
           <div className="text-gray-700 text-lg">Statistik-Seite</div>

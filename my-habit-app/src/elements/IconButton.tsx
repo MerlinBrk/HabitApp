@@ -9,7 +9,7 @@ export default function IconButton({onClick}:IconButtonProps){
   return (
     <button
       onClick={onClick}
-      className="flex items-center z-10 justify-center text-white p-1 rounded-full hover:bg-opacity-80 transition"
+      className="flex items-center z-10 justify-center text-white p-1 rounded-full transition-colors hover:text-red-500"
     >
       <FaTrash size={15}  className="primary"/> {/* Hier ist das Icon */}
     </button>

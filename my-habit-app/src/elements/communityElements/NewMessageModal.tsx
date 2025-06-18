@@ -10,6 +10,7 @@ import {type Community} from "../../utils/types";
 
 interface NewMessageModalProps {
   isActive: boolean;
+  currentCommunityId:string;
   onClose: () => void;
   communities: Community;
   onAddButton: (communityId: string, title: string, description: string,habitId:string) => void;
@@ -17,6 +18,7 @@ interface NewMessageModalProps {
 
 export default function NewMessageModal({
   isActive,
+  currentCommunityId,
   onClose,
   communities,
   onAddButton,
@@ -28,7 +30,7 @@ export default function NewMessageModal({
   const [choosenHabitId, setChoosenHabitId] = useState<string>("");
   const [isAlreadyTaken, setIsAlreadyTaken] = useState(false);
   const [noInput, setNoInput] = useState(false);
-  const [choosenCommunityId, setChoosenCommunityId] = useState<string>("");
+  const [choosenCommunityId, setChoosenCommunityId] = useState<string>(currentCommunityId);
 
   useEffect(() => {
     loadPublicUserHabits();

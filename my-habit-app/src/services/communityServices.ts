@@ -36,6 +36,40 @@ export async function getCommunityNameById(communityId: string) {
   }
 }
 
+export async function getCommunityDesctiptionById(communityId:string){
+  try {
+    const { data, error } = await supabase
+      .from("Communities")
+      .select("description")
+      .eq("id", communityId)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return data?.description || "";
+  } catch (error) {
+    console.error("Fehler beim Abrufen der Community-Description:", error);
+    return "";
+  }
+}
+
+export async function getCommunityIdByCommunityTitle(communityTitle:string){
+try{
+  const {data,error} = await supabase.from("Communities").select("id").eq("title",communityTitle).single();
+  if(!error){
+    return data?.id;
+  }
+  else{
+    throw error;
+  }
+}catch(err){
+  console.error("Fehler beim Fetchen einer Communtiy mit bestimmtem Titel",err);
+  return "";
+}
+}
+
 
 
 export async function addNewCommunity(userId: string, newTitle:string, newDescription:string){

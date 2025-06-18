@@ -5,6 +5,7 @@ import { FaTimes } from "react-icons/fa";
 import { useUserId } from "../services/useUserId";
 import { addHabitToDB } from "../services/dexieServices";
 import { WEEKDAYS } from "../utils/constants";
+import {USER_ID} from "../utils/constants";
 
 interface NewHabitModalProps {
   isActive: boolean;
@@ -21,7 +22,6 @@ export default function NewHabitModal({
     WEEKDAYS.slice(0, 7)
   ); // Standardmäßig alle Tage ausgewählt
 
-  const USER_ID = useUserId();
 
   const addHabit = async () => {
     if (!newHabit.trim()) return;
