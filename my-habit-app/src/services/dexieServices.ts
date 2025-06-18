@@ -15,6 +15,8 @@ export async function getHabitById(habitId: string) {
   }
 }
 
+
+
 // Gibt alle Habits eines Benutzers zurück
 export async function getHabits(userId: string) {
   try {
@@ -188,7 +190,7 @@ export async function addHabitLog(userId:string, habitId:number, date: Date, isD
       });
     }
     catch(err){
-      console.error("Fehler beim Hinzufügen eines Habit Logs")
+      console.error("Fehler beim Hinzufügen eines Habit Logs",err)
     }
 }
 

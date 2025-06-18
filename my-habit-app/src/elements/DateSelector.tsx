@@ -28,20 +28,20 @@ export default function DateSelector({ onDateChange }: DateSelectorProps) {
         <div className="flex items-center justify-center gap-4 p-4 relative">
             <button
                 onClick={goToPreviousDay}
-                className="text-xl px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+                className="text-xl px-3 py-1 rounded-xl bg-gray-200 hover:bg-gray-300"
             >
                 ◀
             </button>
 
             <button
-                className="text-lg font-medium px-2 py-1 rounded bg-gray-100 hover:bg-gray-100 focus:outline-none"
+                className="text-lg font-medium px-2 py-1 rounded-xl bg-gray-100 hover:bg-gray-100 focus:outline-none"
                 onClick={() => setShowCalendar(true)}
                 type="button"
             >
                 {isToday ? "Heute" : format(selectedDate, "dd.MM.yyyy")}
             </button>
             {showCalendar && (
-                <div className="absolute z-10 mt-2 bg-white border rounded shadow-lg p-2">
+                <div className="absolute z-10 mt-2 border rounded-xl bg-white shadow-lg p-2">
                     <input
                         type="date"
                         value={format(selectedDate, "yyyy-MM-dd")}
@@ -49,7 +49,7 @@ export default function DateSelector({ onDateChange }: DateSelectorProps) {
                             setSelectedDate(new Date(e.target.value));
                             setShowCalendar(false);
                         }}
-                        className="border rounded px-2 py-1 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="border rounded-xl px-2 py-1 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         autoFocus
                         onBlur={() => setShowCalendar(false)}
                     />
@@ -58,7 +58,7 @@ export default function DateSelector({ onDateChange }: DateSelectorProps) {
 
             <button
                 onClick={goToNextDay}
-                className="text-xl px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+                className="text-xl px-3 py-1 rounded-xl bg-gray-200 hover:bg-gray-300"
             >
                 ▶
             </button>

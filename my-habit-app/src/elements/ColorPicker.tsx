@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React,{ useEffect } from "react";
 
 const COLORS = [
     { name: "Lila", rgb: "139 92 246", hex: "#8b5cf6" },

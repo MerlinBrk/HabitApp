@@ -13,7 +13,6 @@ interface Props{
 };
 
 export default function SmallHabitCard({
-  habit,
   title,
   checked,
   handleCalenderOpenClick,
@@ -22,14 +21,11 @@ export default function SmallHabitCard({
 }: Props) {
   return (
     <div
-      className="flex items-center justify-between bg-gray-50 p-4 rounded-xl shadow-sm hover:shadow-lg hover:scale-[1.01] transition transform cursor-pointer"
+      className="flex items-center justify-between bg-gray-200 p-4 rounded-xl shadow-sm hover:shadow-lg hover:scale-[1.01] transition transform cursor-pointer"
       onClick={handleCalenderOpenClick}
     >
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-primary text-white font-bold text-sm flex items-center justify-center">
-          {title.charAt(0).toUpperCase()}
-        </div>
-        <span className="text-gray-900 font-medium text-sm truncate max-w-[160px]">
+        <span className="ml-4 text-gray-900 font-bold text-xl truncate max-w-[160px] capitalize">
           {title}
         </span>
       </div>

@@ -1,10 +1,7 @@
-import { useEffect, useState } from "react";
-import { db, type Habit, type HabitLog } from "../lib/db";
-import { v4 as uuidv4 } from "uuid";
+import React, { useEffect, useState } from "react";
+import { type Habit} from "../lib/db";
 import { useUserId } from "../services/useUserId";
-import IconButton from "../elements/IconButton";
 import {
-  getHabits,
   deleteHabit,
   getDaysHabitsByUserId,
   getNotDaysHabitsByUserId,
@@ -13,7 +10,6 @@ import {
   updateHabitLogIsDoneById,
   addHabitLog,
 } from "../services/dexieServices";
-import { FaCheck } from "react-icons/fa";
 import Calendar from "../elements/Calender"; // Assuming you have a Calendar component
 import { syncAll } from "../lib/sync";
 import NewHabitModal from "../elements/NewHabitModal";
@@ -21,12 +17,14 @@ import SelectDaysCalendar from "../elements/SelectDays";
 import DateSelector from "../elements/DateSelector";
 import SmallHabitCard from "../elements/habitlistElements/SmallHabitCard";
 import DropDownButton from "../elements/habitlistElements/DropDownButton";
+import {USER_ID} from "../utils/constants";
+
 
 type CheckInMap = {
   [habitId: string]: boolean;
 };
 
-export function HabitList() {
+export default function HabitList() {
   const [showNotTodaysHabits, setShowNotTodaysHabits] = useState(true);
   const [notTodaysHabits, setNotTodaysHabits] = useState<Habit[]>([]);
   const [habits, setHabits] = useState<Habit[]>([]);
@@ -34,12 +32,11 @@ export function HabitList() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [activeCalender, setActiveCalendar] = useState(false);
   const [newHabitModalState, setNewHabitModalState] = useState(false);
-  const [currentCalenderHabitId, SetCurrentCalenderHabitId] = useState<
+  const [currentCalenderHabitId, setCurrentCalenderHabitId] = useState<
     string | null
   >(null);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
 
-  const USER_ID = useUserId();
 
   useEffect(() => {
     loadAllData();
@@ -49,7 +46,7 @@ export function HabitList() {
   useEffect(() => {
     if (activeCalender && !showNotTodaysHabits) {
       setActiveCalendar(false);
-      SetCurrentCalenderHabitId(null);
+      setCurrentCalenderHabitId(null);
     }
   }, [showNotTodaysHabits]);
 
@@ -108,7 +105,7 @@ export function HabitList() {
     loadDaysCheckIns();
     if (restart) setActiveCalendar(true);
 
-    SetCurrentCalenderHabitId(habitId);
+    setCurrentCalenderHabitId(habitId);
   };
 
   const handleDeleteHabit = async (habit_id, user_id) => {
@@ -123,13 +120,13 @@ export function HabitList() {
       handleCalenderCloseClick();
     } else {
       setActiveCalendar(true);
-      SetCurrentCalenderHabitId(habit_id);
+      setCurrentCalenderHabitId(habit_id);
     }
   };
 
   const handleCalenderCloseClick = () => {
     setActiveCalendar(false);
-    SetCurrentCalenderHabitId(null);
+    setCurrentCalenderHabitId(null);
   };
 
   const handleNewHabitModalClick = () => {
@@ -141,11 +138,11 @@ export function HabitList() {
   };
 
   return (
-    <div className="flex h-screen w-screen">
+    <div className="flex h-screen w-full">
         {/*Seite mit Splitscreen */}
-      <div className="p-4 sm:ml-64 flex-1 bg-white p-6 overflow-auto border-l border-gray-300">
+      <div className="p-4 flex-1 p-6 overflow-auto">
         <DateSelector onDateChange={handleDateChange} />
-        <div className="w-full h-full bg-white rounded-none shadow-none p-6 relative">
+        <div className="w-full h-full rounded-none shadow-none p-6 relative">
           {activeCalender ? (
             <div className="flex gap-8">
               <div className="flex-1 space-y-3">

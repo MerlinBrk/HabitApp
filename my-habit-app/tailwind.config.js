@@ -9,6 +9,9 @@ module.exports = {
       colors: {
         primary: "rgb(var(--primary-color) / <alpha-value>)", // 🟣 das ist der wichtige Teil
       },
+      fontFamily: {
+        helvetica: ['"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+      },
     },
   },
   plugins: [],

@@ -6,7 +6,7 @@ export default function Layout({children}) {
     const isMobile = useIsMobile();
 
     return (
-        <div className="flex h-screen">
+        <div className="flex bg-white h-screen">
             {!isMobile && <SideBar/>}
             <div className="flex-1 flex flex-col overflow-hidden">
                 {isMobile && <MobileNavBar/>}
