@@ -184,15 +184,18 @@ export default function CommunityPage() {
               
             </div>
           )}
-            {communityMessages.map((communityMessage:CommunityMessage) => (
-            <MessageCard
-              key={communityMessage.id}
-              userId={communityMessage.user_id}
-              communityId={getCommunityNameById(communityMessage.community_id)}
-              title={communityMessage.title}
-              message={communityMessage.message || "No description available"}
-              habit={communityMessage.habit_id} // "" if null or undefined
-            />
+            {communityMessages
+              .slice() // create a shallow copy to avoid mutating state
+              .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()) // sort oldest to newest
+              .map((communityMessage: CommunityMessage) => (
+                <MessageCard
+                  key={communityMessage.id}
+                  userId={communityMessage.user_id}
+                  communityId={getCommunityNameById(communityMessage.community_id)}
+                  title={communityMessage.title}
+                  message={communityMessage.message || "No description available"}
+                  habit={communityMessage.habit_id}
+                />
             ))}
         </div>
       </div>
