@@ -1,5 +1,6 @@
-import React,{useEffect} from 'react';
+import React,{useEffect,useState} from 'react';
 import {type Habit } from "../../lib/db";
+import { getHabitById } from '../../services/dexieServices';
 
 interface MessageCardProps {
   userId: string;
@@ -11,8 +12,27 @@ interface MessageCardProps {
 
 export default function MessageCard({ userId,communityId,title,message,habit }: MessageCardProps) {
 
+    const [currentHabitName,setCurrentHabitName] = useState("");
+
+    const fetchHabit = async() => {
+        const data = await getHabitById(habit);
+        if (data && data.title) {
+            setCurrentHabitName(data.title);
+        } else {
+            setCurrentHabitName("Unknown Habit");
+        }
+    }
+
+    useEffect(()=>{
+        if(habit != null && habit !== ""){
+            console.log("Machen für ",habit);
+            fetchHabit();
+        }
+    },[]);
+
+
     return (
-        <div className="bg-gray-200 shadow-md rounded-xl p-4 mb-4">
+        <div className="bg-white border shadow rounded-xl p-4 mb-4">
             <div className="flex items-center mb-2">
                 <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center mr-3">
                     <span className="text-white font-bold text-lg">
@@ -29,7 +49,7 @@ export default function MessageCard({ userId,communityId,title,message,habit }: 
             <p className="text-xl font-bold mb-1">{title}</p>
             <p className="text-gray-700">{message}</p>
             <div className="text-sm text-gray-500 mt-2">Community: {communityId}</div>
-            <div className="text-sm text-gray-500 mt-2">HabitId: {habit}</div>
+            <div className="text-sm text-gray-500 mt-2">HabitId: {currentHabitName}</div>
             
         </div>
     );

@@ -12,6 +12,7 @@ import AppNotInstalled from "./components/AppNotInstalled";
 import Layout from "./responsive/Layout.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import useIsMobile from "./responsive/useIsMobile.ts"
+import ManagementPage from "./pages/ManagementPage.tsx";
 
 export default function App() {
     const isMobile = useIsMobile();
@@ -69,6 +70,7 @@ export default function App() {
                 <Routes>
                 <Route path="/" element={<HomePage/>}/>
                 <Route path="/habits" element={<HabitList/>}/>
+                <Route path="/management" element={<ManagementPage/>}/>
                 <Route path="/stats" element={<ProgressPage/>}/>
                 <Route path="/community" element={<Community/>}/>
                 <Route path="/profile" element={<ProfilePage/>}/>
