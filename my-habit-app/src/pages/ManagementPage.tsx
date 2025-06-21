@@ -1,16 +1,20 @@
 import React, { useState } from "react";
+import ManageHabitCard from "../elements/habitlistElements/ManageHabitCard";
 
 type Tab = "All Habits" | "Daily" | "Weekly" | "Monthly";
 const tabs: Tab[] = ["All Habits", "Daily", "Weekly", "Monthly"];
 
 export default function ManagementPage() {
   const [activeTab, setActiveTab] = useState<Tab>("All Habits");
+
+    
+
   return (
     <div className="bg-white p-6 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Habit Management</h1>
-          <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 text-bold">
+          <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-black text-white shadow hover:bg-black/90 h-9 px-4 py-2 text-bold">
             + Create New Habit
           </button>
         </div>
@@ -43,7 +47,9 @@ export default function ManagementPage() {
               </button>
             ))}
           </div>
-          <div className="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4"></div>
+          <div className="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
+            <ManageHabitCard />
+          </div>
         </div>
       </div>
     </div>
