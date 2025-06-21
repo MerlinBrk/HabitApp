@@ -29,7 +29,7 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState<Tab>("Today");
   const userName = useUserName();
   const [habits, setHabits] = useState<Habit[]>([]);
-  const [notDaysHabits,setNotDaysHabits] = useState<Habit[]>([]);
+  const [notDaysHabits, setNotDaysHabits] = useState<Habit[]>([]);
   const [checkInsToday, setCheckInsToday] = useState<CheckInMap>({});
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -46,12 +46,12 @@ export default function HomePage() {
   }, [activeTab]);
 
   useEffect(() => {
-getDailyDoneHabits();
-  },[habits,checkInsToday]);
+    getDailyDoneHabits();
+  }, [habits, checkInsToday]);
 
   const loadAllData = () => {
-      loadHabits(); 
-      loadNotDaysHabits();
+    loadHabits();
+    loadNotDaysHabits();
     loadDaysCheckIns();
   };
 
@@ -60,7 +60,7 @@ getDailyDoneHabits();
   };
 
   const loadNotDaysHabits = async () => {
-    const data = await getNotDaysHabitsByUserId(USER_ID,currentDate);
+    const data = await getNotDaysHabitsByUserId(USER_ID, currentDate);
     setNotDaysHabits(data);
   };
   const loadHabits = async () => {
@@ -74,21 +74,20 @@ getDailyDoneHabits();
     const map: CheckInMap = {};
     logs.forEach((log) => {
       map[log.habit_id] = log.is_done;
-    })
+    });
     setCheckInsToday(map);
   };
 
   const getDailyDoneHabits = () => {
     let trueHabitLogsAmount = 0;
-    
+
     habits.forEach((log) => {
-      if(checkInsToday[log.id] === true){
+      if (checkInsToday[log.id] === true) {
         trueHabitLogsAmount++;
       }
     });
     setTrueHabitLogs(trueHabitLogsAmount);
-  
-  }
+  };
 
   const toggleCheckIn = async (habitId: string, isNowDone: boolean) => {
     const existing = await getHabitLogByHabitIdAndDateAndUserId(
@@ -109,7 +108,6 @@ getDailyDoneHabits();
     }));
     loadDaysCheckIns();
   };
-  
 
   return (
     <div className="p-6 md:p-8 max-w-6xl mx-auto bg-white flex flex-col gap-6 bg-background p-6 w-full">
@@ -118,7 +116,49 @@ getDailyDoneHabits();
         <h1 className="text-3xl font-bold">Welcome to HabitHub, {userName}!</h1>
         <p className="text-gray-600 mt-1">Goal Tracker</p>
       </div>
-
+      <div
+        className="flex items-center justify-between"
+      >
+        <div
+        >
+          <h1
+            className="text-3xl font-bold tracking-tight"
+          >
+            Dashboard
+          </h1>
+          <p
+            className="text-muted-foreground"
+          >
+            Track your habits and view your progress
+          </p>
+        </div>
+        <div
+          className="flex items-center gap-2"
+        >
+          <button
+            className="inline-flex bg-white items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-calendar mr-2 h-4 w-4"
+            >
+              <path d="M8 2v4"></path>
+              <path d="M16 2v4"></path>
+              <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+              <path d="M3 10h18"></path>
+            </svg>
+            June 21, 2025
+          </button>
+        </div>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-3 gap-6 ">
         <div className="rounded-xl border bg-card text-card-foreground shadow col-span-2 row-span-3">
           <div className="flex flex-col space-y-1.5 p-6">
@@ -157,18 +197,18 @@ getDailyDoneHabits();
               }
             />
           ))}
-          {activeTab === "All Habits" ? 
-            notDaysHabits.map((habit) => (
-            <HabitHomeCard
-              key={habit.id}
-              title={habit.title}
-              checked={checkInsToday[habit.id]}
-              toggleCheckIn={() =>
-                toggleCheckIn(habit.id, !checkInsToday[habit.id])
-              }
-            />
-          ))
-          : ""}
+          {activeTab === "All Habits"
+            ? notDaysHabits.map((habit) => (
+                <HabitHomeCard
+                  key={habit.id}
+                  title={habit.title}
+                  checked={checkInsToday[habit.id]}
+                  toggleCheckIn={() =>
+                    toggleCheckIn(habit.id, !checkInsToday[habit.id])
+                  }
+                />
+              ))
+            : ""}
         </div>
         <div className="rounded-xl border bg-card text-card-foreground shadow col-span-1">
           <div className="flex flex-col space-y-1.5 p-6 pb-2">
@@ -184,11 +224,14 @@ getDailyDoneHabits();
             <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
               <div
                 className="bg-black h-full transition-all duration-500 ease-in-out"
-                style={{ width: `${100*(trueHabitLogs/todaysHabitAmount)}%` }}
+                style={{
+                  width: `${100 * (trueHabitLogs / todaysHabitAmount)}%`,
+                }}
               ></div>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-                {Math.round(100 * (trueHabitLogs / todaysHabitAmount))}% of Habits done
+              {Math.round(100 * (trueHabitLogs / todaysHabitAmount))}% of Habits
+              done
             </p>
           </div>
         </div>
