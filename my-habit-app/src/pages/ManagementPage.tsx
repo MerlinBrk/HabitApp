@@ -1,13 +1,40 @@
-import React, { useState } from "react";
 import ManageHabitCard from "../elements/habitlistElements/ManageHabitCard";
+import React, { useEffect, useState } from "react";
+import { type Habit } from "../lib/db";
+import { useUserId } from "../services/useUserId";
+import { deleteHabit, getHabits } from "../services/dexieServices";
+import Calendar from "../elements/Calender"; // Assuming you have a Calendar component
+import { syncAll } from "../lib/sync";
+import NewHabitModal from "../elements/NewHabitModal";
+import SelectDaysCalendar from "../elements/SelectDays";
+import DateSelector from "../elements/DateSelector";
+import SmallHabitCard from "../elements/habitlistElements/SmallHabitCard";
+import DropDownButton from "../elements/habitlistElements/DropDownButton";
+import { USER_ID } from "../utils/constants";
 
 type Tab = "All Habits" | "Daily" | "Weekly" | "Monthly";
 const tabs: Tab[] = ["All Habits", "Daily", "Weekly", "Monthly"];
 
 export default function ManagementPage() {
+  const [habits, setHabits] = useState<Habit[]>([]);
   const [activeTab, setActiveTab] = useState<Tab>("All Habits");
 
-    
+  useEffect(() => {
+    loadHabits();
+  }, []);
+
+  useEffect(()=>{
+loadHabits();
+  },[habits]);
+
+  const loadHabits = async () => {
+    const data = await getHabits(USER_ID);
+    setHabits(data);
+  };
+
+  const handleDeleteHabit = async (habitId: string) => {
+    await deleteHabit(habitId, USER_ID);
+  };
 
   return (
     <div className="bg-white p-6 min-h-screen">
@@ -48,7 +75,9 @@ export default function ManagementPage() {
             ))}
           </div>
           <div className="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
-            <ManageHabitCard />
+            {habits.map((habit) => (
+              <ManageHabitCard key={habit.id} habitTitle={habit.title} openEditHabitModal={() =>{}} handleDeleteHabit={() => handleDeleteHabit(habit.id)}/>
+            ))}
           </div>
         </div>
       </div>
