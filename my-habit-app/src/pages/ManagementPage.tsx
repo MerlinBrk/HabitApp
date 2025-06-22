@@ -1,16 +1,61 @@
-import React, { useState } from "react";
+import ManageHabitCard from "../elements/habitlistElements/ManageHabitCard";
+import React, { useEffect, useState } from "react";
+import { type Habit } from "../lib/db";
+import { useUserId } from "../services/useUserId";
+import { deleteHabit, getHabits, getUserStreak } from "../services/dexieServices";
+import Calendar from "../elements/Calender"; // Assuming you have a Calendar component
+import { syncAll } from "../lib/sync";
+import NewHabitModal from "../elements/NewHabitModal";
+import SelectDaysCalendar from "../elements/SelectDays";
+import DateSelector from "../elements/DateSelector";
+import SmallHabitCard from "../elements/habitlistElements/SmallHabitCard";
+import DropDownButton from "../elements/habitlistElements/DropDownButton";
+import { USER_ID } from "../utils/constants";
 
 type Tab = "All Habits" | "Daily" | "Weekly" | "Monthly";
 const tabs: Tab[] = ["All Habits", "Daily", "Weekly", "Monthly"];
 
 export default function ManagementPage() {
+  const [habits, setHabits] = useState<Habit[]>([]);
   const [activeTab, setActiveTab] = useState<Tab>("All Habits");
+  const [openNewHabitModal,setOpenNewHabitModal] = useState(false);
+  
+
+  useEffect(() => {
+    loadHabits();
+  }, []);
+
+  useEffect(()=>{
+loadHabits();
+  },[habits]);
+
+const loadHabits = async () => {
+    const data = await getHabits(USER_ID);
+    console.log(data);
+    setHabits(prev =>
+        JSON.stringify(prev) !== JSON.stringify(data) ? data : prev
+    );
+};
+
+  const handleDeleteHabit = async (habitId: string) => {
+    await deleteHabit(habitId, USER_ID);
+  };
+
+  const handleOpenNewHabitModal = () =>{
+    setOpenNewHabitModal(true);
+  }
+  const handleCloseNewHabitModal = ()=>{
+    setOpenNewHabitModal(false);
+  }
+
   return (
+    
     <div className="bg-white p-6 min-h-screen">
+        
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Habit Management</h1>
-          <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 text-bold">
+          <button onClick={handleOpenNewHabitModal} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-black text-white shadow hover:bg-black/90 h-9 px-4 py-2 text-bold">
             + Create New Habit
           </button>
         </div>
@@ -43,9 +88,21 @@ export default function ManagementPage() {
               </button>
             ))}
           </div>
-          <div className="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4"></div>
+          <div className="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
+            {habits.map((habit) => (
+              <ManageHabitCard key={habit.id} habitId={habit.id} userId={USER_ID}habitTitle={habit.title} openEditHabitModal={() =>{}} handleDeleteHabit={() => handleDeleteHabit(habit.id)}/>
+            ))}
+          </div>
         </div>
       </div>
+      {openNewHabitModal &&
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+              <div className="bg-white rounded-xl shadow-2xl p-8 relative min-w-[320px]">
+                <NewHabitModal isActive={openNewHabitModal} onClose={handleCloseNewHabitModal} />
+                
+              </div>
+            </div>
+}
     </div>
   );
 }
