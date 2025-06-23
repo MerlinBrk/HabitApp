@@ -167,20 +167,14 @@ export default function ManageHabitCard({
             <span>Completion Rate</span>
             <span>{percentage}%</span>
           </div>
-          <div
-            aria-valuemax="100"
-            aria-valuemin="0"
-            role="progressbar"
-            data-state="indeterminate"
-            data-max="100"
-            className="relative w-full overflow-hidden rounded-full bg-primary/20 h-2"
-          >
-            <div
-              data-state="indeterminate"
-              data-max="100"
-              className="h-full w-full flex-1 bg-primary transition-all"
-            ></div>
-          </div>
+          <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+              <div
+                className="bg-black h-full transition-all duration-500 ease-in-out"
+                style={{
+                  width: `${percentage}%`,
+                }}
+              ></div>
+            </div>
         </div>
         {openMoreDetails &&
         (
@@ -192,13 +186,13 @@ export default function ManageHabitCard({
                   <div className="text-xs text-muted-foreground">
                     Current Streak
                   </div>
-                  <div className="text-xl font-bold">5 days</div>
+                  <div className="text-xl font-bold">{habitStreak} days</div>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-md border shadow">
                   <div className="text-xs text-muted-foreground">
                     Completion Rate
                   </div>
-                  <div className="text-xl font-bold">60%</div>
+                  <div className="text-xl font-bold">{percentage}%</div>
                 </div>
               </div>
               <button className="bg-white inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs mt-4 w-full">
