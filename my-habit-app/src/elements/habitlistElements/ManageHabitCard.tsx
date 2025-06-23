@@ -31,7 +31,6 @@ export default function ManageHabitCard({
 
   const fetchpersentage = async() => {
     const data = await getPercentageDoneByHabitId(habitId,userId);
-    console.log(data);
     setPercentage(data);
   }
 

@@ -28,7 +28,6 @@ export default function MessageCard({ userId,communityId,title,message,habit,han
 
     useEffect(()=>{
         if(habit != null && habit !== ""){
-            console.log("Machen für ",habit);
             fetchHabit();
         }
     },[]);

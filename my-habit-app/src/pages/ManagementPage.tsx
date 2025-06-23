@@ -31,7 +31,6 @@ loadHabits();
 
 const loadHabits = async () => {
     const data = await getHabits(USER_ID);
-    console.log(data);
     setHabits(prev =>
         JSON.stringify(prev) !== JSON.stringify(data) ? data : prev
     );
