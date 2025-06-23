@@ -295,18 +295,12 @@ fetchUserDonePercentage();
           </div>
           <div className="p-6 pt-0">
             <div className="text-3xl font-bold">{userpercentage}%</div>
-            <div
-              aria-valuemax="100"
-              aria-valuemin="0"
-              role="progressbar"
-              data-state="indeterminate"
-              data-max="100"
-              className="relative h-2 w-full overflow-hidden rounded-full bg-primary/20 mt-2"
-            >
+            <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
               <div
-                data-state="indeterminate"
-                data-max="100"
-                className="h-full w-full flex-1 bg-black transition-all"
+                className="bg-black h-full transition-all duration-500 ease-in-out"
+                style={{
+                  width: `${userpercentage}%`,
+                }}
               ></div>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
