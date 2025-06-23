@@ -186,7 +186,7 @@ export async function getPercentageDoneByHabitId(habitId: string, userId: string
       }
       currentDate.setDate(currentDate.getDate() - 1);
     }
-    return done + notDone === 0 ? 0 : Math.round(100 * (done / (done + notDone)));
+    return done + notDone === 0 ? 100 : Math.round(100 * (done / (done + notDone)));
   } catch (err) {
     console.error("Fehler beim Anfordern der Prozente wie oft das Habit gemacht wurde", err);
     return 0.0;
@@ -203,6 +203,29 @@ export async function getPercentageDoneByUserId(userId: string) {
     let count = 0;
 
     for (const habit of habits) {
+      // Prüfe, ob das Habit überhaupt schon hätte gemacht werden können
+      if (!habit.days || habit.days.length === 0) continue;
+
+      const createdAt = new Date(habit.created_at);
+      createdAt.setHours(0, 0, 0, 0);
+
+      let possible = false;
+      let checkDate = new Date(createdAt);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // Prüfe, ob zwischen Erstellungsdatum und heute ein Tag liegt, an dem das Habit aktiv ist
+      while (checkDate <= today) {
+        const weekday = WEEKDAYS[checkDate.getDay()];
+        if (habit.days.includes(weekday)) {
+          possible = true;
+          break;
+        }
+        checkDate.setDate(checkDate.getDate() + 1);
+      }
+
+      if (!possible) continue;
+
       const percent = await getPercentageDoneByHabitId(habit.id, userId);
       totalPercentage += percent;
       count++;
