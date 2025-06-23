@@ -27,7 +27,7 @@ export default function ManagementPage() {
 
   useEffect(()=>{
 loadHabits();
-  },[habits]);
+  },[habits,openNewHabitModal]);
 
 const loadHabits = async () => {
     const data = await getHabits(USER_ID);
@@ -39,6 +39,7 @@ const loadHabits = async () => {
 
   const handleDeleteHabit = async (habitId: string) => {
     await deleteHabit(habitId, USER_ID);
+    loadHabits();
   };
 
   const handleOpenNewHabitModal = () =>{
@@ -46,6 +47,7 @@ const loadHabits = async () => {
   }
   const handleCloseNewHabitModal = ()=>{
     setOpenNewHabitModal(false);
+    
   }
 
   return (

@@ -8,16 +8,19 @@ interface MessageCardProps {
   title:string;
   message: string;
   habit:string;
+  handleCopyHabit:(title:string, days:string[]) => {};
 }
 
-export default function MessageCard({ userId,communityId,title,message,habit }: MessageCardProps) {
+export default function MessageCard({ userId,communityId,title,message,habit,handleCopyHabit }: MessageCardProps) {
 
     const [currentHabitName,setCurrentHabitName] = useState("");
+    const [curHabit,setCurHabit] = useState<Habit>();
 
     const fetchHabit = async() => {
         const data = await getHabitById(habit);
         if (data && data.title) {
             setCurrentHabitName(data.title);
+            setCurHabit(data);
         } else {
             setCurrentHabitName("Unknown Habit");
         }
@@ -49,8 +52,19 @@ export default function MessageCard({ userId,communityId,title,message,habit }: 
             <p className="text-xl font-bold mb-1">{title}</p>
             <p className="text-gray-700">{message}</p>
             <div className="text-sm text-gray-500 mt-2">Community: {communityId}</div>
-            <div className="text-sm text-gray-500 mt-2">HabitId: {currentHabitName}</div>
+            {curHabit ?
             
+            <div className="bg-white border shadow rounded-xl p-4 mt-4 flex items-center justify-between">
+                <div className="flex flex-col gap-1">
+                    <p className="text-lg font-bold text-black">{currentHabitName}</p>
+                    <p className="text-sm">{curHabit?.days?.join(' ')}</p>
+                </div>
+            <div className="flex items-center gap-2">
+                <button onClick={() => handleCopyHabit(curHabit.title,curHabit.days)} className="px-3 py-1 rounded-xl font-semibold transition-colors border-black cursor-pointer bg-white text-blak hover:bg-gray-200">Copy Habit</button>
+            </div>
+            </div>
+             : ""
+            }
         </div>
     );
 }
