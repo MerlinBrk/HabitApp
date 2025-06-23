@@ -1,21 +1,37 @@
-import React,{ useState } from "react";
+import React,{ useState ,useEffect} from "react";
+import { getStreakByHabitId } from "../../services/dexieServices";
 
 interface ManageHabitProps {
   habitTitle: string;
+  habitId:string;
+  userId:string;
   openEditHabitModal: () => {};
   handleDeleteHabit: () => {};
 }
 
 export default function ManageHabitCard({
   habitTitle,
+  habitId,
+  userId,
   openEditHabitModal,
   handleDeleteHabit,
 }: ManageHabitProps) {
   const [openMoreDetails, setOpenMoreDetails] = useState(false);
+  const [habitStreak,setHabitStreak] = useState(0);
+
+  useEffect(()=>{
+    fetchhabitStreak();
+  },[])
 
   const handleOpenMoreClick = () => {
     setOpenMoreDetails(!openMoreDetails);
   };
+
+  const fetchhabitStreak = async() =>{
+    const data = await getStreakByHabitId(habitId,userId);
+    console.log(data,"ID: ",habitId);
+    setHabitStreak(data);
+  }
   return (
     <div className="rounded-xl border text-card-foreground shadow bg-card">
       <div className="flex flex-col space-y-1.5 p-6 pb-2">
@@ -136,7 +152,7 @@ export default function ManageHabitCard({
             <span className="text-sm">07:00</span>
           </div>
           <div className="flex items-center">
-            <span className="text-sm font-medium mr-2">Streak: 12 days</span>
+            <span className="text-sm font-medium mr-2">Streak: {habitStreak} days</span>
           </div>
         </div>
         <div>

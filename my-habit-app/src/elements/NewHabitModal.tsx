@@ -87,127 +87,15 @@ export default function NewHabitModal({
               id="description"
             ></textarea>
           </div>
-          <div className="grid gap-2 relative">
-            <label
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              htmlFor="category"
-            >
-              Category
-            </label>
-            <button
-              title="Sachen"
-              type="button"
-              role="combobox"
-              aria-controls="radix-:r3r:"
-              aria-expanded="false"
-              aria-autocomplete="none"
-              dir="ltr"
-              data-state="closed"
-              className="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
-            >
-              <span className="pointer-events-none">General</span>
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 15 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 opacity-50"
-                aria-hidden="true"
-              >
-                <path
-                  d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z"
-                  fill="currentColor"
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </button>
-            <select
-              aria-hidden="true"
-              onChange={() => {}}
-              tabIndex={-1}
-              className="absolute border-0 w-px h-px p-0 m-[-1px] overflow-hidden clip-rect whitespace-nowrap overflow-wrap-normal"
-              defaultValue="General"
-            >
-              <option value="General">General</option>
-              <option value="Wellness">Wellness</option>
-              <option value="Fitness">Fitness</option>
-              <option value="Learning">Learning</option>
-              <option value="Productivity">Productivity</option>
-              <option value="Finance">Finance</option>
-            </select>
-          </div>
-          <div className="grid gap-2 relative">
-            <label
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              htmlFor="frequency"
-            >
-              Frequency
-            </label>
-            <button
-              type="button"
-              title="Anderes"
-              role="combobox"
-              aria-controls="radix-:r3t:"
-              aria-expanded="false"
-              aria-autocomplete="none"
-              dir="ltr"
-              data-state="closed"
-              className="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
-            >
-              <span className="pointer-events-none">Daily</span>
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 15 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 opacity-50"
-                aria-hidden="true"
-              >
-                <path
-                  d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z"
-                  fill="currentColor"
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </button>
-            <select
-              aria-hidden="true"
-              tabIndex={-1}
-              className="absolute border-0 w-px h-px p-0 m-[-1px] overflow-hidden clip-rect whitespace-nowrap overflow-wrap-normal"
-              defaultValue="Daily"
-            >
-              <option value="Daily">Daily</option>
-              <option value="Weekly">Weekly</option>
-              <option value="Monthly">Monthly</option>
-            </select>
-          </div>
-          <div className="grid gap-2">
-            <label
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              htmlFor="reminderTime"
-            >
-              Reminder Time (Optional)
-            </label>
-            <input
-              type="time"
-              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-              id="reminderTime"
-              defaultValue=""
-            />
-          </div>
           <div className="flex items-center space-x-2 relative">
             <button
               type="button"
               role="switch"
-              aria-checked={isPublic}
+              aria-checked={isPublic ? "true" : "false"}
               data-state={isPublic ? "checked" : "unchecked"}
               value="on"
-              className={`peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 ${
-                isPublic ? "bg-primary" : "bg-input"
+              className={`peer inline-flex h-5 w-9 border-black shrink-0 cursor-pointer items-center rounded-full border-2 shadow transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 ${
+                isPublic ? "bg-black" : "bg-input"
               }`}
               id="isPrivate"
               onClick={() => setIsPublic((v) => !v)}
@@ -215,7 +103,7 @@ export default function NewHabitModal({
               <span
                 data-state={isPublic ? "checked" : "unchecked"}
                 className={`pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform ${
-                  isPublic ? "translate-x-4" : "translate-x-0"
+                  isPublic ? "translate-x-4" : "translate-x-0 "
                 }`}
               ></span>
             </button>
@@ -234,6 +122,32 @@ export default function NewHabitModal({
             >
               Make this habit private
             </label>
+          </div>
+
+          <div className="grid gap-2">
+            <label
+              className="text-sm font-medium leading-none"
+              htmlFor="weekdays"
+            >
+              Days of the Week
+            </label>
+            <div className="flex flex-wrap gap-2" id="weekdays">
+              {WEEKDAYS.map((day) => (
+                <button
+                  type="button"
+                  key={day}
+                  className={`px-3 py-1 rounded-md border text-sm transition-colors ${
+                    selectedDays.includes(day)
+                      ? "bg-black text-white border-primary"
+                      : "bg-background text-foreground border-input"
+                  }`}
+                  aria-pressed={selectedDays.includes(day)}
+                  onClick={() => toggleDay(day)}
+                >
+                  {day}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
         <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">

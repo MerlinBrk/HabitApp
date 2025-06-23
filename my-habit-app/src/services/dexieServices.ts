@@ -16,7 +16,6 @@ export async function getHabitById(habitId: string) {
 }
 
 
-
 // Gibt alle Habits eines Benutzers zurück
 export async function getHabits(userId: string) {
   try {
@@ -149,6 +148,79 @@ export async function getHabitLogByHabitLogId(
     } catch (err) {
     console.error("❌ Fehler beim Abrufen des HabitLogs:", err);
     return null;
+  }
+}
+
+export async function getStreakByHabitId(habitId: string, userId: string) {
+  try {
+    // Hole das Habit, um die aktiven Wochentage zu bekommen
+    const habit = await db.habits.where({ id: habitId }).first();
+    if (!habit || !habit.days || habit.days.length === 0) return 0;
+
+    // Hole alle HabitLogs für dieses Habit, die erledigt wurden, sortiert nach Datum absteigend
+    const habitLog = await db.habit_logs.where({ habit_id: habitId }).toArray();
+    const logs = habitLog.filter((log) => log.is_done === true);
+
+    // Sortiere die Logs absteigend nach Datum
+    logs.sort((a, b) => b.date.localeCompare(a.date));
+
+    let streak = 0;
+    let currentDate = new Date();
+    let checkedToday = false;
+
+    while (true) {
+      const weekday = WEEKDAYS[currentDate.getDay()];
+      // Prüfe, ob das Habit an diesem Wochentag gemacht werden soll
+      if (habit.days.includes(weekday)) {
+        const dayStr = currentDate.toISOString().split("T")[0] + "T00:00:00+00:00";
+        const found = logs.find((log) => log.date === dayStr);
+
+        if (found) {
+          streak++;
+        } else {
+          // Wenn wir heute prüfen und heute kein Log existiert, ignoriere heute und prüfe weiter mit gestern
+          if (!checkedToday) {
+            checkedToday = true;
+            currentDate.setDate(currentDate.getDate() - 1);
+            continue;
+          } else {
+            break;
+          }
+        }
+      }
+      currentDate.setDate(currentDate.getDate() - 1);
+      checkedToday = true;
+    }
+
+    return streak;
+  } catch (err) {
+    console.error("Fehler beim Abrufen der Streak", err);
+    return 0;
+  }
+}
+
+// Gibt die niedrigste Streak aller Habits eines Users zurück (User-Streak)
+export async function getUserStreak(userId: string) {
+  try {
+    const habits = await db.habits.where({ user_id: userId }).toArray();
+    if (!habits || habits.length === 0) return 0;
+
+    let minStreak = Infinity;
+
+    for (const habit of habits) {
+      if (!habit.days || habit.days.length === 0) {
+        minStreak = 0;
+        break;
+      }
+      const streak = await getStreakByHabitId(habit.id, userId);
+      if (streak < minStreak) minStreak = streak;
+      if (minStreak === 0) break;
+    }
+
+    return minStreak === Infinity ? 0 : minStreak;
+  } catch (err) {
+    console.error("Fehler beim Berechnen der User-Streak", err);
+    return 0;
   }
 }
 

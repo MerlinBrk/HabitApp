@@ -12,6 +12,7 @@ import {
   updateHabitLogIsDoneById,
   addHabitLog,
   getHabits,
+  getUserStreak
 } from "../services/dexieServices";
 import SmallHabitCard from "../elements/habitlistElements/SmallHabitCard";
 import DropDownButton from "../elements/habitlistElements/DropDownButton";
@@ -35,6 +36,7 @@ export default function HomePage() {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [todaysHabitAmount, setTodaysHabitAmount] = useState(0);
   const [trueHabitLogs, setTrueHabitLogs] = useState(0);
+  const [userStreak,setUserStreak] = useState(0);
 
   useEffect(() => {
     loadAllData();
@@ -47,12 +49,14 @@ export default function HomePage() {
 
   useEffect(() => {
 getDailyDoneHabits();
+fetchUserStreak();
   },[habits,checkInsToday]);
 
   const loadAllData = () => {
       loadHabits(); 
       loadNotDaysHabits();
     loadDaysCheckIns();
+    fetchUserStreak();
   };
 
   const handleDateChange = (newDate) => {
@@ -88,6 +92,11 @@ getDailyDoneHabits();
     });
     setTrueHabitLogs(trueHabitLogsAmount);
   
+  }
+
+  const fetchUserStreak = async() =>{
+    const data = await getUserStreak(USER_ID);
+    setUserStreak(data);
   }
 
   const toggleCheckIn = async (habitId: string, isNowDone: boolean) => {
@@ -199,7 +208,13 @@ getDailyDoneHabits();
             </h3>
           </div>
           <div className="p-6 pt-0">
-            <div className="text-3xl font-bold">10</div>
+            <div className="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trending-up h-5 w-5 mr-2 text-primary">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+            <polyline points="16 7 22 7 22 13"></polyline>
+            </svg>
+            <div className="text-3xl font-bold">{userStreak}</div>
+            </div>
             <div
               aria-valuemax="100"
               aria-valuemin="0"
@@ -216,7 +231,7 @@ getDailyDoneHabits();
             </div>
             <p className="text-xs text-muted-foreground mt-2">
               {" "}
-              50% of Habits done
+              Keep going to Push your Streak
             </p>
           </div>
         </div>
