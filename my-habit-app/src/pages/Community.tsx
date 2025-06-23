@@ -18,7 +18,11 @@ import { useUserId } from "../services/useUserId";
 import PostButton from "../elements/communityElements/PostButton";
 import NewMessageModal from "../elements/communityElements/NewMessageModal";
 import { addNewMessage } from "../services/messageServices";
-import { addHabitLog, addHabitToDB, getHabitById } from "../services/dexieServices";
+import {
+  addHabitLog,
+  addHabitToDB,
+  getHabitById,
+} from "../services/dexieServices";
 import { type Habit } from "../lib/db";
 import { useStore } from "../lib/store";
 import { USER_ID } from "../utils/constants";
@@ -137,6 +141,7 @@ export default function CommunityPage() {
     habitId: string
   ) => {
     await addNewMessage(communityId, title, description, USER_ID, habitId);
+    fetchCommunityMessages("");
   };
 
   const getCommunityNameById = (communityId: string) => {
@@ -158,8 +163,8 @@ export default function CommunityPage() {
     addCommunityName(getCommunityNameById(communityId));
   };
 
-  const handleCopyHabit = async(title: string, days:string[] ) =>{
-    await addHabitToDB(title,USER_ID,true,days);
+  const handleCopyHabit = async (title: string, days: string[]) => {
+    await addHabitToDB(title, USER_ID, true, days);
   };
 
   return (
@@ -189,10 +194,20 @@ export default function CommunityPage() {
           />
           <div className="mt-4">
             {currentCommunityName !== "" && (
-              <div className="w-full h-32 bg-gray-200 rounded-lg mb-4 flex flex-col text-center items-center justify-center">
-                <h1 className="font-bold">{currentCommunityName}</h1>
-                <p className="mt-2">{currentCommunityDescription}</p>
-              </div>
+              
+                <div className="w-full p-4 bg-gray-200 rounded-lg mb-4 mt-4 flex flex-col text-center items-center justify-center">
+                  <h1 className="font-bold">{currentCommunityName}</h1>
+                  <p className="mt-2">{currentCommunityDescription}</p>
+                  <button
+                    onClick={() => {}}
+                    className="rounded-xl mt-4 bg-black font-bold text-white h-12 flex items-center justify-center shadow-lg text-l hover:bg-white hover:text-black hover:border-black border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50"
+                    aria-label="Community beitreten"
+                  >
+                    Join Community
+                  </button>
+                </div>
+                
+             
             )}
             {communityMessages
               .slice() // create a shallow copy to avoid mutating state
