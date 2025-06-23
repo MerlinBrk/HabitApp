@@ -71,7 +71,6 @@ export default function App() {
                 <Route path="/" element={<HomePage/>}/>
                 <Route path="/habits" element={<HabitList/>}/>
                 <Route path="/management" element={<ManagementPage/>}/>
-                <Route path="/stats" element={<ProgressPage/>}/>
                 <Route path="/community" element={<Community/>}/>
                 <Route path="/profile" element={<ProfilePage/>}/>
                 </Routes>

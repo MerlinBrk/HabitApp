@@ -41,11 +41,6 @@ export default function SideBar() {
           </a>
         </li>
         <li>
-          <a href="/progress" className={linkClass("/progress") + " hover:text-white no-underline font-bold"}>
-            Progress
-          </a>
-        </li>
-        <li>
           <a href="/community" className={linkClass("/community")+ " hover:text-white no-underline font-bold"}>
             Community
           </a>
