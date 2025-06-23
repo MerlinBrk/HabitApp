@@ -18,7 +18,7 @@ import { useUserId } from "../services/useUserId";
 import PostButton from "../elements/communityElements/PostButton";
 import NewMessageModal from "../elements/communityElements/NewMessageModal";
 import { addNewMessage } from "../services/messageServices";
-import { getHabitById } from "../services/dexieServices";
+import { addHabitLog, addHabitToDB, getHabitById } from "../services/dexieServices";
 import { type Habit } from "../lib/db";
 import { useStore } from "../lib/store";
 import { USER_ID } from "../utils/constants";
@@ -158,6 +158,10 @@ export default function CommunityPage() {
     addCommunityName(getCommunityNameById(communityId));
   };
 
+  const handleCopyHabit = async(title: string, days:string[] ) =>{
+    await addHabitToDB(title,USER_ID,true,days);
+  };
+
   return (
     <div className="flex h-screen w-full">
       <div className="flex-1 overflow-auto flex flex-col">
@@ -209,6 +213,7 @@ export default function CommunityPage() {
                     communityMessage.message || "No description available"
                   }
                   habit={communityMessage.habit_id}
+                  handleCopyHabit={handleCopyHabit}
                 />
               ))}
           </div>

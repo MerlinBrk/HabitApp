@@ -23,7 +23,7 @@ export default function SideBar() {
   }
 
   return (
-    <div className="fixed top-0 left-0 h-screen w-64 bg-white p-6 shadow-lg overflow-y-auto">
+    <div className="fixed top-0 left-0 h-screen w-64 bg-white p-6 shadow-lg">
       <ul className="flex flex-col space-y-4">
         <li>
           <a href="/" className={linkClass("/") + " hover:text-white no-underline font-bold"}>
