@@ -12,7 +12,8 @@ import {
   updateHabitLogIsDoneById,
   addHabitLog,
   getHabits,
-  getUserStreak
+  getUserStreak,
+  getPercentageDoneByUserId
 } from "../services/dexieServices";
 import SmallHabitCard from "../elements/habitlistElements/SmallHabitCard";
 import DropDownButton from "../elements/habitlistElements/DropDownButton";
@@ -37,6 +38,7 @@ export default function HomePage() {
   const [todaysHabitAmount, setTodaysHabitAmount] = useState(0);
   const [trueHabitLogs, setTrueHabitLogs] = useState(0);
   const [userStreak,setUserStreak] = useState(0);
+  const [userpercentage,setUserPercentage] = useState(0);
 
   useEffect(() => {
     loadAllData();
@@ -50,6 +52,7 @@ export default function HomePage() {
   useEffect(() => {
 getDailyDoneHabits();
 fetchUserStreak();
+fetchUserDonePercentage();
   },[habits,checkInsToday]);
 
   const loadAllData = () => {
@@ -97,6 +100,11 @@ fetchUserStreak();
   const fetchUserStreak = async() =>{
     const data = await getUserStreak(USER_ID);
     setUserStreak(data);
+  }
+
+  const fetchUserDonePercentage = async() =>{
+    const data = await getPercentageDoneByUserId(USER_ID);
+    setUserPercentage(data);
   }
 
   const toggleCheckIn = async (habitId: string, isNowDone: boolean) => {
@@ -242,7 +250,7 @@ fetchUserStreak();
             </h3>
           </div>
           <div className="p-6 pt-0">
-            <div className="text-3xl font-bold">75%</div>
+            <div className="text-3xl font-bold">{userpercentage}%</div>
             <div
               aria-valuemax="100"
               aria-valuemin="0"

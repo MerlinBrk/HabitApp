@@ -1,5 +1,5 @@
 import React,{ useState ,useEffect} from "react";
-import { getStreakByHabitId } from "../../services/dexieServices";
+import { getPercentageDoneByHabitId, getStreakByHabitId } from "../../services/dexieServices";
 
 interface ManageHabitProps {
   habitTitle: string;
@@ -18,18 +18,25 @@ export default function ManageHabitCard({
 }: ManageHabitProps) {
   const [openMoreDetails, setOpenMoreDetails] = useState(false);
   const [habitStreak,setHabitStreak] = useState(0);
+  const [percentage, setPercentage] = useState(0);
 
   useEffect(()=>{
     fetchhabitStreak();
+    fetchpersentage();
   },[])
 
   const handleOpenMoreClick = () => {
     setOpenMoreDetails(!openMoreDetails);
   };
 
+  const fetchpersentage = async() => {
+    const data = await getPercentageDoneByHabitId(habitId,userId);
+    console.log(data);
+    setPercentage(data);
+  }
+
   const fetchhabitStreak = async() =>{
     const data = await getStreakByHabitId(habitId,userId);
-    console.log(data,"ID: ",habitId);
     setHabitStreak(data);
   }
   return (
@@ -158,7 +165,7 @@ export default function ManageHabitCard({
         <div>
           <div className="flex justify-between items-center text-xs text-muted-foreground mb-1">
             <span>Completion Rate</span>
-            <span>85%</span>
+            <span>{percentage}%</span>
           </div>
           <div
             aria-valuemax="100"

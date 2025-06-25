@@ -151,6 +151,71 @@ export async function getHabitLogByHabitLogId(
   }
 }
 
+export async function getPercentageDoneByHabitId(habitId: string, userId: string) {
+  try {
+    // Hole das Habit, um die aktiven Wochentage zu bekommen
+    const habit = await db.habits.where({ id: habitId }).first();
+    if (!habit || !habit.days || habit.days.length === 0) return 0;
+
+    const formattedDate = new Date(habit.created_at);
+    formattedDate.setHours(0, 0, 0, 0);
+
+    const logs = await db.habit_logs.where({ habit_id: habitId }).toArray();
+    logs.sort((a, b) => b.date.localeCompare(a.date));
+
+    let done = 0;
+    let notDone = 0;
+    let currentDate = new Date();
+
+    while (currentDate >= formattedDate) {
+      const weekday = WEEKDAYS[currentDate.getDay()];
+      // Prüfe, ob das Habit an diesem Wochentag gemacht werden soll
+      if (habit.days.includes(weekday)) {
+        const dayStr = currentDate.toISOString().split("T")[0] + "T00:00:00+00:00";
+        const found = logs.find((log) => log.date === dayStr);
+
+        if (found) {
+          if (found.is_done) {
+            done++;
+          } else {
+            notDone++;
+          }
+        } else {
+          notDone++;
+        }
+      }
+      currentDate.setDate(currentDate.getDate() - 1);
+    }
+    return done + notDone === 0 ? 0 : Math.round(100 * (done / (done + notDone)));
+  } catch (err) {
+    console.error("Fehler beim Anfordern der Prozente wie oft das Habit gemacht wurde", err);
+    return 0.0;
+  }
+}
+
+// Gibt den durchschnittlichen Prozentsatz aller Habits eines Users zurück
+export async function getPercentageDoneByUserId(userId: string) {
+  try {
+    const habits = await db.habits.where({ user_id: userId }).toArray();
+    if (!habits || habits.length === 0) return 0;
+
+    let totalPercentage = 0;
+    let count = 0;
+
+    for (const habit of habits) {
+      const percent = await getPercentageDoneByHabitId(habit.id, userId);
+      totalPercentage += percent;
+      count++;
+    }
+    return count === 0 ? 0 : Math.round(totalPercentage / count);
+  } catch (err) {
+    console.error("Fehler beim Berechnen des durchschnittlichen Prozentsatzes für den User", err);
+    return 0;
+  }
+}
+
+
+
 export async function getStreakByHabitId(habitId: string, userId: string) {
   try {
     // Hole das Habit, um die aktiven Wochentage zu bekommen
