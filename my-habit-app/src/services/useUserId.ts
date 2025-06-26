@@ -6,3 +6,7 @@ export function useUserId() {
 export function useUserName(){
   return localStorage.getItem("user_name") ?? "offline-user";
 }
+
+export function useUserEmail(){
+  return localStorage.getItem("user_email") ?? "offline Email";
+}
