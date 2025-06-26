@@ -234,7 +234,7 @@ fetchUserDonePercentage();
               <div
                 className="bg-black h-full transition-all duration-500 ease-in-out"
                 style={{
-                  width: `${100 * (trueHabitLogs / todaysHabitAmount)}%`,
+                  width: `${todaysHabitAmount !== 0 ? 100 * (trueHabitLogs / todaysHabitAmount) : 0}%`,
                 }}
               ></div>
             </div>
@@ -269,7 +269,7 @@ fetchUserDonePercentage();
               <div
                 data-state="indeterminate"
                 data-max="100"
-                className="h-full w-full flex-1 bg-primary transition-all tempo-e664fefe-fa52-579a-92ad-6c35279a5bcc"
+                className="h-full w-full flex-1 bg-primary transition-all"
               ></div>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
