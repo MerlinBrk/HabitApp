@@ -425,3 +425,25 @@ export async function updateHabitLogIsDoneById(
     console.error("Fehler beim Updaten eines Habit Logs", err);
   }
 }
+
+export async function clearHabitDB(){
+  try{
+    await db.habits.clear();
+
+  }
+  catch(err){
+    console.error("Fehler beim Clearen der Indexed DB Habits",err);
+  }
+}
+
+export async function clearHabitLogsDB(){
+  try{
+    await db.habit_logs.clear();
+
+  }
+  catch(err){
+    console.error("Fehler beim Clearen der Indexed DB HabitLogs",err);
+  }
+}
+
+

@@ -72,7 +72,7 @@ export default function CommunityPage() {
 const loadCommunityInfo = async (name: string) => {
   setLoadingCommunityInfo(true); // Start Loading
   setCurrentCommunityDescription("");
-  await getCommunityId(name); // ruft communityId und setzt es
+  getCommunityId(name); // ruft communityId und setzt es
   setLoadingCommunityInfo(false); // End Loading
 };
 
@@ -88,7 +88,7 @@ useEffect(() => {
   const fetchAll = () =>{
     fetchCommunities();
     fetchOwnCommunities();
-    fetchCommunityMessages("");
+    fetchCommunityMessages(""); 
   }
 
   const fetchCommunities = async () => {

@@ -52,6 +52,8 @@ setCommunityDescription("");
 
   if (!isActive) return null;
   return (
+    <>
+    <div className="fixed inset-0 z-40 bg-black bg-opacity-40"></div>
     <div
   role="dialog"
   aria-modal="true"
@@ -159,6 +161,6 @@ setCommunityDescription("");
     <span className="sr-only">Close</span>
   </button>
 </div>
-
+</>
   );
 }

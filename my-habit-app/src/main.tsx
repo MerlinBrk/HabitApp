@@ -5,17 +5,19 @@ import './index.css';
 import App from './App.tsx';
 import { syncUserIdToLocalStorage } from './lib/auth';
 import { registerSW } from 'virtual:pwa-register';
+import { syncAll } from './lib/sync.ts';
 
 
 setInterval(() => {
   if (navigator.onLine) {
-    //syncAll();
+    console.log("Sync");
+    syncAll();
   }
 }, 60 * 1000); // jede Minuten
 
 // Bei Internetverbindung
 window.addEventListener('online', () => {
-  //syncAll();
+  syncAll();
 });
 
 registerSW();
