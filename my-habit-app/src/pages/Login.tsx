@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { supabase } from "../lib/supabase";
+import { clearHabitDB, clearHabitLogsDB } from "../services/dexieServices";
 
 export default function Login({ onLogin }: { onLogin: () => void }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -8,7 +9,18 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
   const [error, setError] = useState("");
   const [name, setName] = useState("");
 
-  const handleAuth = async () => {
+
+  useEffect(()=>{
+    const clearDB = async() =>{
+      await clearHabitDB();
+      await clearHabitLogsDB();
+    };
+
+    clearDB();
+  },[])
+
+  const handleAuth = async (type: "signIn" | "signUp") => {
+
     setError("");
 
     const { error } = isLogin

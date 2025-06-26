@@ -1,11 +1,12 @@
 import { useStore } from "../lib/store";
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import { useLocation } from "react-router-dom";
 
 export default function SideBar() {
   const list = useStore((state) => state.list);
   const addCommunityName = useStore((state) => state.addCommunityName);
   const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
 
   function handleItemClick(item: string) {
     addCommunityName(item);
@@ -55,23 +56,44 @@ export default function SideBar() {
             <hr className="my-2 border-gray-300" />
           </li>
         )}
-        {list.map((item, index) => (
+        {(isOpen ? list : list.slice(0, 5)).map((item, index) => (
           <li key={index} className="flex items-center space-x-1">
             <a
               href="#"
               onClick={e => {
-                e.preventDefault();
-                handleItemClick(item);
+          e.preventDefault();
+          handleItemClick(item);
               }}
               className="flex items-center block px-2 py-1 rounded-xl text-gray-700 hover:bg-blue-500 hover:text-white transition-colors no-underline flex-1"
             >
               <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-200 text-blue-700 font-bold text-lg mr-2">
-                {item.charAt(0).toUpperCase()}
+          {item.charAt(0).toUpperCase()}
               </div>
               {item}
             </a>
           </li>
         ))}
+        
+        {list.length > 5 && !isOpen && (
+          <li>
+            <button
+              className="text-black px-2 py-1"
+              onClick={() => setIsOpen(true)}
+            >
+              Zeige mehr...
+            </button>
+          </li>
+        )}
+        {list.length > 5 && isOpen && (
+          <li>
+            <button
+              className="text-black px-2 py-1"
+              onClick={() => setIsOpen(false)}
+            >
+              Weniger anzeigen
+            </button>
+          </li>
+        )}
       </ul>
     </div>
   );

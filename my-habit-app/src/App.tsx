@@ -12,6 +12,8 @@ import Layout from "./responsive/Layout.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import useIsMobile from "./responsive/useIsMobile.ts"
 import ManagementPage from "./pages/ManagementPage.tsx";
+import {USER_ID} from "./utils/constants.tsx";
+import { pullHabitLogsFromSupabase, pullHabitsFromSupabase } from "./lib/sync.ts";
 
 export default function App() {
     const isMobile = useIsMobile();
@@ -32,6 +34,17 @@ export default function App() {
 
         return () => subscription.unsubscribe();
     }, []);
+
+    useEffect(()=>{
+        const pullData = async() => {
+        if(isLoggedIn){
+            await pullHabitLogsFromSupabase(USER_ID);
+            await pullHabitsFromSupabase(USER_ID);
+        }
+    }
+
+    pullData();
+    },[isLoggedIn]);
 /*
     if (loading) return <div className="p-6 text-center">Lade...</div>;
 

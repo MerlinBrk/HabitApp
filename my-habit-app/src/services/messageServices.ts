@@ -31,6 +31,41 @@ export async function getAllCommunityMessages(){
   } 
 }
 
+export async function getAllMessagesByUserCommunities(userId: string) {
+  try {
+    // Hole alle Community-IDs, bei denen der User Mitglied ist
+    const { data: communityUsers, error: communityUsersError } = await supabase
+      .from("Community_users")
+      .select("community_id")
+      .eq("user_id", userId);
+
+    if (communityUsersError) {
+      throw communityUsersError;
+    }
+
+    const communityIds = communityUsers?.map((cu: any) => cu.community_id) || [];
+
+    if (communityIds.length === 0) {
+      return [];
+    }
+
+    // Hole alle Nachrichten aus diesen Communities
+    const { data: messages, error: messagesError } = await supabase
+      .from("Community_messages")
+      .select("*")
+      .in("community_id", communityIds);
+
+    if (messagesError) {
+      throw messagesError;
+    }
+
+    return messages || [];
+  } catch (err) {
+    console.error("Fehler beim Abrufen der Nachrichten für die Communities des Users", err);
+    return [];
+  }
+}
+
 export async function getAllCommunityMessagesByCommunityId(communityId: string) {
   try {
     const { data, error } = await supabase
