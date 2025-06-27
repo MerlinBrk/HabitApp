@@ -90,7 +90,7 @@ const loadHabits = async () => {
           </div>
           <div className="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
             {habits.map((habit) => (
-              <ManageHabitCard key={habit.id} habitId={habit.id} userId={USER_ID}habitTitle={habit.title} openEditHabitModal={() =>{}} handleDeleteHabit={() => handleDeleteHabit(habit.id)}/>
+              <ManageHabitCard key={habit.id} habitId={habit.id} description={habit.description}userId={USER_ID}habitTitle={habit.title} openEditHabitModal={() =>{}} handleDeleteHabit={() => handleDeleteHabit(habit.id)}/>
             ))}
           </div>
         </div>
