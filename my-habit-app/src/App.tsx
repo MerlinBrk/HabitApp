@@ -33,25 +33,25 @@ export default function App() {
 
         return () => subscription.unsubscribe();
     }, []);
-/*
-    if (loading) return <div className="p-6 text-center">Lade...</div>;
+    /*
+        if (loading) return <div className="p-6 text-center">Lade...</div>;
 
-    const [isMobile, setIsMobile] = useState(false);
+        const [isMobile, setIsMobile] = useState(false);
 
-    useEffect(() => {
-        const checkMobile = () => {
-            setIsMobile(window.innerWidth <= 469);
-        };
-        checkMobile();
-        window.addEventListener("resize", checkMobile);
-        return () => window.removeEventListener("resize", checkMobile);
-    }, []);
-
-
-    const isStartetAsApp = window.matchMedia('(display-mode: standalone)').matches;
+        useEffect(() => {
+            const checkMobile = () => {
+                setIsMobile(window.innerWidth <= 469);
+            };
+            checkMobile();
+            window.addEventListener("resize", checkMobile);
+            return () => window.removeEventListener("resize", checkMobile);
+        }, []);
 
 
-     */
+        const isStartetAsApp = window.matchMedia('(display-mode: standalone)').matches;
+
+
+         */
     /*
     if ((isMobile || true) && !isStartetAsApp) {
         return (
@@ -66,16 +66,16 @@ export default function App() {
     return (
         <Router>
             <Layout>
-            <div className={isMobile ? "" : "ml-64"}>
-                <Routes>
-                <Route path="/" element={<HomePage/>}/>
-                <Route path="/habits" element={<HabitList/>}/>
-                <Route path="/management" element={<ManagementPage/>}/>
-                <Route path="/stats" element={<ProgressPage/>}/>
-                <Route path="/community" element={<Community/>}/>
-                <Route path="/profile" element={<ProfilePage/>}/>
-                </Routes>
-            </div>
+                <div className={isMobile ? "" : "ml-64"}>
+                    <Routes>
+                        <Route path="/" element={<HomePage/>}/>
+                        <Route path="/habits" element={<HabitList/>}/>
+                        <Route path="/management" element={<ManagementPage/>}/>
+                        <Route path="/stats" element={<ProgressPage/>}/>
+                        <Route path="/community" element={<Community/>}/>
+                        <Route path="/profile" element={<ProfilePage/>}/>
+                    </Routes>
+                </div>
             </Layout>
         </Router>
     );
