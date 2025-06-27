@@ -1,5 +1,4 @@
 import { FaCheck } from "react-icons/fa";
-import IconButton from "../IconButton"; // falls du eine eigene Komponente hast
 import React from "react";
 
 
