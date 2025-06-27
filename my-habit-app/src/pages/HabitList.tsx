@@ -14,7 +14,6 @@ import Calendar from "../elements/Calender"; // Assuming you have a Calendar com
 import { syncAll } from "../lib/sync";
 import NewHabitModal from "../elements/NewHabitModal";
 import SelectDaysCalendar from "../elements/SelectDays";
-import DateSelector from "../elements/DateSelector";
 import SmallHabitCard from "../elements/habitlistElements/SmallHabitCard";
 import DropDownButton from "../elements/habitlistElements/DropDownButton";
 import {USER_ID} from "../utils/constants";
@@ -141,7 +140,6 @@ export default function HabitList() {
     <div className="flex h-screen w-full">
         {/*Seite mit Splitscreen */}
       <div className="p-4 flex-1 p-6 overflow-auto">
-        <DateSelector onDateChange={handleDateChange} />
         <div className="w-full h-full rounded-none shadow-none p-6 relative">
           {activeCalender ? (
             <div className="flex gap-8">

@@ -11,17 +11,14 @@ import {
   getAllCommunityMessagesByCommunityId,
   getAllMessagesByUserCommunities
 } from "../services/messageServices";
-import { supabase } from "../lib/supabase";
 import MessageCard from "../elements/communityElements/MessageCard";
 import NewCommunityModal from "../elements/communityElements/NewCommunityModal";
 import AddButton from "../elements/AddButton";
 import { type Community, type CommunityMessage } from "../utils/types";
-import { useUserId } from "../services/useUserId";
 import PostButton from "../elements/communityElements/PostButton";
 import NewMessageModal from "../elements/communityElements/NewMessageModal";
 import { addNewMessage } from "../services/messageServices";
 import {
-  addHabitLog,
   addHabitToDB,
   getHabitById,
 } from "../services/dexieServices";
@@ -29,6 +26,7 @@ import { type Habit } from "../lib/db";
 import { useStore } from "../lib/store";
 import { USER_ID } from "../utils/constants";
 import { addNewCommunityUser, deleteCommunityUser, getIfUserIsPartOfCommunity } from "../services/commUserServices";
+import JoinLeaveButton from "../elements/communityElements/JoinLeaveButton";
 
 export default function CommunityPage() {
   const clearList = useStore((state) => state.clearList);
@@ -72,7 +70,7 @@ export default function CommunityPage() {
 const loadCommunityInfo = async (name: string) => {
   setLoadingCommunityInfo(true); // Start Loading
   setCurrentCommunityDescription("");
-  getCommunityId(name); // ruft communityId und setzt es
+  await getCommunityIdByName(name); // ruft communityId und setzt es
   setLoadingCommunityInfo(false); // End Loading
 };
 
@@ -112,7 +110,7 @@ useEffect(() => {
     }
   };
 
-  const getCommunityId = async (name: string) => {
+  const getCommunityIdByName = async (name: string) => {
     if (name.toString() !== "") {
       const data = await getCommunityIdByCommunityTitle(name);
       setCurrentCommunityId(data);
@@ -219,26 +217,12 @@ useEffect(() => {
                     </div>
                   <div className="ml-4">
                     {!partOfCurrentCommunity ? (
-                      <button
-                        onClick={() => joinCommunity(currentCommunityId)}
-                        className="rounded-xl bg-black font-bold text-white h-12 flex items-center justify-center shadow-lg text-l hover:bg-white hover:text-black hover:border-black border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50 px-6"
-                        aria-label="Community beitreten"
-                      >
-                        Join Community
-                      </button>
+                      <JoinLeaveButton title="Join Community" onClick={() => joinCommunity(currentCommunityId)} />
                     ) : (
-                      <button
-                        onClick={() => leaveCommunity(currentCommunityId)}
-                        className="rounded-xl bg-black font-bold text-white px-6 py-2 flex items-center justify-center shadow-lg text-l hover:bg-white hover:text-black hover:border-black border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50"
-                        aria-label="Community verlassen"
-                      >
-                        Leave Community
-                      </button>
+                      <JoinLeaveButton title="Leave Community" onClick={() => leaveCommunity(currentCommunityId)} />
                     )}
                   </div>
                 </div>
-                
-             
             )}
             {communityMessages
               .slice() // create a shallow copy to avoid mutating state
