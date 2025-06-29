@@ -197,13 +197,13 @@ export default function ManageHabitCard({
                                         <div className="text-xs text-muted-foreground">
                                             Current Streak
                                         </div>
-                                        <div className="text-xl font-bold">5 days</div>
+                                        <div className="text-xl font-bold">{habitStreak}</div>
                                     </div>
                                     <div className="bg-muted/50 p-3 rounded-md border shadow">
                                         <div className="text-xs text-muted-foreground">
                                             Completion Rate
                                         </div>
-                                        <div className="text-xl font-bold">60%</div>
+                                        <div className="text-xl font-bold">{percentage}%</div>
                                     </div>
                                 </div>
                                 <button
