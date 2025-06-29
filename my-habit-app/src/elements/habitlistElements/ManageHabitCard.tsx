@@ -24,6 +24,7 @@ export default function ManageHabitCard({
     const [habitStreak, setHabitStreak] = useState(0);
     const [percentage, setPercentage] = useState(0);
 
+
     useEffect(() => {
         fetchhabitStreak();
         fetchpersentage();

@@ -1,15 +1,9 @@
 import ManageHabitCard from "../elements/habitlistElements/ManageHabitCard";
 import React, {useEffect, useState} from "react";
 import {type Habit} from "../lib/db";
-import {useUserId} from "../services/useUserId";
 import {deleteHabit, getHabits, getUserStreak} from "../services/dexieServices";
-import Calendar from "../elements/Calender"; // Assuming you have a Calendar component
-import {syncAll} from "../lib/sync";
 import NewHabitModal from "../elements/NewHabitModal";
-import SelectDaysCalendar from "../elements/SelectDays";
-import DateSelector from "../elements/DateSelector";
-import SmallHabitCard from "../elements/habitlistElements/SmallHabitCard";
-import DropDownButton from "../elements/habitlistElements/DropDownButton";
+
 import {USER_ID} from "../utils/constants";
 
 type Tab = "All Habits" | "Daily" | "Weekly" | "Monthly";
@@ -40,7 +34,9 @@ export default function ManagementPage() {
 
     const handleDeleteHabit = async (habitId: string) => {
         await deleteHabit(habitId, USER_ID);
+        setHabits(prev => prev.filter(habit => habit.id !== habitId)); // Remove from UI
     };
+
 
     const handleOpenNewHabitModal = () => {
         setOpenNewHabitModal(true);
@@ -107,7 +103,9 @@ export default function ManagementPage() {
                                                  habitTitle={habit.title}
                                                  days={habit.days.join(", ")}
                                                  openEditHabitModal={() => {
-                                                 }} handleDeleteHabit={() => handleDeleteHabit(habit.id)}/>
+                                                 }}
+                                                 handleDeleteHabit={() => handleDeleteHabit(habit.id)}
+                                />
                             )
                         )}
                     </div>

@@ -4,7 +4,7 @@ import {v4 as uuidv4} from "uuid";
 import {WEEKDAYS} from "../utils/constants";
 
 
-//Gibt ein Habit anhand der ID zurück
+// Gibt ein Habit anhand der ID zurück
 export async function getHabitById(habitId: string) {
     try {
         const habit = await db.habits.where({id: habitId}).first();
@@ -27,7 +27,7 @@ export async function getHabits(userId: string) {
     }
 }
 
-//Gibt alle Habits eines Benutzers zurück, die für den gewählten Tag aktiv sind
+// Gibt alle Habits eines Benutzers zurück, die für den gewählten Tag aktiv sind
 export async function getDaysHabitsByUserId(userId: string, date: Date) {
     try {
         const todayWeekday = WEEKDAYS[date.getDay()];
@@ -136,7 +136,7 @@ export async function getTrueHabitLogByHabitId(habitId: number) {
     }
 }
 
-//Gibt alle Habits für einen User und die HabitLog ID zurück
+// Gibt alle Habits für einen User und die HabitLog ID zurück
 export async function getHabitLogByHabitLogId(
     habitLogId: number,
     userId: string
@@ -289,7 +289,7 @@ export async function getUserStreak(userId: string) {
     }
 }
 
-//Hinzufügen eines Habits zur IndexedDB
+// Hinzufügen eines Habits zur IndexedDB
 export async function addHabitToDB(
     title: string,
     description: string,
@@ -314,7 +314,7 @@ export async function addHabitToDB(
     }
 }
 
-//Hinzufügen eines neuen HabitLogs für ein besimmtes Habit
+// Hinzufügen eines neuen HabitLogs für ein besimmtes Habit
 export async function addHabitLog(userId: string, habitId: number, date: Date, isDone: boolean) {
     try {
         const day = date.toISOString().split("T")[0] + "T00:00:00+00:00";
@@ -331,7 +331,7 @@ export async function addHabitLog(userId: string, habitId: number, date: Date, i
     }
 }
 
-//Löschen eines Habits
+// Löschen eines Habits
 export async function deleteHabit(habitId: string, userId: string) {
     try {
         await db.habits.delete(habitId);
@@ -355,7 +355,7 @@ export async function deleteHabit(habitId: string, userId: string) {
     }
 }
 
-//Löschen eines Habit Logs aus IndexedDB
+// Löschen eines Habit Logs aus IndexedDB
 export async function deleteHabitLog(habitId: number, userId: string) {
     try {
         const habitLog = await db.habit_logs.where({habit_id: habitId}).toArray();
@@ -388,7 +388,7 @@ export async function deleteHabitLog(habitId: number, userId: string) {
     }
 }
 
-//Aktualisieren von IsDone-Wert für ein Habit Log
+// Aktualisieren von IsDone-Wert für ein Habit Log
 export async function updateHabitLogIsDoneById(
     habitLogId: number,
     isDone: boolean
