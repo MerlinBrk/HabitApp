@@ -49,7 +49,7 @@ export default function ManagementPage() {
         setOpenNewHabitModal(false);
     }
 
-    const getHabits = searchKey === "" ? habits : habits.filter(habit =>
+    const getFilteredHabits = searchKey === "" ? habits : habits.filter(habit =>
         habit.title.toLowerCase().includes(searchKey.toLowerCase())
     );
 
@@ -99,12 +99,13 @@ export default function ManagementPage() {
                     </div>
                     <div
                         className="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
-                        {getHabits.map((habit) => (
+                        {getFilteredHabits.map((habit) => (
                                 <ManageHabitCard key={habit.id}
                                                  habitId={habit.id}
                                                  description={habit.description}
                                                  userId={USER_ID}
                                                  habitTitle={habit.title}
+                                                 days={habit.days.join(", ")}
                                                  openEditHabitModal={() => {
                                                  }} handleDeleteHabit={() => handleDeleteHabit(habit.id)}/>
                             )

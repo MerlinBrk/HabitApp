@@ -32,10 +32,17 @@ export default function NewHabitModal({
     };
 
     const toggleDay = (day: string) => {
-        setSelectedDays((prev) =>
-            prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
-        );
+        setSelectedDays((prev) => {
+            let updated = prev.includes(day)
+                ? prev.filter((d) => d !== day)
+                : [...prev, day];
+
+            // Put the days in the correct order (Mo - So)
+            updated.sort((a, b) => WEEKDAYS.indexOf(a) - WEEKDAYS.indexOf(b));
+            return updated;
+        });
     };
+
 
     if (!isActive) return null;
 
