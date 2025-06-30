@@ -290,7 +290,7 @@ export async function getUserStreak(userId: string) {
 }
 
 // Hinzufügen eines Habits zur IndexedDB
-export async function addHabitToDB(
+export async function  addHabitToDB(
     title: string,
     description: string,
     userId: string,

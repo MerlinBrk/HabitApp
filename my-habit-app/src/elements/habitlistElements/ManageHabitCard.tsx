@@ -117,9 +117,11 @@ export default function ManageHabitCard({
                                 strokeWidth="2"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                className="lucide lucide-chevron-down h-4 w-4 "
+                                className="lucide lucide-bar-chart mr-2 h-4 w-4"
                             >
-                                <path d="m6 9 6 6 6-6"></path>
+                                <line x1="12" x2="12" y1="20" y2="10"></line>
+                                <line x1="18" x2="18" y1="20" y2="4"></line>
+                                <line x1="6" x2="6" y1="20" y2="16"></line>
                             </svg>
                         </button>
                     </div>
@@ -193,7 +195,19 @@ export default function ManageHabitCard({
                         <>
                             <div className="mt-4 pt-4 border-t">
                                 <h4 className="text-sm font-medium mb-2">Analytics</h4>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 grid-rows-2 gap-4">
+                                    <div className="bg-muted/50 p-3 rounded-md border shadow">
+                                        <div className="text-xs text-muted-foreground">
+                                            Current Streak
+                                        </div>
+                                        <div className="text-xl font-bold">{habitStreak}</div>
+                                    </div>
+                                    <div className="bg-muted/50 p-3 rounded-md border shadow">
+                                        <div className="text-xs text-muted-foreground">
+                                            Longest Streak
+                                        </div>
+                                        <div className="text-xl font-bold">{habitStreak}</div>
+                                    </div>
                                     <div className="bg-muted/50 p-3 rounded-md border shadow">
                                         <div className="text-xs text-muted-foreground">
                                             Current Streak
@@ -207,27 +221,6 @@ export default function ManageHabitCard({
                                         <div className="text-xl font-bold">{percentage}%</div>
                                     </div>
                                 </div>
-                                <button
-                                    className="bg-white inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs mt-4 w-full">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="lucide lucide-bar-chart mr-2 h-4 w-4"
-                                    >
-                                        <line x1="12" x2="12" y1="20" y2="10"></line>
-                                        <line x1="18" x2="18" y1="20" y2="4"></line>
-                                        <line x1="6" x2="6" y1="20" y2="16"></line>
-                                    </svg>
-                                    {" "}
-                                    View Detailed Analytics
-                                </button>
                             </div>
                         </>
                     )}
