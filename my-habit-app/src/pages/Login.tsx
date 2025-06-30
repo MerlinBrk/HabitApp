@@ -23,15 +23,25 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
 
     setError("");
 
-    const { error } = isLogin
-      ? await supabase.auth.signInWithPassword({ email, password })
-      : await supabase.auth.signUp({
+    if(isLogin){
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+    }
+    else{
+      const { data: {user},error } = await supabase.auth.signUp({
           email,
           password,
-          options: {
-            data: { display_name: name },
-          },
+          
         });
+        
+      if(user){
+        await supabase.from("Profiles").upsert({
+          id:user.id,
+          username: name,
+        })
+      }
+    }
+    
+
 
     if (error) setError(error.message);
     else onLogin();

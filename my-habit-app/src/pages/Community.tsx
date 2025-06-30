@@ -6,6 +6,7 @@ import {
   getCommunityIdByCommunityTitle,
   getCommunitiesByUserId
 } from "../services/communityServices";
+import CommentModal from "../elements/communityElements/CommentModal";
 import {
   getAllCommunityMessages,
   getAllCommunityMessagesByCommunityId,
@@ -43,10 +44,10 @@ export default function CommunityPage() {
   const [stateNewCommunityModal, setStateNewCommunityModal] = useState(false);
   const [stateNewMessageModal, setStateNewMessageModal] = useState(false);
   const [currentCommunityId, setCurrentCommunityId] = useState("");
-  const [currentCommunityDescription, setCurrentCommunityDescription] =
-    useState("");
-    const [partOfCurrentCommunity,setPartOfCurrentCommunity] = useState(false);
-    const [loadingCommunityInfo, setLoadingCommunityInfo] = useState(false);
+  const [currentCommunityDescription, setCurrentCommunityDescription] =useState("");
+  const [partOfCurrentCommunity,setPartOfCurrentCommunity] = useState(false);
+  const [loadingCommunityInfo, setLoadingCommunityInfo] = useState(false);
+  const [commentModalOpen,setCommentModalOpen] = useState(false);
 
 
   useEffect(() => {
@@ -192,8 +193,10 @@ useEffect(() => {
             <SearchBar data={communities} onClick={handleOpenCommunityFeed} />
           </div>
           <AddButton onClick={() => setStateNewCommunityModal(true)} />
+            
         </div>
         <div className="flex-1 p-4">
+          <CommentModal isActive={commentModalOpen} handleCommentModalClose={() => setCommentModalOpen(false)}/>
           <NewCommunityModal
             currentTitles={communityTitles}
             isActive={stateNewCommunityModal}
@@ -244,6 +247,7 @@ useEffect(() => {
                   }
                   habit={communityMessage.habit_id}
                   handleCopyHabit={handleCopyHabit}
+                  handleCommentOpen={() => setCommentModalOpen(true)}
                 />
               ))}
           </div>
