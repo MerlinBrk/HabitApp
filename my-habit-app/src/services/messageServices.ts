@@ -84,3 +84,23 @@ export async function getAllCommunityMessagesByCommunityId(communityId: string) 
   }
 }
 
+export async function getCommunityMessageById(messageId:string){
+  try{
+const { data, error } = await supabase
+      .from("Community_messages")
+      .select("*")
+      .eq("id", messageId)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  } catch (err) {
+    console.error("Beim Fetchen der Community Nachrichten mit einer bestimmten Id gab es ein Fehler", err);
+    return;
+  }
+  
+}
+

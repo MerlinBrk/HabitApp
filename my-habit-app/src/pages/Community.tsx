@@ -37,6 +37,7 @@ export default function CommunityPage() {
   const currentCommunityName = useStore((state) => state.currentCommunityName);
   const [communities, setCommunities] = useState<Community[]>([]);
   const [userCommunities,setUserCommunities] = useState<Community[]>([]);
+  const [currentCommunityForCommentModal,setCurrentCommunityForCommentModal] = useState("");
   const [communityMessages, setCommunityMessages] = useState<
     CommunityMessage[]
   >([]);
@@ -196,7 +197,7 @@ useEffect(() => {
             
         </div>
         <div className="flex-1 p-4">
-          <CommentModal isActive={commentModalOpen} handleCommentModalClose={() => setCommentModalOpen(false)}/>
+          <CommentModal isActive={commentModalOpen} message_id={currentCommunityForCommentModal} handleCommentModalClose={() => setCommentModalOpen(false)}/>
           <NewCommunityModal
             currentTitles={communityTitles}
             isActive={stateNewCommunityModal}
@@ -247,7 +248,7 @@ useEffect(() => {
                   }
                   habit={communityMessage.habit_id}
                   handleCopyHabit={handleCopyHabit}
-                  handleCommentOpen={() => setCommentModalOpen(true)}
+                  handleCommentOpen={() => {setCommentModalOpen(true); setCurrentCommunityForCommentModal(communityMessage.id);}}
                 />
               ))}
           </div>
