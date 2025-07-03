@@ -78,7 +78,8 @@ export default function CommentModal({
 
       {/* Modal Container */}
       <div className="fixed inset-0 bg-opacity-40 flex items-center justify-center z-40">
-        <div className="relative bg-white rounded-lg p-6 min-w-[320px] min-h-[180px] shadow-lg w-full max-w-xl">
+        <div className="relative bg-white rounded-lg p-6 shadow-lg w-[90vw] max-w-[1280px] h-[85vh] overflow-y-auto">
+
           {/* Close Button */}
           <button
             className="absolute top-3 right-3 text-2xl text-gray-500 hover:text-gray-700 focus:outline-none"
@@ -87,7 +88,7 @@ export default function CommentModal({
           >
             ×
           </button>
-
+          <h1 className="text-3xl font-bold">Message</h1>
           {/* Message Display */}
           {message && (
             <div className="mt-8 bg-white border shadow rounded-xl p-4 mb-4 relative">
@@ -121,6 +122,7 @@ export default function CommentModal({
 
           {comments?.length > 0 && (
             <div className="space-y-4">
+              <h2 className="text-2xl font-bold mt-8 mb-4">Comments {"(" + comments.length + ")"}</h2>
               {comments.map((comment, index) => (
                 <CommentCard key={index} comment={comment} />
                 

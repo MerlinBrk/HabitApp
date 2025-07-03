@@ -6,7 +6,7 @@ import { getUsernameById } from "../../services/profileServices";
 
 interface MessageCardProps {
   userId: string;
-  communityId: string;
+  communityName: string;
   title: string;
   message: string;
   habit: string;
@@ -16,7 +16,7 @@ interface MessageCardProps {
 
 export default function MessageCard({
   userId,
-  communityId,
+  communityName,
   title,
   message,
   habit,
@@ -56,7 +56,7 @@ export default function MessageCard({
       setTimeout(() => setShowSuccess(false), 1500);
     }
   };
-  // Placeholder for comment button click handler
+  
   const handleCommentClick = () => {
     handleCommentOpen();
   };
@@ -99,7 +99,7 @@ export default function MessageCard({
           <p className="text-xl font-bold mb-1">{title}</p>
           <p className="text-gray-700">{message}</p>
           <div className="text-sm text-gray-500 mt-2">
-            Community: {communityId}
+            Community: {communityName}
           </div>
         </div>
         <button

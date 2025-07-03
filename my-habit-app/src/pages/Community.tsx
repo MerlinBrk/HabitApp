@@ -29,6 +29,10 @@ import { USER_ID } from "../utils/constants";
 import { addNewCommunityUser, deleteCommunityUser, getIfUserIsPartOfCommunity } from "../services/commUserServices";
 import JoinLeaveButton from "../elements/communityElements/JoinLeaveButton";
 
+type Tab = "Messages" | "Shared Habits";
+const tabs: Tab[] = ["Messages", "Shared Habits"];
+
+
 export default function CommunityPage() {
   const clearList = useStore((state) => state.clearList);
   const addName = useStore((state) => state.addName);
@@ -49,6 +53,7 @@ export default function CommunityPage() {
   const [partOfCurrentCommunity,setPartOfCurrentCommunity] = useState(false);
   const [loadingCommunityInfo, setLoadingCommunityInfo] = useState(false);
   const [commentModalOpen,setCommentModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>("Messages");
 
 
   useEffect(() => {
@@ -228,6 +233,24 @@ useEffect(() => {
                   </div>
                 </div>
             )}
+            <div className="pb-4 pt-0">
+            <div className="inline-flex rounded-full bg-[#f4f6f9] p-1">
+              {tabs.map((tab) => (
+                <button
+                  type="button"
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                    activeTab === tab
+                      ? "bg-white text-black hover:border-white shadow-sm "
+                      : "text-gray-500 bg-[#f4f6f9] hover:text-black hover:bg-white hover:border-white"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </div>
             {communityMessages
               .slice() // create a shallow copy to avoid mutating state
               .sort(
@@ -239,7 +262,7 @@ useEffect(() => {
                 <MessageCard
                   key={communityMessage.id}
                   userId={communityMessage.user_id}
-                  communityId={getCommunityNameById(
+                  communityName={getCommunityNameById(
                     communityMessage.community_id
                   )}
                   title={communityMessage.title}
