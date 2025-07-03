@@ -6,22 +6,20 @@ import {
   getCommunityIdByCommunityTitle,
   getCommunitiesByUserId
 } from "../services/communityServices";
+import CommentModal from "../elements/communityElements/CommentModal";
 import {
   getAllCommunityMessages,
   getAllCommunityMessagesByCommunityId,
   getAllMessagesByUserCommunities
 } from "../services/messageServices";
-import { supabase } from "../lib/supabase";
 import MessageCard from "../elements/communityElements/MessageCard";
 import NewCommunityModal from "../elements/communityElements/NewCommunityModal";
 import AddButton from "../elements/AddButton";
 import { type Community, type CommunityMessage } from "../utils/types";
-import { useUserId } from "../services/useUserId";
 import PostButton from "../elements/communityElements/PostButton";
 import NewMessageModal from "../elements/communityElements/NewMessageModal";
 import { addNewMessage } from "../services/messageServices";
 import {
-  addHabitLog,
   addHabitToDB,
   getHabitById,
 } from "../services/dexieServices";
@@ -29,6 +27,11 @@ import { type Habit } from "../lib/db";
 import { useStore } from "../lib/store";
 import { USER_ID } from "../utils/constants";
 import { addNewCommunityUser, deleteCommunityUser, getIfUserIsPartOfCommunity } from "../services/commUserServices";
+import JoinLeaveButton from "../elements/communityElements/JoinLeaveButton";
+
+type Tab = "Messages" | "Shared Habits";
+const tabs: Tab[] = ["Messages", "Shared Habits"];
+
 
 export default function CommunityPage() {
   const clearList = useStore((state) => state.clearList);
@@ -38,6 +41,7 @@ export default function CommunityPage() {
   const currentCommunityName = useStore((state) => state.currentCommunityName);
   const [communities, setCommunities] = useState<Community[]>([]);
   const [userCommunities,setUserCommunities] = useState<Community[]>([]);
+  const [currentCommunityForCommentModal,setCurrentCommunityForCommentModal] = useState("");
   const [communityMessages, setCommunityMessages] = useState<
     CommunityMessage[]
   >([]);
@@ -45,10 +49,11 @@ export default function CommunityPage() {
   const [stateNewCommunityModal, setStateNewCommunityModal] = useState(false);
   const [stateNewMessageModal, setStateNewMessageModal] = useState(false);
   const [currentCommunityId, setCurrentCommunityId] = useState("");
-  const [currentCommunityDescription, setCurrentCommunityDescription] =
-    useState("");
-    const [partOfCurrentCommunity,setPartOfCurrentCommunity] = useState(false);
-    const [loadingCommunityInfo, setLoadingCommunityInfo] = useState(false);
+  const [currentCommunityDescription, setCurrentCommunityDescription] =useState("");
+  const [partOfCurrentCommunity,setPartOfCurrentCommunity] = useState(false);
+  const [loadingCommunityInfo, setLoadingCommunityInfo] = useState(false);
+  const [commentModalOpen,setCommentModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>("Messages");
 
 
   useEffect(() => {
@@ -72,7 +77,7 @@ export default function CommunityPage() {
 const loadCommunityInfo = async (name: string) => {
   setLoadingCommunityInfo(true); // Start Loading
   setCurrentCommunityDescription("");
-  getCommunityId(name); // ruft communityId und setzt es
+  await getCommunityIdByName(name); // ruft communityId und setzt es
   setLoadingCommunityInfo(false); // End Loading
 };
 
@@ -112,7 +117,7 @@ useEffect(() => {
     }
   };
 
-  const getCommunityId = async (name: string) => {
+  const getCommunityIdByName = async (name: string) => {
     if (name.toString() !== "") {
       const data = await getCommunityIdByCommunityTitle(name);
       setCurrentCommunityId(data);
@@ -194,8 +199,10 @@ useEffect(() => {
             <SearchBar data={communities} onClick={handleOpenCommunityFeed} />
           </div>
           <AddButton onClick={() => setStateNewCommunityModal(true)} />
+            
         </div>
         <div className="flex-1 p-4">
+          <CommentModal isActive={commentModalOpen} message_id={currentCommunityForCommentModal} handleCommentModalClose={() => setCommentModalOpen(false)}/>
           <NewCommunityModal
             currentTitles={communityTitles}
             isActive={stateNewCommunityModal}
@@ -219,27 +226,31 @@ useEffect(() => {
                     </div>
                   <div className="ml-4">
                     {!partOfCurrentCommunity ? (
-                      <button
-                        onClick={() => joinCommunity(currentCommunityId)}
-                        className="rounded-xl bg-black font-bold text-white h-12 flex items-center justify-center shadow-lg text-l hover:bg-white hover:text-black hover:border-black border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50 px-6"
-                        aria-label="Community beitreten"
-                      >
-                        Join Community
-                      </button>
+                      <JoinLeaveButton title="Join Community" onClick={() => joinCommunity(currentCommunityId)} />
                     ) : (
-                      <button
-                        onClick={() => leaveCommunity(currentCommunityId)}
-                        className="rounded-xl bg-black font-bold text-white px-6 py-2 flex items-center justify-center shadow-lg text-l hover:bg-white hover:text-black hover:border-black border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50"
-                        aria-label="Community verlassen"
-                      >
-                        Leave Community
-                      </button>
+                      <JoinLeaveButton title="Leave Community" onClick={() => leaveCommunity(currentCommunityId)} />
                     )}
                   </div>
                 </div>
-                
-             
             )}
+            <div className="pb-4 pt-0">
+            <div className="inline-flex rounded-full bg-[#f4f6f9] p-1">
+              {tabs.map((tab) => (
+                <button
+                  type="button"
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                    activeTab === tab
+                      ? "bg-white text-black hover:border-white shadow-sm "
+                      : "text-gray-500 bg-[#f4f6f9] hover:text-black hover:bg-white hover:border-white"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </div>
             {communityMessages
               .slice() // create a shallow copy to avoid mutating state
               .sort(
@@ -251,7 +262,7 @@ useEffect(() => {
                 <MessageCard
                   key={communityMessage.id}
                   userId={communityMessage.user_id}
-                  communityId={getCommunityNameById(
+                  communityName={getCommunityNameById(
                     communityMessage.community_id
                   )}
                   title={communityMessage.title}
@@ -260,6 +271,7 @@ useEffect(() => {
                   }
                   habit={communityMessage.habit_id}
                   handleCopyHabit={handleCopyHabit}
+                  handleCommentOpen={() => {setCommentModalOpen(true); setCurrentCommunityForCommentModal(communityMessage.id);}}
                 />
               ))}
           </div>

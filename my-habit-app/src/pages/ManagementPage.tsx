@@ -7,7 +7,6 @@ import Calendar from "../elements/Calender"; // Assuming you have a Calendar com
 import { syncAll } from "../lib/sync";
 import NewHabitModal from "../elements/NewHabitModal";
 import SelectDaysCalendar from "../elements/SelectDays";
-import DateSelector from "../elements/DateSelector";
 import SmallHabitCard from "../elements/habitlistElements/SmallHabitCard";
 import DropDownButton from "../elements/habitlistElements/DropDownButton";
 import { USER_ID } from "../utils/constants";
