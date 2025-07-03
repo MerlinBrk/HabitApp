@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { type Habit } from "../../lib/db";
 import { getHabitById } from "../../services/dexieServices";
 import CommentModal from "./CommentModal";
-import { getUsernameById } from "../../services/profileServices";
+import { getUsernameById ,getProfileImageUrl} from "../../services/profileServices";
 
 interface MessageCardProps {
   userId: string;
@@ -27,6 +27,7 @@ export default function MessageCard({
   const [curHabit, setCurHabit] = useState<Habit>();
   const [showSuccess, setShowSuccess] = useState(false);
   const [username, setUsername] = useState("");
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
 
   const fetchHabit = async () => {
     const data = await getHabitById(habit);
@@ -38,6 +39,16 @@ export default function MessageCard({
     }
   };
 
+  const fetchProfileImage = async () => {
+    if (!userId) return;
+    const data = await getProfileImageUrl(userId);
+    if (data) {
+      setProfileImageUrl(data);
+    } else {
+      console.error("Fehler beim Abrufen des Profilbilds");
+    }
+  }
+
   const fetchUserName = async () => {
     const data = await getUsernameById(userId);
     setUsername(data);
@@ -47,6 +58,7 @@ export default function MessageCard({
       fetchHabit();
     }
     fetchUserName();
+    fetchProfileImage();
   }, []);
 
   const handleCopy = () => {
@@ -82,15 +94,27 @@ export default function MessageCard({
         </div>
       )}
       <div className="flex items-center mb-2">
-        <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center mr-3">
-          <span className="text-white font-bold text-lg">
-            {username
-              .split(" ")
-              .map((n) => n[0])
-              .join("")
-              .toUpperCase()
-              .slice(0, 2)}
-          </span>
+        <div
+          className={`w-10 h-10 rounded-full flex items-center justify-center mr-3 ${
+            profileImageUrl ? "" : "bg-blue-500"
+          }`}
+        >
+          {profileImageUrl ? (
+            <img
+              src={profileImageUrl}
+              alt="Profilbild"
+              className="w-10 h-10 rounded-full object-cover"
+            />
+          ) : (
+            <span className="text-white font-bold text-lg">
+              {username
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .toUpperCase()
+          .slice(0, 2)}
+            </span>
+          )}
         </div>
         <div className="text-gray-800 font-semibold">{username}</div>
       </div>
