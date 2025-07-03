@@ -7,15 +7,15 @@ export default function MobileNavBar() {
                         href="/"
                         className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors text-center"
                     >
-                        Habits
+                        Home
                     </a>
                 </li>
                 <li>
                     <a
-                        href="/test"
+                        href="/management"
                         className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors text-center"
                     >
-                        Test
+                        Habit Management
                     </a>
                 </li>
                 <li>
