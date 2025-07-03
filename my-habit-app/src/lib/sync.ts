@@ -10,9 +10,10 @@ export async function syncAll() {
 
   await syncHabitsWithSupabase(userId);         // Dexie → Supabase
   await syncHabitLogsWithSupabase(userId);
-  await pullHabitsFromSupabase(userId);   // Supabase → Dexie
-  await pullHabitLogsFromSupabase(userId);
+  //await pullHabitsFromSupabase(userId);   // Supabase → Dexie
+  //await pullHabitLogsFromSupabase(userId);
 }
+
 
 
 
@@ -51,12 +52,17 @@ export async function syncHabitLogsWithSupabase(userId: string) {
       .where({ user_id: userId, synced: false })
       .toArray();
 */
-    const unsyncedHabitLogs = await db.habit_logs
+
+    /*const unsyncedHabitLogs = await db.habit_logs
       .where('[user_id+synced]')
       .equals([userId, false]) // Filtere nach user_id und synced = false
-      .toArray();
+      .toArray();*/
 
+      const unsyncedHabitLogs = await db.habit_logs
+  .filter(log => log.user_id === userId && log.synced === false)
+  .toArray();
 
+    
 
     for (const habitLog of unsyncedHabitLogs) {
       const { synced, ...habitLogWithoutSynced } = habitLog;

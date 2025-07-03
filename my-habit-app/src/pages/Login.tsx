@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { supabase } from "../lib/supabase";
+import { clearHabitDB, clearHabitLogsDB } from "../services/dexieServices";
 
 export default function Login({ onLogin }: { onLogin: () => void }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -8,18 +9,39 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
   const [error, setError] = useState("");
   const [name, setName] = useState("");
 
-  const handleAuth = async () => {
+
+  useEffect(()=>{
+    const clearDB = async() =>{
+      await clearHabitDB();
+      await clearHabitLogsDB();
+    };
+
+    clearDB();
+  },[])
+
+  const handleAuth = async (type: "signIn" | "signUp") => {
+
     setError("");
 
-    const { error } = isLogin
-      ? await supabase.auth.signInWithPassword({ email, password })
-      : await supabase.auth.signUp({
+    if(isLogin){
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+    }
+    else{
+      const { data: {user},error } = await supabase.auth.signUp({
           email,
           password,
-          options: {
-            data: { display_name: name },
-          },
+          
         });
+        
+      if(user){
+        await supabase.from("Profiles").upsert({
+          id:user.id,
+          username: name,
+        })
+      }
+    }
+    
+
 
     if (error) setError(error.message);
     else onLogin();

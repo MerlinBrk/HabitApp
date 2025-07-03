@@ -87,3 +87,40 @@ export async function addNewCommunity(userId: string, newTitle:string, newDescri
       return;
   }
 }
+
+
+export async function getCommunitiesByUserId(userId:string){
+  try {
+    // Hole alle Community-IDs, bei denen der User Mitglied ist
+    const { data: communityUsers, error: communityUsersError } = await supabase
+      .from("Community_users")
+      .select("community_id")
+      .eq("user_id", userId);
+
+    if (communityUsersError) {
+      throw communityUsersError;
+    }
+
+    const communityIds = communityUsers?.map((cu: any) => cu.community_id) || [];
+
+    if (communityIds.length === 0) {
+      return [];
+    }
+
+    // Hole alle Communities mit diesen IDs
+    const { data: communities, error: communitiesError } = await supabase
+      .from("Communities")
+      .select("*")
+      .in("id", communityIds);
+
+    if (communitiesError) {
+      throw communitiesError;
+    }
+
+    return communities || [];
+  }
+  catch(err){
+    console.error("Fehler beim Fetchen der subscripten Communities",err);
+      return;
+  }
+}
