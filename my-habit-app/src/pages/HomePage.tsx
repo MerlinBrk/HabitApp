@@ -15,7 +15,6 @@ import {
   getUserStreak,
   getPercentageDoneByUserId
 } from "../services/dexieServices";
-import SmallHabitCard from "../elements/habitlistElements/SmallHabitCard";
 import DropDownButton from "../elements/habitlistElements/DropDownButton";
 import { USER_ID } from "../utils/constants";
 import HabitHomeCard from "../elements/habitlistElements/HabitHomeCard";

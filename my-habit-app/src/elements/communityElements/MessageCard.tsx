@@ -4,8 +4,13 @@ import { getHabitById } from "../../services/dexieServices";
 import CommentModal from "./CommentModal";
 import { getUsernameById ,getProfileImageUrl} from "../../services/profileServices";
 import { getHabitByIdFromSupabase } from "../../services/habitServices";
+import {
+  getAllCommentsByMessageId,
+} from "../../services/commentsServices";
+
 
 interface MessageCardProps {
+  messageId: string;
   userId: string;
   communityName: string;
   title: string;
@@ -16,6 +21,7 @@ interface MessageCardProps {
 }
 
 export default function MessageCard({
+  messageId,
   userId,
   communityName,
   title,
@@ -29,6 +35,7 @@ export default function MessageCard({
   const [showSuccess, setShowSuccess] = useState(false);
   const [username, setUsername] = useState("");
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+  const [commentAmount, setCommentAmount] = useState(0);
 
   const fetchHabit = async () => {
     const data = await getHabitByIdFromSupabase(habit);
@@ -38,6 +45,11 @@ export default function MessageCard({
     } else {
       setCurrentHabitName("Unknown Habit");
     }
+  };
+
+  const fetchCommentAmount = async () => {
+    const data = await getAllCommentsByMessageId(messageId);
+    setCommentAmount(data.length);
   };
 
   const fetchProfileImage = async () => {
@@ -60,6 +72,7 @@ export default function MessageCard({
     }
     fetchUserName();
     fetchProfileImage();
+    fetchCommentAmount();
   }, []);
 
   const handleCopy = () => {
@@ -117,7 +130,7 @@ export default function MessageCard({
             </span>
           )}
         </div>
-        <div className="text-gray-800 font-semibold">{username}</div>
+        <div onClick={() => alert(`Profil von ${userId}`)} role="button" className="text-gray-800 font-semibold">{username}</div>
       </div>
       <div className="flex items-start justify-between mt-2">
         <div className="flex-1">
@@ -129,7 +142,7 @@ export default function MessageCard({
         </div>
         <button
           onClick={handleCommentClick}
-          className="bg-gray-100 hover:bg-gray-200 rounded-full p-2 shadow transition-colors ml-4"
+          className="bg-gray-100 hover:bg-gray-200 rounded-full px-4 py-2 shadow transition-colors ml-4 flex items-center gap-2 min-w-[56px]"
           title="Kommentieren"
         >
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -142,6 +155,7 @@ export default function MessageCard({
               fill="none"
             />
           </svg>
+          <span className="text-gray-700 text-sm font-bold">{commentAmount}</span>
         </button>
       </div>
       {curHabit ? (

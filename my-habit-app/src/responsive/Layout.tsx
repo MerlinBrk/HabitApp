@@ -1,6 +1,6 @@
 import useIsMobile from "./useIsMobile";
 import SideBar from "../elements/SideBar";
-import MobileNavBar from "../elements/MobileNavBar";
+import MobileNavBar from "../responsive/MobileNavBar";
 
 export default function Layout({children}) {
     const isMobile = useIsMobile();

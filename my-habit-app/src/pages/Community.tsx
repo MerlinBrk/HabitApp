@@ -89,6 +89,7 @@ useEffect(() => {
     fetchCommunities();
     fetchOwnCommunities();
     fetchCommunityMessages(""); 
+
   }
 
   const fetchCommunities = async () => {
@@ -98,6 +99,8 @@ useEffect(() => {
 
   const fetchOwnCommunities = async () => {
     const data = await getCommunitiesByUserId(USER_ID);
+    console.log("Own Communities: ", data);
+    clearList();
     setCommunityTitles(data.map((community) => community.title));
     setUserCommunities(data);
   }
@@ -164,11 +167,15 @@ useEffect(() => {
       await addNewCommunityUser(communityId,USER_ID);
       fetchCommunityMessages();
       setPartOfCurrentCommunity(true);
+      fetchOwnCommunities();
+
   };
 
   const leaveCommunity = async(communityId:string) => {
     await deleteCommunityUser(communityId,USER_ID);
     setPartOfCurrentCommunity(false);
+    fetchOwnCommunities();
+
   }
   const fetchpartOfCommunity = async(CommunityId:string) => {
     if(CommunityId !== ""){
@@ -232,6 +239,7 @@ useEffect(() => {
               .map((communityMessage: CommunityMessage) => (
                 <MessageCard
                   key={communityMessage.id}
+                  messageId={communityMessage.id}
                   userId={communityMessage.user_id}
                   communityName={getCommunityNameById(
                     communityMessage.community_id

@@ -28,7 +28,7 @@ export default function CommentCard({ comment }: CommentCardProps) {
 
   if (!isLoading) {
     return (
-      <div className="bg-white rounded-xl p-4 relative" >
+      <div className="bg-white rounded-xl relative" >
         <div className="flex items-start mb-2 mt-0">
           {/* Avatar */}
           <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center mr-3">

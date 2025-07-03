@@ -3,7 +3,6 @@ import {supabase} from "./lib/supabase";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 
 import Login from "./pages/Login";
-import HabitList from "./pages/HabitList";
 import ProfilePage from "./pages/ProfilePage";
 import Community from "./pages/Community";
 import AppNotInstalled from "./components/AppNotInstalled";
@@ -54,7 +53,6 @@ export default function App() {
             <div className={isMobile ? "" : "ml-64"}>
                 <Routes>
                 <Route path="/" element={<HomePage/>}/>
-                <Route path="/habits" element={<HabitList/>}/>
                 <Route path="/management" element={<ManagementPage/>}/>
                 <Route path="/community" element={<Community/>}/>
                 <Route path="/profile" element={<ProfilePage/>}/>

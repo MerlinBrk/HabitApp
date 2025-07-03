@@ -11,15 +11,19 @@ export default function SideBar() {
   function handleItemClick(item: string) {
     addCommunityName(item);
   }
-
+useEffect(() => {
+      // Trigger re-render when list changes
+      setIsOpen(false);
+    }, [list]);
   // Hilfsfunktion für aktive Links
   function linkClass(path: string) {
     const isActive = location.pathname === path;
+    
     return (
       "block px-4 py-2 rounded-xl text-gray-700 transition-colors " +
       (isActive
-        ? "bg-black text-white"
-        : "hover:bg-black hover:text-white")
+      ? "bg-black text-white"
+      : "hover:bg-black hover:text-white")
     );
   }
 
@@ -29,11 +33,6 @@ export default function SideBar() {
         <li>
           <a href="/" className={linkClass("/") + " hover:text-white no-underline font-bold"}>
             Home
-          </a>
-        </li>
-        <li>
-          <a href="/habits" className={linkClass("/habits") + " hover:text-white no-underline font-bold"}>
-            Habits
           </a>
         </li>
         <li>

@@ -43,7 +43,6 @@ export default function CommentModal({
   const fetchComments = async () => {
     const data = await getAllCommentsByMessageId(message.id);
     setComments(data);
-    console.log(data);
   };
 
   const getUserName = async(userId:string) => {
@@ -108,9 +107,7 @@ export default function CommentModal({
               <div className="mt-2">
                 <p className="text-xl font-bold mb-1">{message.title}</p>
                 <p className="text-gray-700">{message.message}</p>
-                <div className="text-sm text-gray-500 mt-2">
-                  Community: {message.community_id}
-                </div>
+                
               </div>
             </div>
           )}
