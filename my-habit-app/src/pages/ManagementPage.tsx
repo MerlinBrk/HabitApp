@@ -26,6 +26,7 @@ export default function ManagementPage() {
 
   useEffect(()=>{
 loadHabits();
+syncAll(); // Synchronize data with Supabase when the component mounts
   },[habits,openNewHabitModal]);
 
 const loadHabits = async () => {

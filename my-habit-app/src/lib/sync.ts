@@ -23,10 +23,6 @@ export async function syncHabitsWithSupabase(userId: string) {
     const allHabits = await db.habits.where("user_id").equals(userId).toArray();
     const unsyncedHabits = allHabits.filter((h) => h.synced === false);
 
-    /*const unsyncedHabits = await db.habits
-      .where({ user_id: userId, synced: false })
-      .toArray();*/
-
     for (const habit of unsyncedHabits) {
       const { synced, ...habitWithoutSynced } = habit;
 
@@ -48,15 +44,6 @@ export async function syncHabitsWithSupabase(userId: string) {
 //Sync HabitLogs from Indexed DB -> SupaBase / only unsynced HabitsLogs
 export async function syncHabitLogsWithSupabase(userId: string) {
   try {
-    /*const unsyncedHabitLogs = await db.habit_logs
-      .where({ user_id: userId, synced: false })
-      .toArray();
-*/
-
-    /*const unsyncedHabitLogs = await db.habit_logs
-      .where('[user_id+synced]')
-      .equals([userId, false]) // Filtere nach user_id und synced = false
-      .toArray();*/
 
       const unsyncedHabitLogs = await db.habit_logs
   .filter(log => log.user_id === userId && log.synced === false)

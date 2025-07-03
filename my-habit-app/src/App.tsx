@@ -45,33 +45,6 @@ export default function App() {
 
     pullData();
     },[isLoggedIn]);
-/*
-    if (loading) return <div className="p-6 text-center">Lade...</div>;
-
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-        const checkMobile = () => {
-            setIsMobile(window.innerWidth <= 469);
-        };
-        checkMobile();
-        window.addEventListener("resize", checkMobile);
-        return () => window.removeEventListener("resize", checkMobile);
-    }, []);
-
-
-    const isStartetAsApp = window.matchMedia('(display-mode: standalone)').matches;
-
-
-     */
-    /*
-    if ((isMobile || true) && !isStartetAsApp) {
-        return (
-            <AppNotInstalled/>
-
-        );
-    }
-     */
 
     if (loading) return <div className="p-6 text-center">Lade...</div>;
     if (!isLoggedIn) return <Login onLogin={() => setIsLoggedIn(true)}/>;

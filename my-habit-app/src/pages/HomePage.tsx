@@ -43,7 +43,6 @@ export default function HomePage() {
 
   useEffect(() => {
     loadAllData();
-    console.log("Sync");
     syncAll();
   }, []);
 
@@ -55,6 +54,7 @@ export default function HomePage() {
 getDailyDoneHabits();
 fetchUserStreak();
 fetchUserDonePercentage();
+syncAll(); // Synchronize data with Supabase when the component mounts
   },[habits,checkInsToday]);
 
   useEffect(()=>{

@@ -119,13 +119,6 @@ useEffect(() => {
     }
   };
 
-  const fetchHabitByHabitId = async (habitId: string) => {
-    //vorrübergend mit dexie später mit supabase
-    if (habitId) return await getHabitById(habitId);
-    else {
-      return null;
-    }
-  };
 
   const handleAddNewCommunityButton = async (
     title: string,

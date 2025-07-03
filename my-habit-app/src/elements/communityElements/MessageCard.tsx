@@ -3,6 +3,7 @@ import { type Habit } from "../../lib/db";
 import { getHabitById } from "../../services/dexieServices";
 import CommentModal from "./CommentModal";
 import { getUsernameById ,getProfileImageUrl} from "../../services/profileServices";
+import { getHabitByIdFromSupabase } from "../../services/habitServices";
 
 interface MessageCardProps {
   userId: string;
@@ -30,7 +31,7 @@ export default function MessageCard({
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
 
   const fetchHabit = async () => {
-    const data = await getHabitById(habit);
+    const data = await getHabitByIdFromSupabase(habit);
     if (data && data.title) {
       setCurrentHabitName(data.title);
       setCurHabit(data);
