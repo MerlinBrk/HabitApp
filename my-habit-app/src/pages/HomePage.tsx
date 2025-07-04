@@ -15,11 +15,11 @@ import {
   getUserStreak,
   getPercentageDoneByUserId
 } from "../services/dexieServices";
-import SmallHabitCard from "../elements/habitlistElements/SmallHabitCard";
 import DropDownButton from "../elements/habitlistElements/DropDownButton";
 import { USER_ID } from "../utils/constants";
 import HabitHomeCard from "../elements/habitlistElements/HabitHomeCard";
 import { syncAll } from "../lib/sync";
+import HomeProgressCard from "../elements/habitlistElements/HomeProgressCard";
 
 type CheckInMap = {
   [habitId: string]: boolean;
@@ -43,7 +43,6 @@ export default function HomePage() {
 
   useEffect(() => {
     loadAllData();
-    console.log("Sync");
     syncAll();
   }, []);
 
@@ -55,6 +54,7 @@ export default function HomePage() {
 getDailyDoneHabits();
 fetchUserStreak();
 fetchUserDonePercentage();
+syncAll(); // Synchronize data with Supabase when the component mounts
   },[habits,checkInsToday]);
 
   useEffect(()=>{
@@ -134,7 +134,7 @@ fetchUserDonePercentage();
   };
 
   return (
-    <div className="p-6 md:p-8 max-w-6xl mx-auto bg-white flex flex-col gap-6 bg-background p-6 w-full">
+    <div className="p-6 md:p-8 max-w-6xl overflow-auto h-screen mx-auto bg-white flex flex-col gap-6 bg-background p-6 w-full">
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold">Welcome to HabitHub, {userName}!</h1>
@@ -221,87 +221,32 @@ fetchUserDonePercentage();
               ))
             : ""}
         </div>
-        <div className="rounded-xl border bg-card text-card-foreground shadow col-span-1">
-          <div className="flex flex-col space-y-1.5 p-6 pb-2">
-            <h3 className="tracking-tight text-sm font-medium">
-              Daily Completion
-            </h3>
-          </div>
-          <div className="p-6 pt-0">
-            <div className="text-3xl font-bold pb-2">
-              {trueHabitLogs}/{todaysHabitAmount}
-            </div>
+        
+        <HomeProgressCard
+          title="Daily Completition"
+          value={trueHabitLogs + "/" + todaysHabitAmount}
+          progressbar={true}
+          icon={false}
+          description={Math.round(100 * (trueHabitLogs / todaysHabitAmount)) + "% of Habits done"}
+          percentage={todaysHabitAmount !== 0 ? 100 * (trueHabitLogs / todaysHabitAmount) : 0}
+        />
+        
+        <HomeProgressCard title="Current Streak"
+          value={userStreak}
+          progressbar={false}
+          icon={true}
+          description="Keep going to Push your Streak"
+          percentage={userStreak}
+        />
 
-            <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-              <div
-                className="bg-black h-full transition-all duration-500 ease-in-out"
-                style={{
-                  width: `${todaysHabitAmount !== 0 ? 100 * (trueHabitLogs / todaysHabitAmount) : 0}%`,
-                }}
-              ></div>
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              {Math.round(100 * (trueHabitLogs / todaysHabitAmount))}% of Habits
-              done
-            </p>
-          </div>
-        </div>
-        <div className="rounded-xl border bg-card text-card-foreground shadow col-span-1">
-          <div className="flex flex-col space-y-1.5 p-6 pb-2">
-            <h3 className="tracking-tight text-sm font-medium">
-              Current Streak
-            </h3>
-          </div>
-          <div className="p-6 pt-0">
-            <div className="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trending-up h-5 w-5 mr-2 text-primary">
-            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
-            <polyline points="16 7 22 7 22 13"></polyline>
-            </svg>
-            <div className="text-3xl font-bold">{userStreak}</div>
-            </div>
-            <div
-              aria-valuemax="100"
-              aria-valuemin="0"
-              role="progressbar"
-              data-state="indeterminate"
-              data-max="100"
-              className="relative h-2 w-full overflow-hidden rounded-full bg-primary/20 mt-2"
-            >
-              <div
-                data-state="indeterminate"
-                data-max="100"
-                className="h-full w-full flex-1 bg-primary transition-all"
-              ></div>
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              {" "}
-              Keep going to Push your Streak
-            </p>
-          </div>
-        </div>
-        <div className="rounded-xl border bg-card text-card-foreground shadow col-span-1">
-          <div className="flex flex-col space-y-1.5 p-6 pb-2">
-            <h3 className="tracking-tight text-sm font-medium">
-              Overall Completion
-            </h3>
-          </div>
-          <div className="p-6 pt-0">
-            <div className="text-3xl font-bold">{userpercentage}%</div>
-            <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-              <div
-                className="bg-black h-full transition-all duration-500 ease-in-out"
-                style={{
-                  width: `${userpercentage}%`,
-                }}
-              ></div>
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              {" "}
-              Average Completition
-            </p>
-          </div>
-        </div>
+        <HomeProgressCard
+          title="Overall Completition"
+          value={userpercentage + "%"}
+          progressbar={true}
+          icon={false}
+          description="average Completition of all Habits"
+          percentage={userpercentage}
+        />
       </div>
     </div>
   );

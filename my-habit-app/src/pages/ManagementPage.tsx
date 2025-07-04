@@ -3,11 +3,9 @@ import React, { useEffect, useState } from "react";
 import { type Habit } from "../lib/db";
 import { useUserId } from "../services/useUserId";
 import { deleteHabit, getHabits, getUserStreak } from "../services/dexieServices";
-import Calendar from "../elements/Calender"; // Assuming you have a Calendar component
 import { syncAll } from "../lib/sync";
 import NewHabitModal from "../elements/NewHabitModal";
 import SelectDaysCalendar from "../elements/SelectDays";
-import SmallHabitCard from "../elements/habitlistElements/SmallHabitCard";
 import DropDownButton from "../elements/habitlistElements/DropDownButton";
 import { USER_ID } from "../utils/constants";
 
@@ -26,6 +24,7 @@ export default function ManagementPage() {
 
   useEffect(()=>{
 loadHabits();
+syncAll(); // Synchronize data with Supabase when the component mounts
   },[habits,openNewHabitModal]);
 
 const loadHabits = async () => {
@@ -50,9 +49,9 @@ const loadHabits = async () => {
 
   return (
     
-    <div className="bg-white p-6 min-h-screen">
+    <div className="bg-white p-6">
         
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto ">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Habit Management</h1>
           <button onClick={handleOpenNewHabitModal} className="font-bold inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-black text-white shadow hover:bg-black/90 h-9 px-4 py-2 text-bold">
@@ -88,7 +87,7 @@ const loadHabits = async () => {
               </button>
             ))}
           </div>
-          <div className="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
+          <div className="mt-2 overflow-auto max-h-[calc(100vh-250px)]  ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
             {habits.map((habit) => (
               <ManageHabitCard key={habit.id} habitId={habit.id} userId={USER_ID}habitTitle={habit.title} openEditHabitModal={() =>{}} handleDeleteHabit={() => handleDeleteHabit(habit.id)}/>
             ))}

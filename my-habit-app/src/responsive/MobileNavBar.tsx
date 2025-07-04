@@ -1,21 +1,21 @@
 export default function MobileNavBar() {
     return (
-        <div className="fixed bottom-0 left-0 w-full bg-gray-100 p-2 shadow-inner">
+        <div className="fixed bottom-0 left-0 w-full z-100 bg-gray-100 p-2 shadow-inner">
             <ul className="flex justify-around">
                 <li>
                     <a
                         href="/"
                         className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors text-center"
                     >
-                        Habits
+                        Home
                     </a>
                 </li>
                 <li>
                     <a
-                        href="/test"
+                        href="/management"
                         className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white transition-colors text-center"
                     >
-                        Test
+                        Habit Management
                     </a>
                 </li>
                 <li>

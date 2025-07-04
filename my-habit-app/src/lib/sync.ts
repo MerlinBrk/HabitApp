@@ -3,6 +3,33 @@ import { supabase } from "./supabase";
 import { db } from "./db";
 import { useUserId } from "../services/useUserId";
 
+export async function syncUserIdToLocalStorage() {
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user) return;
+
+  
+  const userId = data.user.id;
+  const userEmail = data.user.email;
+
+  const { data: profile, error: profileError } = await supabase
+    .from("Profiles")
+    .select("username")
+    .eq("id", data.user.id)
+    .maybeSingle();
+
+  if (profileError) {
+    console.error("Fehler beim Laden des Profils:", profileError.message);
+    return null;
+  }
+
+  if (!profile) {
+    console.log("Kein Profil gefunden");
+    return null;
+  }
+  localStorage.setItem('user_id', userId);
+  localStorage.setItem('user_name',profile.username);
+  localStorage.setItem('user_email',userEmail);
+}
 
 export async function syncAll() {
   const userId = useUserId();
@@ -22,10 +49,6 @@ export async function syncHabitsWithSupabase(userId: string) {
   try {
     const allHabits = await db.habits.where("user_id").equals(userId).toArray();
     const unsyncedHabits = allHabits.filter((h) => h.synced === false);
-
-    /*const unsyncedHabits = await db.habits
-      .where({ user_id: userId, synced: false })
-      .toArray();*/
 
     for (const habit of unsyncedHabits) {
       const { synced, ...habitWithoutSynced } = habit;
@@ -48,15 +71,6 @@ export async function syncHabitsWithSupabase(userId: string) {
 //Sync HabitLogs from Indexed DB -> SupaBase / only unsynced HabitsLogs
 export async function syncHabitLogsWithSupabase(userId: string) {
   try {
-    /*const unsyncedHabitLogs = await db.habit_logs
-      .where({ user_id: userId, synced: false })
-      .toArray();
-*/
-
-    /*const unsyncedHabitLogs = await db.habit_logs
-      .where('[user_id+synced]')
-      .equals([userId, false]) // Filtere nach user_id und synced = false
-      .toArray();*/
 
       const unsyncedHabitLogs = await db.habit_logs
   .filter(log => log.user_id === userId && log.synced === false)
