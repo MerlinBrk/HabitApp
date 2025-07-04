@@ -4,6 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import fs from 'fs';
 
 export default defineConfig({
+  base: '/HabitApp/', // wichtig: Slash am Anfang und Ende
   server: {
     https: {
       key: fs.readFileSync('key.pem'),
