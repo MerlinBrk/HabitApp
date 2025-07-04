@@ -1,5 +1,5 @@
 import { supabase } from "../lib/supabase";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useUserName, useUserEmail } from "../services/useUserId";
 import { USER_ID } from "../utils/constants";
 import {
@@ -9,7 +9,7 @@ import {
 } from "../services/dexieServices";
 import { getProfileImageUrl, uploadProfileImage } from "../services/profileServices";
 
-export default function ProfilePage({ onBack }: { onBack: () => void }) {
+export default function ProfilePage() {
   const [userStreak, setUserStreak] = useState(0);
   const [userPercentage, setUserPercentage] = useState(0);
   const [userHabitAmount, setUserHabitAmount] = useState(0);

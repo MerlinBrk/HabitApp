@@ -10,13 +10,13 @@ import {
   getAllCommentsByMessageId,
 } from "../../services/commentsServices";
 import { USER_ID } from "../../utils/constants";
-import CommentCard from "./commentCard";
+import CommentCard from "./CommentCard";
 import NewCommentCard from "./NewCommentCard";
 
 interface CommentModalProps {
   isActive: boolean;
   message_id: string;
-  handleCommentModalClose: () => {};
+  handleCommentModalClose: () => void;
 }
 
 export default function CommentModal({
@@ -26,7 +26,6 @@ export default function CommentModal({
 }: CommentModalProps) {
   const [message, setMessage] = useState<CommunityMessage>();
   const [username, setUsername] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
   const [comments, setComments] = useState<CommunityComments[]>([]);
 
   const fetchCommunityById = async () => {
@@ -41,15 +40,12 @@ export default function CommentModal({
   };
 
   const fetchComments = async () => {
+    if (!message) return;
     const data = await getAllCommentsByMessageId(message.id);
     setComments(data);
   };
 
-  const getUserName = async(userId:string) => {
-    const data = await getUsernameById(userId);
-    return data;
-    
-  }
+  
 
   useEffect(() => {
     if (isActive) {
@@ -81,6 +77,7 @@ export default function CommentModal({
 
           {/* Close Button */}
           <button
+            type="button"
             className="absolute top-3 right-3 text-2xl text-gray-500 hover:text-gray-700 focus:outline-none"
             aria-label="Close"
             onClick={handleCommentModalClose}

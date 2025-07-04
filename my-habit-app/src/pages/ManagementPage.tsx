@@ -1,12 +1,9 @@
 import ManageHabitCard from "../elements/habitlistElements/ManageHabitCard";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { type Habit } from "../lib/db";
-import { useUserId } from "../services/useUserId";
-import { deleteHabit, getHabits, getUserStreak } from "../services/dexieServices";
+import { deleteHabit, getHabits } from "../services/dexieServices";
 import { syncAll } from "../lib/sync";
 import NewHabitModal from "../elements/NewHabitModal";
-import SelectDaysCalendar from "../elements/SelectDays";
-import DropDownButton from "../elements/habitlistElements/DropDownButton";
 import { USER_ID } from "../utils/constants";
 
 type Tab = "All Habits" | "Daily" | "Weekly" | "Monthly";

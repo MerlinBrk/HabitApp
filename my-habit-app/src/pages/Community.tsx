@@ -1,5 +1,5 @@
 import SearchBar from "../elements/communityElements/SearchBar";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   getAllCommunities,
   addNewCommunity,
@@ -8,7 +8,6 @@ import {
 } from "../services/communityServices";
 import CommentModal from "../elements/communityElements/CommentModal";
 import {
-  getAllCommunityMessages,
   getAllCommunityMessagesByCommunityId,
   getAllMessagesByUserCommunities
 } from "../services/messageServices";
@@ -21,13 +20,12 @@ import NewMessageModal from "../elements/communityElements/NewMessageModal";
 import { addNewMessage } from "../services/messageServices";
 import {
   addHabitToDB,
-  getHabitById,
 } from "../services/dexieServices";
-import { type Habit } from "../lib/db";
 import { useStore } from "../lib/store";
 import { USER_ID } from "../utils/constants";
 import { addNewCommunityUser, deleteCommunityUser, getIfUserIsPartOfCommunity } from "../services/commUserServices";
 import JoinLeaveButton from "../elements/communityElements/JoinLeaveButton";
+import {supabase} from "../lib/supabase";
 
 export default function CommunityPage() {
   const clearList = useStore((state) => state.clearList);
@@ -47,12 +45,25 @@ export default function CommunityPage() {
   const [currentCommunityId, setCurrentCommunityId] = useState("");
   const [currentCommunityDescription, setCurrentCommunityDescription] =useState("");
   const [partOfCurrentCommunity,setPartOfCurrentCommunity] = useState(false);
-  const [loadingCommunityInfo, setLoadingCommunityInfo] = useState(false);
+ 
   const [commentModalOpen,setCommentModalOpen] = useState(false);
 
 
   useEffect(() => {
     fetchAll();
+    const channel = supabase.channel('custom-all-channel')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'Community_messages' },
+      (payload) => {
+        console.log('Change received!', payload);
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
   }, []);
 
   useEffect(() => {
@@ -70,16 +81,14 @@ export default function CommunityPage() {
 }, [currentCommunityName]);
 
 const loadCommunityInfo = async (name: string) => {
-  setLoadingCommunityInfo(true); // Start Loading
   setCurrentCommunityDescription("");
   await getCommunityIdByName(name); // ruft communityId und setzt es
-  setLoadingCommunityInfo(false); // End Loading
 };
 
 useEffect(() => {
   if (currentCommunityId) {
     fetchCommunityMessages(currentCommunityId);
-    setCurrentCommunityDescription(getCommunityDescriptionById(currentCommunityId));
+    setCurrentCommunityDescription(getCommunityDescriptionById(currentCommunityId) ?? "");
     fetchpartOfCommunity(currentCommunityId);
   }
 }, [currentCommunityId]);
@@ -101,8 +110,8 @@ useEffect(() => {
     const data = await getCommunitiesByUserId(USER_ID);
     console.log("Own Communities: ", data);
     clearList();
-    setCommunityTitles(data.map((community) => community.title));
-    setUserCommunities(data);
+    setCommunityTitles(Array.isArray(data) ? data.map((community) => community.title) : []);
+    setUserCommunities(Array.isArray(data) ? data : []);
   }
 
   const fetchCommunityMessages = async (communityId: string) => {
@@ -165,7 +174,7 @@ useEffect(() => {
 
   const joinCommunity = async(communityId:string) =>{
       await addNewCommunityUser(communityId,USER_ID);
-      fetchCommunityMessages();
+      fetchCommunityMessages("");
       setPartOfCurrentCommunity(true);
       fetchOwnCommunities();
 

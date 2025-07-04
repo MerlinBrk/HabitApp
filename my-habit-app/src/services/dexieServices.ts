@@ -34,7 +34,7 @@ export async function getDaysHabitsByUserId(userId: string, date: Date) {
     const habits = await db.habits
       .where("user_id")
       .equals(userId)
-      .filter((habit) => habit.days?.includes(todayWeekday))
+      .filter((habit) => Array.isArray(habit.days) && habit.days.includes(todayWeekday))
       .toArray();
     return habits; 
   } catch (err) {
@@ -75,7 +75,7 @@ export async function getAllHabitLogs(userId: string) {
 }
 
 // Gibt alle HabitLogs eines Benutzers zurück, die zu einem bestimmten Habit gehören
-export async function getHabitLogByHabitId(habitId: number) {
+export async function getHabitLogByHabitId(habitId: string) {
   try {
     const habitLog = await db.habit_logs.where({ habit_id: habitId }).toArray();
     return habitLog;   } catch (err) {
@@ -86,7 +86,7 @@ export async function getHabitLogByHabitId(habitId: number) {
 
 // Gibt einen HabitLog für einen bestimmten Habit, ein bestimmtes Datum und einen Benutzer zurück
 export async function getHabitLogByHabitIdAndDateAndUserId(
-  habitId: number,
+  habitId: string,
   date: Date,
   userId: string
 ) {
@@ -105,11 +105,11 @@ export async function getHabitLogByHabitIdAndDateAndUserId(
 // Gibt alle HabitLogs eines Benutzers für einen bestimmten Tag zurück
 export async function getHabitLogsByDateAndUserId(
   userId: string,
-  day: Date
+  day: Date | string
 ) {
   try {
     const formattedDate =
-      day instanceof Date ? day.toISOString().split("T")[0] : day.split("T")[0]; // Formatieren des Datums als "YYYY-MM-DD"
+      day instanceof Date ? day.toISOString().split("T")[0] : (typeof day === "string" ? day.split("T")[0] : ""); // Formatieren des Datums als "YYYY-MM-DD"
     const habitLogs = await db.habit_logs
       .where("user_id")
       .equals(userId)
@@ -123,7 +123,7 @@ export async function getHabitLogsByDateAndUserId(
 }
 
 // Gibt alle HabitLogs eines Benutzers für einen bestimmten Habit zurück, die als erledigt markiert sind
-export async function getTrueHabitLogByHabitId(habitId: number) {
+export async function getTrueHabitLogByHabitId(habitId: string) {
   try {
     const habitLog = await db.habit_logs.where({ habit_id: habitId }).toArray();
     const filteredHabitLog = habitLog.filter((log) => log.is_done === true);
@@ -137,7 +137,7 @@ export async function getTrueHabitLogByHabitId(habitId: number) {
 
 //Gibt alle Habits für einen User und die HabitLog ID zurück
 export async function getHabitLogByHabitLogId(
-  habitLogId: number,
+  habitLogId: string,
   userId: string
 ) {
   try {
@@ -154,7 +154,7 @@ export async function getHabitLogByHabitLogId(
 export async function getPercentageDoneByHabitId(habitId: string, userId: string) {
   try {
     // Hole das Habit, um die aktiven Wochentage zu bekommen
-    const habit = await db.habits.where({ id: habitId }).first();
+    const habit = await db.habits.where({ id: habitId, user_id: userId }).first();
     if (!habit || !habit.days || habit.days.length === 0) return 0;
 
     const formattedDate = new Date(habit.created_at);
@@ -242,7 +242,7 @@ export async function getPercentageDoneByUserId(userId: string) {
 export async function getStreakByHabitId(habitId: string, userId: string) {
   try {
     // Hole das Habit, um die aktiven Wochentage zu bekommen
-    const habit = await db.habits.where({ id: habitId }).first();
+    const habit = await db.habits.where({ id: habitId ,user_id:userId}).first();
     if (!habit || !habit.days || habit.days.length === 0) return 0;
 
     // Hole alle HabitLogs für dieses Habit, die erledigt wurden, sortiert nach Datum absteigend
@@ -336,7 +336,7 @@ export async function addHabitToDB(
 }
 
 //Hinzufügen eines neuen HabitLogs für ein besimmtes Habit
-export async function addHabitLog(userId:string, habitId:number, date: Date, isDone:boolean)
+export async function addHabitLog(userId:string, habitId:string, date: Date, isDone:boolean)
 {
   try{
   const day = date.toISOString().split("T")[0] + "T00:00:00+00:00";
@@ -372,14 +372,14 @@ export async function deleteHabit(habitId: string, userId: string) {
         `Habit mit ID ${habitId} erfolgreich aus Supabase gelöscht.`
       );
     }
-    await deleteHabitLog(habitId, userId); 
+    await deleteHabitLog(habitId as string, userId); 
   } catch (err) {
     console.error("Fehler beim Löschen des Habits:", err);
   }
 }
 
 //Löschen eines Habit Logs aus IndexedDB
-export async function deleteHabitLog(habitId: number, userId: string) {
+export async function deleteHabitLog(habitId: string, userId: string) {
   try {
     const habitLog = await db.habit_logs.where({ habit_id: habitId }).toArray();
     if (!habitLog) {
@@ -413,7 +413,7 @@ export async function deleteHabitLog(habitId: number, userId: string) {
 
 //Aktualisieren von IsDone-Wert für ein Habit Log
 export async function updateHabitLogIsDoneById(
-  habitLogId: number,
+  habitLogId: string,
   isDone: boolean
 ) {
   try {

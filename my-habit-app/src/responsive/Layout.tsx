@@ -2,7 +2,9 @@ import useIsMobile from "./useIsMobile";
 import SideBar from "../elements/SideBar";
 import MobileNavBar from "../responsive/MobileNavBar";
 
-export default function Layout({children}) {
+import { type ReactNode } from "react";
+
+export default function Layout({ children }: { children: ReactNode }) {
     const isMobile = useIsMobile();
 
     return (

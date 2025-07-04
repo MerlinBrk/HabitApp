@@ -1,7 +1,4 @@
-
-import React from "react";
 import { useState } from "react";
-import { FaTimes } from "react-icons/fa";
 
 
 interface NewCommunityModalProps {

@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from "react";
+import { useState ,useEffect} from "react";
 import { supabase } from "../lib/supabase";
 import { clearHabitDB, clearHabitLogsDB } from "../services/dexieServices";
 
@@ -19,12 +19,16 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
     clearDB();
   },[])
 
-  const handleAuth = async (type: "signIn" | "signUp") => {
+  const handleAuth = async () => {
 
     setError("");
 
     if(isLogin){
       const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if( error) {
+        setError(error.message);
+        return;
+      }
     }
     else{
       const { data: {user},error } = await supabase.auth.signUp({
@@ -32,6 +36,10 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
           password,
           
         });
+        if(error) {
+          setError(error.message);
+          return;
+        }
         
       if(user){
         await supabase.from("Profiles").upsert({
@@ -43,7 +51,7 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
     
 
 
-    if (error) setError(error.message);
+    if (error) setError(error);
     else onLogin();
   };
 

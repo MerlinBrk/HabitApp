@@ -6,11 +6,12 @@
   "homepage": "https://merlinbrk.github.io/HabitApp/my-habit-app/",
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build -b gh-pages -r https://github.com/merlinbrk/HabitApp.git",
+    "deploy": "gh-pages -d dist -b gh-pages -r https://github.com/merlinbrk/HabitApp.git",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate-cert": "openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj '/CN=localhost'"
   },
   "dependencies": {
     "@nivo/core": "^0.99.0",

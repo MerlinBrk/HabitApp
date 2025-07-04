@@ -1,10 +1,6 @@
-
-import React from "react";
 import { useState, useEffect } from "react";
-import { FaTimes } from "react-icons/fa";
 import { type Habit } from "../../lib/db";
 import { getHabits } from "../../services/dexieServices";
-import { useUserId } from "../../services/useUserId";
 import { USER_ID } from "../../utils/constants";
 import {type Community} from "../../utils/types";
 
@@ -12,7 +8,7 @@ interface NewMessageModalProps {
   isActive: boolean;
   currentCommunityId:string;
   onClose: () => void;
-  communities: Community;
+  communities: Community[];
   onAddButton: (communityId: string, title: string, description: string,habitId:string) => void;
 }
 
@@ -28,8 +24,7 @@ export default function NewMessageModal({
   const [messageTitle, setMessageTitle] = useState("");
   const [messageContent, setMessageContent] = useState("");
   const [choosenHabitId, setChoosenHabitId] = useState<string>("");
-  const [isAlreadyTaken, setIsAlreadyTaken] = useState(false);
-  const [noInput, setNoInput] = useState(false);
+  
   const [choosenCommunityId, setChoosenCommunityId] = useState<string>(currentCommunityId);
 
   useEffect(() => {
@@ -160,9 +155,7 @@ export default function NewMessageModal({
           </div>
         </div>
 
-        {noInput && (
-          <p className="text-sm text-red-600">Bitte alle Felder ausfüllen.</p>
-        )}
+        
 
         <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
           <button

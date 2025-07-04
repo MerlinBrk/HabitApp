@@ -8,6 +8,9 @@ export async function addNewCommunityUser(communityId:string,userId: string){
     { community_id:communityId,user_id:userId },
   ])
 
+  if(error) {
+    throw error;
+  }
 }
 
   catch(err){

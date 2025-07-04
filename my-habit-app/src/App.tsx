@@ -5,7 +5,6 @@ import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Login from "./pages/Login";
 import ProfilePage from "./pages/ProfilePage";
 import Community from "./pages/Community";
-import AppNotInstalled from "./components/AppNotInstalled";
 
 import Layout from "./responsive/Layout.tsx";
 import HomePage from "./pages/HomePage.tsx";

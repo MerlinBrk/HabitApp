@@ -1,21 +1,16 @@
-import React, { useState, useEffect } from "react";
-import ProgressBar from "react-bootstrap/ProgressBar";
+import { useState, useEffect } from "react";
 import { useUserName } from "../services/useUserId";
 import { type Habit } from "../lib/db";
-import { useUserId } from "../services/useUserId";
 import {
-  deleteHabit,
   getDaysHabitsByUserId,
   getNotDaysHabitsByUserId,
   getHabitLogsByDateAndUserId,
   getHabitLogByHabitIdAndDateAndUserId,
   updateHabitLogIsDoneById,
   addHabitLog,
-  getHabits,
   getUserStreak,
   getPercentageDoneByUserId
 } from "../services/dexieServices";
-import DropDownButton from "../elements/habitlistElements/DropDownButton";
 import { USER_ID } from "../utils/constants";
 import HabitHomeCard from "../elements/habitlistElements/HabitHomeCard";
 import { syncAll } from "../lib/sync";
@@ -34,7 +29,6 @@ export default function HomePage() {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [notDaysHabits, setNotDaysHabits] = useState<Habit[]>([]);
   const [checkInsToday, setCheckInsToday] = useState<CheckInMap>({});
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [todaysHabitAmount, setTodaysHabitAmount] = useState(0);
   const [trueHabitLogs, setTrueHabitLogs] = useState(0);
@@ -68,7 +62,7 @@ syncAll(); // Synchronize data with Supabase when the component mounts
     fetchUserStreak();
   };
 
-  const handleDateChange = (newDate) => {
+  const handleDateChange = (newDate:Date) => {
     setCurrentDate(newDate);
   };
 
@@ -232,7 +226,7 @@ syncAll(); // Synchronize data with Supabase when the component mounts
         />
         
         <HomeProgressCard title="Current Streak"
-          value={userStreak}
+          value={userStreak.toString()}
           progressbar={false}
           icon={true}
           description="Keep going to Push your Streak"

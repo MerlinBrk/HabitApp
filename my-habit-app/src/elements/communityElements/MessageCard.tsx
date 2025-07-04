@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { type Habit } from "../../lib/db";
-import { getHabitById } from "../../services/dexieServices";
-import CommentModal from "./CommentModal";
 import { getUsernameById ,getProfileImageUrl} from "../../services/profileServices";
 import { getHabitByIdFromSupabase } from "../../services/habitServices";
 import {
@@ -16,8 +14,8 @@ interface MessageCardProps {
   title: string;
   message: string;
   habit: string;
-  handleCopyHabit: (title: string, days: string[]) => {};
-  handleCommentOpen:() =>{};
+  handleCopyHabit: (title: string, days: string[]) => void;
+  handleCommentOpen:() =>void;
 }
 
 export default function MessageCard({
@@ -77,7 +75,7 @@ export default function MessageCard({
 
   const handleCopy = () => {
     if (curHabit) {
-      handleCopyHabit(curHabit.title, curHabit.days);
+      handleCopyHabit(curHabit.title, curHabit.days ?? []);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 1500);
     }
@@ -141,6 +139,7 @@ export default function MessageCard({
           </div>
         </div>
         <button
+          type="button"
           onClick={handleCommentClick}
           className="bg-gray-100 hover:bg-gray-200 rounded-full px-4 py-2 shadow transition-colors ml-4 flex items-center gap-2 min-w-[56px]"
           title="Kommentieren"
@@ -164,13 +163,14 @@ export default function MessageCard({
             <div className="flex flex-col gap-1">
               <p className="text-lg font-bold text-black">{currentHabitName}</p>
               <p className="text-sm">{curHabit?.days?.join(" ")}</p>
-            </div>
             <button
+              type="button"
               onClick={handleCopy}
               className="px-3 py-1 rounded-xl font-semibold transition-colors border-black cursor-pointer bg-white text-black hover:bg-gray-200"
             >
               Copy Habit
             </button>
+            </div>
           </div>
         </div>
       ) : (

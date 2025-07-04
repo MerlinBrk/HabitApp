@@ -1,12 +1,12 @@
-import React,{ useState ,useEffect} from "react";
+import { useState ,useEffect} from "react";
 import { getPercentageDoneByHabitId, getStreakByHabitId } from "../../services/dexieServices";
 
 interface ManageHabitProps {
   habitTitle: string;
   habitId:string;
   userId:string;
-  openEditHabitModal: () => {};
-  handleDeleteHabit: () => {};
+  openEditHabitModal: () => void;
+  handleDeleteHabit: () => void;
 }
 
 export default function ManageHabitCard({
@@ -53,6 +53,7 @@ export default function ManageHabitCard({
           <div className="flex space-x-2">
             <button
               type="button"
+              onClick={openEditHabitModal}
               title="Edit habit"
               className="bg-white hover:border-white inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs"
             >

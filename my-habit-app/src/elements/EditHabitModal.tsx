@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import { FaTimes } from "react-icons/fa";
-import { useUserId } from "../services/useUserId";
+import { useState } from "react";
 import { addHabitToDB } from "../services/dexieServices";
 import { WEEKDAYS } from "../utils/constants";
 import { USER_ID } from "../utils/constants";
@@ -29,11 +27,7 @@ export default function EditHabitModal({
     onClose();
   };
 
-  const toggleDay = (day: string) => {
-    setSelectedDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
-    );
-  };
+  
 
   if (!isActive) return null;
 
