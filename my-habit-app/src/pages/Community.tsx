@@ -253,6 +253,12 @@ useEffect(() => {
                   handleCommentOpen={() => {setCommentModalOpen(true); setCurrentCommunityForCommentModal(communityMessage.id);}}
                 />
               ))}
+              {communityMessages.length === 0&& (
+                <div className="text-center text-gray-500 mt-4">
+                  No Messages found
+                </div>
+              )}
+
           </div>
         </div>
       </div>

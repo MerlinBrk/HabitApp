@@ -10,7 +10,6 @@ import { syncAll } from './lib/sync.ts';
 
 setInterval(() => {
   if (navigator.onLine) {
- 
     syncAll();
   }
 }, 60 * 1000); // jede Minuten
