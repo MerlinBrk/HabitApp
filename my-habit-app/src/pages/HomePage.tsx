@@ -185,6 +185,7 @@ syncAll(); // Synchronize data with Supabase when the component mounts
               {tabs.map((tab) => (
                 <button
                   type="button"
+                  aria-label={`Switch to ${tab} tab`}
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${

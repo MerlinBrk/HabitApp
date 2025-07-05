@@ -52,6 +52,7 @@ export default function ManageHabitCard({
           </div>
           <div className="flex space-x-2">
             <button
+            aria-label="Edit habit"
               type="button"
               title="Edit habit"
               className="bg-white hover:border-white inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs"
@@ -73,6 +74,7 @@ export default function ManageHabitCard({
               </svg>
             </button>
             <button
+            aria-label="Delete habit"
               title="Delete habit" onClick={handleDeleteHabit}
               className="bg-white hover:border-white inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs"
             >
@@ -96,6 +98,7 @@ export default function ManageHabitCard({
               </svg>
             </button>
             <button
+            aria-label="Expand habit details"
               title="Expand habit details"
               onClick={handleOpenMoreClick}
               className="bg-white hover:border-white inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs"
@@ -194,7 +197,7 @@ export default function ManageHabitCard({
                   <div className="text-xl font-bold">{percentage}%</div>
                 </div>
               </div>
-              <button className="bg-white inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs mt-4 w-full">
+              <button aria-label="View detailed analytics" className="bg-white inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs mt-4 w-full">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"

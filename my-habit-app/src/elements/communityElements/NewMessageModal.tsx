@@ -42,7 +42,7 @@ export default function NewMessageModal({
     setHabits(data);
   };
 
-  const handleAddCommunity = async () => {
+  const handleAddMessage = async () => {
       onAddButton(choosenCommunityId,messageTitle, messageContent,choosenHabitId);
       handleClose();
     
@@ -166,6 +166,7 @@ export default function NewMessageModal({
 
         <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
           <button
+          aria-label="Abbrechen"
             type="button"
             onClick={handleClose}
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-bold shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors"
@@ -173,8 +174,9 @@ export default function NewMessageModal({
             Abbrechen
           </button>
           <button
+          aria-label="Nachricht hinzufügen"
             type="button"
-            onClick={handleAddCommunity}
+            onClick={handleAddMessage}
             className="inline-flex items-center justify-center bg-black font-bold text-white rounded-md px-4 py-2 text-sm  hover:text-black shadow hover:bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
           >
             Hinzufügen

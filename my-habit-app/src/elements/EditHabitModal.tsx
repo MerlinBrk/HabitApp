@@ -95,6 +95,7 @@ export default function EditHabitModal({
               Category
             </label>
             <button
+            aria-label="Sachen"
               title="Sachen"
               type="button"
               role="combobox"

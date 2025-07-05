@@ -124,6 +124,7 @@ setCommunityDescription("");
 
   <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
     <button
+    aria-label="Abbrechen"
       type="button"
       onClick={handleClose}
       className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
@@ -131,6 +132,7 @@ setCommunityDescription("");
       Abbrechen
     </button>
     <button
+    aria-label="Community Hinzufügen"
       onClick={handleAddCommunity}
       className="inline-flex bg-black items-center justify-center whitespace-nowrap rounded-md text-sm font-bold hover:bg-white hover:text-black transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-white shadow hover:bg-primary/90 h-9 px-4 py-2"
     >

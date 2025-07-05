@@ -36,12 +36,14 @@ export default function NewCommentCard({handleCommentSubmit}:NewCommentCardProps
             {isFocused && (
               <div className="flex justify-end mt-3 space-x-2">
                 <button
+                aria-label="Cancel comment"
                   onClick={handleCancel}
                   className="bg-gray-100 text-black px-4 py-2 rounded-full hover:bg-gray-200"
                 >
                   Cancel
                 </button>
                 <button
+                  aria-label="Submit comment"
                   onClick={handleSubmit}
                   className="bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-900"
                 >

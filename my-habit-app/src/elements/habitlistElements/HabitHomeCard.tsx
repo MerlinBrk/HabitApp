@@ -28,6 +28,7 @@ export default function HabitHomeCard({
       </div>
       <div className="flex items-center gap-2">
         <button
+        aria-label="Complete habit"
           onClick={(e) => {
             e.stopPropagation();
             toggleCheckIn();

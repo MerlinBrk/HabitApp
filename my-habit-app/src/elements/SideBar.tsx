@@ -76,6 +76,7 @@ useEffect(() => {
         {list.length > 5 && !isOpen && (
           <li>
             <button
+              aria-label="Show more habits"
               className="text-black px-2 py-1"
               onClick={() => setIsOpen(true)}
             >
@@ -86,6 +87,7 @@ useEffect(() => {
         {list.length > 5 && isOpen && (
           <li>
             <button
+              aria-label="Show less habits"
               className="text-black px-2 py-1"
               onClick={() => setIsOpen(false)}
             >

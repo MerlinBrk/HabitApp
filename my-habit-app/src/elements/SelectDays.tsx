@@ -49,6 +49,7 @@ const toggleDay = async(day) => {
     <div className="flex gap-2 p-4">
       {WEEKDAYS.map((day) => (
         <button
+        aria-label={`Select ${day}`}
           key={day}
           onClick={() => toggleDay(day)}
           className={`px-4 py-2 rounded-xl border ${
