@@ -77,7 +77,7 @@ export default function CommentModal({
 
       {/* Modal Container */}
       <div className="fixed inset-0 bg-opacity-40 flex items-center justify-center z-40">
-        <div className="relative bg-white rounded-lg p-6 shadow-lg w-[90vw] max-w-[1280px] h-[85vh] overflow-y-auto">
+        <div className="relative bg-white rounded-lg p-6 shadow-lg w-[90vw] max-w-[1280px] h-[85vh] overflow-y-auto  hide-scrollbar ">
 
           {/* Close Button */}
           <button

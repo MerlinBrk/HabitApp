@@ -10,7 +10,7 @@ export default function Layout({children}) {
             {!isMobile && <SideBar/>}
             <div className="flex-1 flex flex-col overflow-hidden">
                 {isMobile && <MobileNavBar/>}
-                <main className={`flex-1 ${isMobile ? " overflow-y-auto" : " p-4 "}`}>
+                <main className={`flex-1 ${isMobile ? " overflow-y-auto hide-scrollbar " : " p-4 "}`}>
                     {children}
                 </main>
             </div>

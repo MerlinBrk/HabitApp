@@ -88,7 +88,7 @@ const loadHabits = async () => {
               </button>
             ))}
           </div>
-          <div className="mt-2 overflow-auto max-h-[calc(100vh-250px)]  ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
+          <div className="mt-2 overflow-auto hide-scrollbar max-h-[calc(100vh-250px)]  ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
             {habits.map((habit) => (
               <ManageHabitCard key={habit.id} habitId={habit.id} userId={USER_ID}habitTitle={habit.title} openEditHabitModal={() =>{}} handleDeleteHabit={() => handleDeleteHabit(habit.id)}/>
             ))}

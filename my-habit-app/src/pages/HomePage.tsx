@@ -133,7 +133,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="p-6 md:p-8 max-w-6xl overflow-auto h-screen mx-auto bg-white flex flex-col gap-6 bg-background p-6 w-full">
+    <div className="p-6 md:p-8 max-w-6xl overflow-auto hide-scrollbar h-screen mx-auto bg-white flex flex-col gap-6 bg-background p-6 w-full">
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold">Welcome to HabitHub, {userName}!</h1>

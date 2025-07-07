@@ -242,7 +242,7 @@ useEffect(() => {
       </h1>
     </div>
     <div className="flex-1 flex">
-      <div className="flex-1 overflow-auto flex flex-col">
+      <div className="flex-1 overflow-auto hide-scrollbar flex flex-col">
         {/* Sticky Header */}
         <div className="sticky top-0 z-40 bg-white w-full py-2 px-4">
           {/* ... */}

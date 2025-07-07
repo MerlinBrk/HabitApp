@@ -50,7 +50,7 @@ export default function App() {
     return (
         <Router>
             <Layout>
-            <div className={isMobile ? " overflow-auto " : "ml-64 overflow-auto "} >
+            <div className={isMobile ? " overflow-auto hide-scrollbar " : "ml-64 overflow-auto hide-scrollbar "} >
                 <Routes>
                 <Route path="/" element={<HomePage/>}/>
                 <Route path="/management" element={<ManagementPage/>}/>
