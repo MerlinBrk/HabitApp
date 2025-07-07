@@ -74,6 +74,7 @@ export default function EditHabitModal({
               value={newHabit}
               onChange={(e) => setNewHabit(e.target.value)}
             />
+           
           </div>
           <div className="grid gap-2">
             <label

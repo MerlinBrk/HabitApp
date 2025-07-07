@@ -1,4 +1,5 @@
 import SearchBar from "../elements/communityElements/SearchBar";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import React, { useEffect, useState } from "react";
 import {
   getAllCommunities,
@@ -28,6 +29,7 @@ import { useStore } from "../lib/store";
 import { USER_ID } from "../utils/constants";
 import { addNewCommunityUser, deleteCommunityUser, getIfUserIsPartOfCommunity } from "../services/commUserServices";
 import JoinLeaveButton from "../elements/communityElements/JoinLeaveButton";
+import NewCommunityButton from "../elements/communityElements/NewCommunityButton";
 
 export default function CommunityPage() {
   const clearList = useStore((state) => state.clearList);
@@ -49,6 +51,7 @@ export default function CommunityPage() {
   const [partOfCurrentCommunity,setPartOfCurrentCommunity] = useState(false);
   const [loadingCommunityInfo, setLoadingCommunityInfo] = useState(false);
   const [commentModalOpen,setCommentModalOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
 
   useEffect(() => {
@@ -185,16 +188,81 @@ useEffect(() => {
   }
 
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex h-screen w-full flex-col bg-white">
+    {/* Titel ganz oben */}
+    <div className="sm:hidden flex items-center px-4 pt-4">
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="text-gray-700 focus:outline-none"
+          aria-label="Open menu"
+        >
+          <Bars3Icon className="h-7 w-7" />
+        </button>
+        <h1 className="text-2xl font-bold ml-4">Community</h1>
+      </div>
+
+      {/* Sidebar Drawer */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-50 flex">
+          {/* Overlay */}
+          <div
+            className="fixed inset-0 bg-black opacity-30"
+            onClick={() => setSidebarOpen(false)}
+          />
+          {/* Sidebar */}
+          <div className="relative bg-white w-64 h-full shadow-lg z-50 p-6">
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="absolute top-4 right-4 text-gray-700"
+              aria-label="Close menu"
+            >
+              <XMarkIcon className="h-6 w-6" />
+            </button>
+            <h2 className="text-xl font-bold mb-4">Communities</h2>
+            <ul>
+              {communities.map((c) => (
+                <li key={c.id}>
+                  <button
+                    className="w-full text-left py-2 px-2 hover:bg-gray-100 rounded"
+                    onClick={() => {
+                      handleOpenCommunityFeed(c.id);
+                      setSidebarOpen(false);
+                    }}
+                  >
+                    {c.title}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+    <div className="max-w-7xl mx-auto w-full px-4 pt-6 mb-6 hidden sm:block">
+      <h1 className="text-3xl font-bold">Community
+      </h1>
+    </div>
+    <div className="flex-1 flex">
       <div className="flex-1 overflow-auto flex flex-col">
         {/* Sticky Header */}
-        <div className="sticky top-0 z-40 bg-white flex items-center justify-between py-2 px-4 w-full">
-          <PostButton onClick={() => setStateNewMessageModal(true)} />
-          <div className="flex-1 flex justify-center">
-            <SearchBar data={communities} onClick={handleOpenCommunityFeed} />
+        <div className="sticky top-0 z-40 bg-white w-full py-2 px-4">
+          {/* ... */}
+          <div className="hidden sm:flex items-center justify-between w-full">
+            <PostButton onClick={() => setStateNewMessageModal(true)} />
+            <div className="flex-1 flex justify-center">
+              <SearchBar data={communities} onClick={handleOpenCommunityFeed} />
+            </div>
+            <NewCommunityButton onClick={() => setStateNewCommunityModal(true)} />
           </div>
-          <AddButton onClick={() => setStateNewCommunityModal(true)} />
-            
+          {/* Mobile layout */}
+          <div className="flex flex-col sm:hidden w-full">
+            <div className="mb-2">
+              <SearchBar data={communities} onClick={handleOpenCommunityFeed} />
+            </div>
+            <div className="flex justify-between w-full">
+              <PostButton onClick={() => setStateNewMessageModal(true)} />
+              <NewCommunityButton onClick={() => setStateNewCommunityModal(true)} />
+            </div>
+          </div>
         </div>
         <div className="flex-1 p-4">
           <CommentModal isActive={commentModalOpen} message_id={currentCommunityForCommentModal} handleCommentModalClose={() => setCommentModalOpen(false)}/>
@@ -213,21 +281,30 @@ useEffect(() => {
           />
           <div className="mt-4">
             {currentCommunityName !== "" && (
-              
-                <div className="w-full p-6 bg-gray-200 rounded-lg mb-4 mt-4 flex flex-row justify-between items-center">
-                    <div className="flex flex-col max-w-xs">
-                    <h1 className="font-bold">{currentCommunityName}</h1>
-                    <p className="mt-2 break-words line-clamp-3">{currentCommunityDescription}</p>
-                    </div>
-                  <div className="ml-4">
-                    {!partOfCurrentCommunity ? (
-                      <JoinLeaveButton title="Join Community" onClick={() => joinCommunity(currentCommunityId)} />
-                    ) : (
-                      <JoinLeaveButton title="Leave Community" onClick={() => leaveCommunity(currentCommunityId)} />
-                    )}
-                  </div>
-                </div>
-            )}
+  <div className="w-full p-6 bg-gray-200 rounded-lg mb-4 mt-4 flex flex-row sm:flex-row flex-col justify-between items-center sm:items-center">
+    <div className="flex flex-col max-w-xs w-full">
+      <h1 className="font-bold">{currentCommunityName}</h1>
+      <p className="mt-2 break-words line-clamp-3">{currentCommunityDescription}</p>
+      {/* Mobile: Join/Leave Button unterhalb von Title/Description */}
+      <div className="mt-4 sm:hidden">
+        {!partOfCurrentCommunity ? (
+          <JoinLeaveButton title="Join Community" onClick={() => joinCommunity(currentCommunityId)} />
+        ) : (
+          <JoinLeaveButton title="Leave Community" onClick={() => leaveCommunity(currentCommunityId)} />
+        )}
+      </div>
+    </div>
+    {/* Desktop: Join/Leave Button rechts */}
+    <div className="ml-4 hidden sm:block">
+      {!partOfCurrentCommunity ? (
+        <JoinLeaveButton title="Join Community" onClick={() => joinCommunity(currentCommunityId)} />
+      ) : (
+        <JoinLeaveButton title="Leave Community" onClick={() => leaveCommunity(currentCommunityId)} />
+      )}
+    </div>
+  </div>
+)}
+
             
             {communityMessages
               .slice() // create a shallow copy to avoid mutating state
@@ -263,5 +340,21 @@ useEffect(() => {
         </div>
       </div>
     </div>
+    </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+

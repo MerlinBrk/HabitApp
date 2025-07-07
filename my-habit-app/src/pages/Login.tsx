@@ -49,7 +49,7 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
 
   return (
     
-      <div className="fixed inset-0 min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className=" overflow-y-auto fixed inset-0 min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="w-full h-full flex flex-col">
           <div className="container mx-auto px-4 py-12 flex-1 flex flex-col justify-center">
             <div className="text-center">

@@ -19,7 +19,7 @@ export default function ProfilePage({ onBack }: { onBack: () => void }) {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    window.location.reload(); // Optional: erzwingt Neu-Login
+    window.location.reload();
   };
 
   const fetchProfileImage = async () => {
@@ -30,7 +30,7 @@ export default function ProfilePage({ onBack }: { onBack: () => void }) {
     } else {
       console.error("Fehler beim Abrufen des Profilbilds");
     }
-  }
+  };
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -38,7 +38,7 @@ export default function ProfilePage({ onBack }: { onBack: () => void }) {
     if (!file) return;
 
     try {
-      const imageUrl = await uploadProfileImage(USER_ID,file); 
+      const imageUrl = await uploadProfileImage(USER_ID, file);
       setProfileImageUrl(imageUrl);
       console.log("Profilbild hochgeladen:", imageUrl);
     } catch (error: any) {
@@ -51,6 +51,7 @@ export default function ProfilePage({ onBack }: { onBack: () => void }) {
     fetchUserDonePercentage();
     fetchUserHabitAmount();
     fetchProfileImage();
+    // eslint-disable-next-line
   }, []);
 
   const fetchStreak = async () => {
@@ -70,9 +71,9 @@ export default function ProfilePage({ onBack }: { onBack: () => void }) {
 
   return (
     <main className="flex-1 w-full p-4">
-      <div className="rounded-xl border bg-card text-card-foreground shadow">
+      <div className="rounded-xl border bg-card text-card-foreground shadow max-w-2xl mx-auto">
         <div className="flex flex-col space-y-1.5 p-6">
-          <h1 className="text-3xl font-bold">Profile</h1>
+          <h1 className="text-3xl font-bold ext-left">Profile</h1>
         </div>
         <div className="p-6 pt-0">
           <div className="flex flex-col items-center gap-4">
@@ -119,10 +120,11 @@ export default function ProfilePage({ onBack }: { onBack: () => void }) {
               </div>
             </div>
 
-            <h2 className="text-xl font-bold">{USERNAME}</h2>
-            <p className="text-muted-foreground">{USEREMAIL}</p>
+            <h2 className="text-xl font-bold text-center">{USERNAME}</h2>
+            <p className="text-muted-foreground text-center break-all">{USEREMAIL}</p>
 
-            <div className="grid grid-cols-3 gap-4 w-full max-w-md">
+            {/* Responsive grid: 1 column on mobile, 3 columns on sm+ */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-md">
               <div className="rounded-xl border bg-card text-card-foreground shadow p-4 text-center">
                 <p className="text-2xl font-bold">{userHabitAmount}</p>
                 <p className="text-sm text-muted-foreground">Active Habits</p>
@@ -138,11 +140,11 @@ export default function ProfilePage({ onBack }: { onBack: () => void }) {
             </div>
 
             <button
-            aria-label="Edit Profile"
+              aria-label="Logout"
               onClick={handleLogout}
-              className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 w-full max-w-md"
+              className="inline-flex items-center justify-center bg-black text-white font-bold hover:bg-white border-2 border-black hover:text-black whitespace-nowrap rounded-md text-sm  transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 w-full max-w-md mt-2"
             >
-              Edit Profile
+              Logout
             </button>
           </div>
         </div>
