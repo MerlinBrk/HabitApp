@@ -38,6 +38,7 @@ export default function MessageCard({
   const [commentAmount, setCommentAmount] = useState(0);
 
   const fetchHabit = async () => {
+    
     const data = await getHabitByIdFromSupabase(habit);
     if (data && data.title) {
       setCurrentHabitName(data.title);

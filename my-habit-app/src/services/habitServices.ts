@@ -2,6 +2,7 @@ import { supabase } from "../lib/supabase";
 
 export async function getHabitByIdFromSupabase(habitId: string) {
   try {
+    console.log("Fetching habit with ID:", habitId);
     const { data, error } = await supabase
       .from("Habits")
       .select("*")
@@ -9,8 +10,7 @@ export async function getHabitByIdFromSupabase(habitId: string) {
       .single();
 
     if (error) {
-      console.error("Error fetching habit by ID:", error);
-      return null;
+      throw error;
     }
 
     return data;

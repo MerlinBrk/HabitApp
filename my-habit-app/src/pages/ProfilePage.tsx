@@ -71,7 +71,7 @@ export default function ProfilePage({ onBack }: { onBack: () => void }) {
 
   return (
     <main className="flex-1 w-full p-4">
-      <div className="rounded-xl border bg-card text-card-foreground shadow max-w-2xl mx-auto">
+      
         <div className="flex flex-col space-y-1.5 p-6">
           <h1 className="text-3xl font-bold ext-left">Profile</h1>
         </div>
@@ -148,7 +148,7 @@ export default function ProfilePage({ onBack }: { onBack: () => void }) {
             </button>
           </div>
         </div>
-      </div>
+  
     </main>
   );
 }

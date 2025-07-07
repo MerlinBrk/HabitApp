@@ -5,13 +5,13 @@ import {
   getAllCommunities,
   addNewCommunity,
   getCommunityIdByCommunityTitle,
-  getCommunitiesByUserId
+  getCommunitiesByUserId,
 } from "../services/communityServices";
 import CommentModal from "../elements/communityElements/CommentModal";
 import {
   getAllCommunityMessages,
   getAllCommunityMessagesByCommunityId,
-  getAllMessagesByUserCommunities
+  getAllMessagesByUserCommunities,
 } from "../services/messageServices";
 import MessageCard from "../elements/communityElements/MessageCard";
 import NewCommunityModal from "../elements/communityElements/NewCommunityModal";
@@ -20,14 +20,15 @@ import { type Community, type CommunityMessage } from "../utils/types";
 import PostButton from "../elements/communityElements/PostButton";
 import NewMessageModal from "../elements/communityElements/NewMessageModal";
 import { addNewMessage } from "../services/messageServices";
-import {
-  addHabitToDB,
-  getHabitById,
-} from "../services/dexieServices";
+import { addHabitToDB, getHabitById } from "../services/dexieServices";
 import { type Habit } from "../lib/db";
 import { useStore } from "../lib/store";
 import { USER_ID } from "../utils/constants";
-import { addNewCommunityUser, deleteCommunityUser, getIfUserIsPartOfCommunity } from "../services/commUserServices";
+import {
+  addNewCommunityUser,
+  deleteCommunityUser,
+  getIfUserIsPartOfCommunity,
+} from "../services/commUserServices";
 import JoinLeaveButton from "../elements/communityElements/JoinLeaveButton";
 import NewCommunityButton from "../elements/communityElements/NewCommunityButton";
 
@@ -38,8 +39,9 @@ export default function CommunityPage() {
   const addCommunityName = useStore((state) => state.addCommunityName);
   const currentCommunityName = useStore((state) => state.currentCommunityName);
   const [communities, setCommunities] = useState<Community[]>([]);
-  const [userCommunities,setUserCommunities] = useState<Community[]>([]);
-  const [currentCommunityForCommentModal,setCurrentCommunityForCommentModal] = useState("");
+  const [userCommunities, setUserCommunities] = useState<Community[]>([]);
+  const [currentCommunityForCommentModal, setCurrentCommunityForCommentModal] =
+    useState("");
   const [communityMessages, setCommunityMessages] = useState<
     CommunityMessage[]
   >([]);
@@ -47,12 +49,13 @@ export default function CommunityPage() {
   const [stateNewCommunityModal, setStateNewCommunityModal] = useState(false);
   const [stateNewMessageModal, setStateNewMessageModal] = useState(false);
   const [currentCommunityId, setCurrentCommunityId] = useState("");
-  const [currentCommunityDescription, setCurrentCommunityDescription] =useState("");
-  const [partOfCurrentCommunity,setPartOfCurrentCommunity] = useState(false);
+  const [currentCommunityDescription, setCurrentCommunityDescription] =
+    useState("");
+  const [partOfCurrentCommunity, setPartOfCurrentCommunity] = useState(false);
   const [loadingCommunityInfo, setLoadingCommunityInfo] = useState(false);
-  const [commentModalOpen,setCommentModalOpen] = useState(false);
+  const [commentModalOpen, setCommentModalOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const [fullSidebarOpen, setFullSidebarOpen] = useState(false);
 
   useEffect(() => {
     fetchAll();
@@ -67,33 +70,33 @@ export default function CommunityPage() {
   }, [communityTitles]);
 
   useEffect(() => {
-  if (currentCommunityName) {
-    loadCommunityInfo(currentCommunityName);
-  }
-}, [currentCommunityName]);
+    if (currentCommunityName) {
+      loadCommunityInfo(currentCommunityName);
+    }
+  }, [currentCommunityName]);
 
-const loadCommunityInfo = async (name: string) => {
-  setLoadingCommunityInfo(true); // Start Loading
-  setCurrentCommunityDescription("");
-  await getCommunityIdByName(name); // ruft communityId und setzt es
-  setLoadingCommunityInfo(false); // End Loading
-};
+  const loadCommunityInfo = async (name: string) => {
+    setLoadingCommunityInfo(true); // Start Loading
+    setCurrentCommunityDescription("");
+    await getCommunityIdByName(name); // ruft communityId und setzt es
+    setLoadingCommunityInfo(false); // End Loading
+  };
 
-useEffect(() => {
-  if (currentCommunityId) {
-    fetchCommunityMessages(currentCommunityId);
-    setCurrentCommunityDescription(getCommunityDescriptionById(currentCommunityId));
-    fetchpartOfCommunity(currentCommunityId);
-  }
-}, [currentCommunityId]);
+  useEffect(() => {
+    if (currentCommunityId) {
+      fetchCommunityMessages(currentCommunityId);
+      setCurrentCommunityDescription(
+        getCommunityDescriptionById(currentCommunityId)
+      );
+      fetchpartOfCommunity(currentCommunityId);
+    }
+  }, [currentCommunityId]);
 
-
-  const fetchAll = () =>{
+  const fetchAll = () => {
     fetchCommunities();
     fetchOwnCommunities();
-    fetchCommunityMessages(""); 
-
-  }
+    fetchCommunityMessages("");
+  };
 
   const fetchCommunities = async () => {
     const data = await getAllCommunities();
@@ -106,7 +109,7 @@ useEffect(() => {
     clearList();
     setCommunityTitles(data.map((community) => community.title));
     setUserCommunities(data);
-  }
+  };
 
   const fetchCommunityMessages = async (communityId: string) => {
     if (communityId.toString() === "") {
@@ -124,7 +127,6 @@ useEffect(() => {
       setCurrentCommunityId(data);
     }
   };
-
 
   const handleAddNewCommunityButton = async (
     title: string,
@@ -166,31 +168,29 @@ useEffect(() => {
     await addHabitToDB(title, USER_ID, true, days);
   };
 
-  const joinCommunity = async(communityId:string) =>{
-      await addNewCommunityUser(communityId,USER_ID);
-      fetchCommunityMessages();
-      setPartOfCurrentCommunity(true);
-      fetchOwnCommunities();
-
+  const joinCommunity = async (communityId: string) => {
+    await addNewCommunityUser(communityId, USER_ID);
+    fetchCommunityMessages();
+    setPartOfCurrentCommunity(true);
+    fetchOwnCommunities();
   };
 
-  const leaveCommunity = async(communityId:string) => {
-    await deleteCommunityUser(communityId,USER_ID);
+  const leaveCommunity = async (communityId: string) => {
+    await deleteCommunityUser(communityId, USER_ID);
     setPartOfCurrentCommunity(false);
     fetchOwnCommunities();
-
-  }
-  const fetchpartOfCommunity = async(CommunityId:string) => {
-    if(CommunityId !== ""){
-      const data = await getIfUserIsPartOfCommunity(CommunityId,USER_ID);
+  };
+  const fetchpartOfCommunity = async (CommunityId: string) => {
+    if (CommunityId !== "") {
+      const data = await getIfUserIsPartOfCommunity(CommunityId, USER_ID);
       setPartOfCurrentCommunity(data);
     }
-  }
+  };
 
   return (
     <div className="flex h-screen w-full flex-col bg-white">
-    {/* Titel ganz oben */}
-    <div className="sm:hidden flex items-center px-4 pt-4">
+      {/* Titel ganz oben */}
+      <div className="sm:hidden flex items-center px-4 pt-4">
         <button
           onClick={() => setSidebarOpen(true)}
           className="text-gray-700 focus:outline-none"
@@ -220,141 +220,181 @@ useEffect(() => {
             </button>
             <h2 className="text-xl font-bold mb-4">Communities</h2>
             <ul>
-              {communities.map((c) => (
-                <li key={c.id}>
+              {(fullSidebarOpen ? list : list.slice(0, 5)).map(
+                (item, index) => (
+                  <li key={index} className="flex items-center space-x-1">
+                    <button
+                      className="flex items-center block px-2 py-1 font-bold rounded-xl text-gray-700 hover:bg-blue-500 hover:text-white transition-colors no-underline flex-1 w-full"
+                      onClick={() => {
+                        addCommunityName(item);
+                        setSidebarOpen(false);
+                      }}
+                    >
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-200 text-blue-700 font-bold text-lg mr-2">
+                        {item.charAt(0).toUpperCase()}
+                      </div>
+                      {item}
+                    </button>
+                  </li>
+                )
+              )}
+              {list.length > 5 && !fullSidebarOpen && (
+                <li>
                   <button
-                    className="w-full text-left py-2 px-2 hover:bg-gray-100 rounded"
-                    onClick={() => {
-                      handleOpenCommunityFeed(c.id);
-                      setSidebarOpen(false);
-                    }}
+                    aria-label="Show more communities"
+                    className="text-black px-2 py-1"
+                    onClick={() => setFullSidebarOpen(true)}
                   >
-                    {c.title}
+                    Zeige mehr...
                   </button>
                 </li>
-              ))}
+              )}
+              {list.length > 5 && fullSidebarOpen && (
+                <li>
+                  <button
+                    aria-label="Show less communities"
+                    className="text-black px-2 py-1"
+                    onClick={() => setFullSidebarOpen(false)}
+                  >
+                    Weniger anzeigen
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
         </div>
       )}
-    <div className="max-w-7xl mx-auto w-full px-4 pt-6 mb-6 hidden sm:block">
-      <h1 className="text-3xl font-bold">Community
-      </h1>
-    </div>
-    <div className="flex-1 flex">
-      <div className="flex-1 overflow-auto hide-scrollbar flex flex-col">
-        {/* Sticky Header */}
-        <div className="sticky top-0 z-40 bg-white w-full py-2 px-4">
-          {/* ... */}
-          <div className="hidden sm:flex items-center justify-between w-full">
-            <PostButton onClick={() => setStateNewMessageModal(true)} />
-            <div className="flex-1 flex justify-center">
-              <SearchBar data={communities} onClick={handleOpenCommunityFeed} />
-            </div>
-            <NewCommunityButton onClick={() => setStateNewCommunityModal(true)} />
-          </div>
-          {/* Mobile layout */}
-          <div className="flex flex-col sm:hidden w-full">
-            <div className="mb-2">
-              <SearchBar data={communities} onClick={handleOpenCommunityFeed} />
-            </div>
-            <div className="flex justify-between w-full">
-              <PostButton onClick={() => setStateNewMessageModal(true)} />
-              <NewCommunityButton onClick={() => setStateNewCommunityModal(true)} />
-            </div>
-          </div>
-        </div>
-        <div className="flex-1 p-4">
-          <CommentModal isActive={commentModalOpen} message_id={currentCommunityForCommentModal} handleCommentModalClose={() => setCommentModalOpen(false)}/>
-          <NewCommunityModal
-            currentTitles={communityTitles}
-            isActive={stateNewCommunityModal}
-            onClose={() => setStateNewCommunityModal(false)}
-            onAddButton={handleAddNewCommunityButton}
-          />
-          <NewMessageModal
-            isActive={stateNewMessageModal}
-            currentCommunityId={currentCommunityId}
-            communities={userCommunities}
-            onClose={() => setStateNewMessageModal(false)}
-            onAddButton={handleAddNewMessageButton}
-          />
-          <div className="mt-4">
-            {currentCommunityName !== "" && (
-  <div className="w-full p-6 bg-gray-200 rounded-lg mb-4 mt-4 flex flex-row sm:flex-row flex-col justify-between items-center sm:items-center">
-    <div className="flex flex-col max-w-xs w-full">
-      <h1 className="font-bold">{currentCommunityName}</h1>
-      <p className="mt-2 break-words line-clamp-3">{currentCommunityDescription}</p>
-      {/* Mobile: Join/Leave Button unterhalb von Title/Description */}
-      <div className="mt-4 sm:hidden">
-        {!partOfCurrentCommunity ? (
-          <JoinLeaveButton title="Join Community" onClick={() => joinCommunity(currentCommunityId)} />
-        ) : (
-          <JoinLeaveButton title="Leave Community" onClick={() => leaveCommunity(currentCommunityId)} />
-        )}
+      <div className="max-w-7xl mx-auto w-full px-4 pt-6 mb-6 hidden sm:block">
+        <h1 className="text-3xl font-bold">Community</h1>
       </div>
-    </div>
-    {/* Desktop: Join/Leave Button rechts */}
-    <div className="ml-4 hidden sm:block">
-      {!partOfCurrentCommunity ? (
-        <JoinLeaveButton title="Join Community" onClick={() => joinCommunity(currentCommunityId)} />
-      ) : (
-        <JoinLeaveButton title="Leave Community" onClick={() => leaveCommunity(currentCommunityId)} />
-      )}
-    </div>
-  </div>
-)}
-
-            
-            {communityMessages
-              .slice() // create a shallow copy to avoid mutating state
-              .sort(
-                (a, b) =>
-                  new Date(a.created_at).getTime() -
-                  new Date(b.created_at).getTime()
-              ) // sort oldest to newest
-              .map((communityMessage: CommunityMessage) => (
-                <MessageCard
-                  key={communityMessage.id}
-                  messageId={communityMessage.id}
-                  userId={communityMessage.user_id}
-                  communityName={getCommunityNameById(
-                    communityMessage.community_id
-                  )}
-                  title={communityMessage.title}
-                  message={
-                    communityMessage.message || "No description available"
-                  }
-                  habit={communityMessage.habit_id}
-                  handleCopyHabit={handleCopyHabit}
-                  handleCommentOpen={() => {setCommentModalOpen(true); setCurrentCommunityForCommentModal(communityMessage.id);}}
+      <div className="flex-1 flex">
+        <div className="flex-1 overflow-auto hide-scrollbar flex flex-col">
+          {/* Sticky Header */}
+          <div className="sticky top-0 z-40 bg-white w-full py-2 px-4">
+            {/* ... */}
+            <div className="hidden sm:flex items-center justify-between w-full">
+              <PostButton onClick={() => setStateNewMessageModal(true)} />
+              <div className="flex-1 flex justify-center">
+                <SearchBar
+                  data={communities}
+                  onClick={handleOpenCommunityFeed}
                 />
-              ))}
-              {communityMessages.length === 0&& (
+              </div>
+              <NewCommunityButton
+                onClick={() => setStateNewCommunityModal(true)}
+              />
+            </div>
+            {/* Mobile layout */}
+            <div className="flex flex-col sm:hidden w-full">
+              <div className="mb-2">
+                <SearchBar
+                  data={communities}
+                  onClick={handleOpenCommunityFeed}
+                />
+              </div>
+              <div className="flex justify-between w-full">
+                <PostButton onClick={() => setStateNewMessageModal(true)} />
+                <NewCommunityButton
+                  onClick={() => setStateNewCommunityModal(true)}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="flex-1 p-4">
+            <CommentModal
+              isActive={commentModalOpen}
+              message_id={currentCommunityForCommentModal}
+              handleCommentModalClose={() => setCommentModalOpen(false)}
+            />
+            <NewCommunityModal
+              currentTitles={communityTitles}
+              isActive={stateNewCommunityModal}
+              onClose={() => setStateNewCommunityModal(false)}
+              onAddButton={handleAddNewCommunityButton}
+            />
+            <NewMessageModal
+              isActive={stateNewMessageModal}
+              currentCommunityId={currentCommunityId}
+              communities={userCommunities}
+              onClose={() => setStateNewMessageModal(false)}
+              onAddButton={handleAddNewMessageButton}
+            />
+            <div className="mt-4">
+              {currentCommunityName !== "" && (
+                <div className="w-full p-6 bg-gray-200 rounded-lg mb-4 mt-4 flex flex-row sm:flex-row flex-col justify-between items-center sm:items-center">
+                  <div className="flex flex-col max-w-xs w-full">
+                    <h1 className="font-bold">{currentCommunityName}</h1>
+                    <p className="mt-2 break-words line-clamp-3">
+                      {currentCommunityDescription}
+                    </p>
+                    {/* Mobile: Join/Leave Button unterhalb von Title/Description */}
+                    <div className="mt-4 sm:hidden">
+                      {!partOfCurrentCommunity ? (
+                        <JoinLeaveButton
+                          title="Join Community"
+                          onClick={() => joinCommunity(currentCommunityId)}
+                        />
+                      ) : (
+                        <JoinLeaveButton
+                          title="Leave Community"
+                          onClick={() => leaveCommunity(currentCommunityId)}
+                        />
+                      )}
+                    </div>
+                  </div>
+                  {/* Desktop: Join/Leave Button rechts */}
+                  <div className="ml-4 hidden sm:block">
+                    {!partOfCurrentCommunity ? (
+                      <JoinLeaveButton
+                        title="Join Community"
+                        onClick={() => joinCommunity(currentCommunityId)}
+                      />
+                    ) : (
+                      <JoinLeaveButton
+                        title="Leave Community"
+                        onClick={() => leaveCommunity(currentCommunityId)}
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {communityMessages
+                .slice() // create a shallow copy to avoid mutating state
+                .sort(
+                  (a, b) =>
+                    new Date(a.created_at).getTime() -
+                    new Date(b.created_at).getTime()
+                ) // sort oldest to newest
+                .map((communityMessage: CommunityMessage) => (
+                  <MessageCard
+                    key={communityMessage.id}
+                    messageId={communityMessage.id}
+                    userId={communityMessage.user_id}
+                    communityName={getCommunityNameById(
+                      communityMessage.community_id
+                    )}
+                    title={communityMessage.title}
+                    message={
+                      communityMessage.message || "No description available"
+                    }
+                    habit={communityMessage.habit_id}
+                    handleCopyHabit={handleCopyHabit}
+                    handleCommentOpen={() => {
+                      setCommentModalOpen(true);
+                      setCurrentCommunityForCommentModal(communityMessage.id);
+                    }}
+                  />
+                ))}
+              {communityMessages.length === 0 && (
                 <div className="text-center text-gray-500 mt-4">
                   No Messages found
                 </div>
               )}
-
+            </div>
           </div>
         </div>
       </div>
     </div>
-    </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-

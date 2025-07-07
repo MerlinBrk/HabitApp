@@ -25,8 +25,8 @@ type CheckInMap = {
   [habitId: string]: boolean;
 };
 
-type Tab = "Today" | "All Habits" | "Calendar";
-const tabs: Tab[] = ["Today", "All Habits", "Calendar"];
+type Tab = "Today" | "All Habits" ;
+const tabs: Tab[] = ["Today", "All Habits"];
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<Tab>("Today");
@@ -135,10 +135,7 @@ export default function HomePage() {
   return (
     <div className="p-6 md:p-8 max-w-6xl overflow-auto hide-scrollbar h-screen mx-auto bg-white flex flex-col gap-6 bg-background p-6 w-full">
       {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold">Welcome to HabitHub, {userName}!</h1>
-        <p className="text-gray-600 mt-1">Goal Tracker</p>
-      </div>
+      
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
