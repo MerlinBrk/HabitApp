@@ -65,16 +65,7 @@ export async function getNotDaysHabitsByUserId(userId: string, date: Date) {
   }
 }
 
-// Gibt alle HabitLogs eines Benutzers zurück
-export async function getAllHabitLogs(userId: string) {
-  try {
-    const habitLogs = await db.habit_logs.where({ user_id: userId }).toArray();
-    return habitLogs; // Gibt die Liste der HabitLogs zurück
-  } catch (err) {
-    console.error("Fehler beim Abrufen der HabitLogs:", err);
-    return [];
-  }
-}
+
 
 // Gibt alle HabitLogs eines Benutzers zurück, die zu einem bestimmten Habit gehören
 export async function getHabitLogByHabitId(habitId: number) {
@@ -119,35 +110,6 @@ export async function getHabitLogsByDateAndUserId(userId: string, day: Date) {
   } catch (err) {
     console.error("Fehler beim Abrufen der HabitLogs:", err);
     return [];
-  }
-}
-
-// Gibt alle HabitLogs eines Benutzers für einen bestimmten Habit zurück, die als erledigt markiert sind
-export async function getTrueHabitLogByHabitId(habitId: number) {
-  try {
-    const habitLog = await db.habit_logs.where({ habit_id: habitId }).toArray();
-    const filteredHabitLog = habitLog.filter((log) => log.is_done === true);
-    return filteredHabitLog;
-    return habitLog;
-  } catch (err) {
-    console.error("Fehler beim Abrufen des HabitLogs:", err);
-    return [];
-  }
-}
-
-//Gibt alle Habits für einen User und die HabitLog ID zurück
-export async function getHabitLogByHabitLogId(
-  habitLogId: number,
-  userId: string
-) {
-  try {
-    const habitLog = await db.habit_logs
-      .where({ id: habitLogId, user_id: userId })
-      .first();
-    return habitLog;
-  } catch (err) {
-    console.error("❌ Fehler beim Abrufen des HabitLogs:", err);
-    return null;
   }
 }
 

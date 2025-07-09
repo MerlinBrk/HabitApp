@@ -1,5 +1,25 @@
 import { supabase } from "../lib/supabase";
 
+export async function getUserEmailById(userId: string) {
+  if (!userId) {
+    console.error("Keine userId übergeben");
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from("Profiles")
+    .select("email")
+    .eq("id", userId)
+    .single();
+
+  if (error) {
+    console.error("Fehler beim Laden der E-Mail:", error.message);
+    return null;
+  }
+
+  return data?.email || null;
+}
+
 export async function getUsernameById(userId:string) {
   if (!userId) {
     console.error("Keine userId übergeben");

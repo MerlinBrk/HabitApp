@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import { type Habit } from "../../lib/db";
 import { getHabits } from "../../services/dexieServices";
-import { useUserId } from "../../services/useUserId";
 import { USER_ID } from "../../utils/constants";
 import {type Community} from "../../utils/types";
 

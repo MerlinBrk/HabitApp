@@ -39,6 +39,7 @@ export default function App() {
         if(isLoggedIn){
             await pullHabitLogsFromSupabase(USER_ID);
             await pullHabitsFromSupabase(USER_ID);
+            
         }
     }
 

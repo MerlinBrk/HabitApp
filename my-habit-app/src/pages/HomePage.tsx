@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ProgressBar from "react-bootstrap/ProgressBar";
-import { useUserName } from "../services/useUserId";
 import { type Habit } from "../lib/db";
-import { useUserId } from "../services/useUserId";
 import {
   deleteHabit,
   getDaysHabitsByUserId,
@@ -20,6 +18,7 @@ import { USER_ID } from "../utils/constants";
 import HabitHomeCard from "../elements/habitlistElements/HabitHomeCard";
 import { syncAll } from "../lib/sync";
 import HomeProgressCard from "../elements/habitlistElements/HomeProgressCard";
+import { getUsernameBySession } from "../lib/auth";
 
 type CheckInMap = {
   [habitId: string]: boolean;
@@ -30,7 +29,7 @@ const tabs: Tab[] = ["Today", "All Habits"];
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<Tab>("Today");
-  const userName = useUserName();
+  const userName = getUsernameBySession();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [notDaysHabits, setNotDaysHabits] = useState<Habit[]>([]);
   const [checkInsToday, setCheckInsToday] = useState<CheckInMap>({});

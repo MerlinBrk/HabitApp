@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import { useUserId } from "../services/useUserId";
 import { addHabitToDB } from "../services/dexieServices";
 import { WEEKDAYS } from "../utils/constants";
 import { USER_ID } from "../utils/constants";

@@ -1,7 +1,6 @@
 import ManageHabitCard from "../elements/habitlistElements/ManageHabitCard";
 import React, { useEffect, useState } from "react";
 import { type Habit } from "../lib/db";
-import { useUserId } from "../services/useUserId";
 import { deleteHabit, getHabits, getUserStreak } from "../services/dexieServices";
 import { syncAll } from "../lib/sync";
 import NewHabitModal from "../elements/NewHabitModal";

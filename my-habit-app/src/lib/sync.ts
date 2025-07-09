@@ -1,8 +1,8 @@
 // lib/sync.ts
 import { supabase } from "./supabase";
 import { db } from "./db";
-import { useUserId } from "../services/useUserId";
 import { deleteHabitLog } from "../services/dexieServices";
+import { getUserIdFromSession } from "./auth";
 
 export async function syncUserIdToLocalStorage() {
   const { data, error } = await supabase.auth.getUser();
@@ -32,7 +32,7 @@ export async function syncUserIdToLocalStorage() {
 }
 
 export async function syncAll() {
-  const userId = useUserId();
+  const userId = await getUserIdFromSession();
   if (!userId) return;
 
   await syncHabitsWithSupabase(userId); // Dexie → Supabase
