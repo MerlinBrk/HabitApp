@@ -16,7 +16,7 @@
     "@heroicons/react": "^2.2.0",
     "@nivo/core": "^0.99.0",
     "@nivo/heatmap": "^0.99.0",
-    "@supabase/supabase-js": "^2.50.0",
+    "@supabase/supabase-js": "^2.50.4",
     "bootstrap": "^5.3.7",
     "d3-scale": "^4.0.2",
     "dayjs": "^1.11.13",

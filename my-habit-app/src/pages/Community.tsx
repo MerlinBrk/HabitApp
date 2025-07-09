@@ -1,6 +1,7 @@
 import SearchBar from "../elements/communityElements/SearchBar";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import React, { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
 import {
   getAllCommunities,
   addNewCommunity,
@@ -58,7 +59,27 @@ export default function CommunityPage() {
   const [fullSidebarOpen, setFullSidebarOpen] = useState(false);
 
   useEffect(() => {
+    
     fetchAll();
+    const channel = supabase
+    .channel("community-messages-logging")
+    .on(
+      "postgres_changes",
+      {
+        event: "*", // "INSERT" | "UPDATE" | "DELETE" oder alles
+        schema: "public",
+        table: "Community_messages",
+      },
+      (payload) => {
+        console.log("Realtime Event:", payload.eventType);
+        console.log("Payload:", payload);
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
   }, []);
 
   useEffect(() => {
@@ -189,8 +210,6 @@ export default function CommunityPage() {
 
   return (
     <div className="flex h-screen w-full flex-col bg-white">
-      {/* Titel ganz oben */}
-
       {/* Sidebar Drawer */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 flex">
