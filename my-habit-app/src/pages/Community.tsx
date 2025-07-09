@@ -190,16 +190,6 @@ export default function CommunityPage() {
   return (
     <div className="flex h-screen w-full flex-col bg-white">
       {/* Titel ganz oben */}
-      <div className="sm:hidden flex items-center px-4 pt-4">
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="text-gray-700 focus:outline-none"
-          aria-label="Open menu"
-        >
-          <Bars3Icon className="h-7 w-7" />
-        </button>
-        <h1 className="text-2xl font-bold ml-4">Community</h1>
-      </div>
 
       {/* Sidebar Drawer */}
       {sidebarOpen && (
@@ -264,13 +254,25 @@ export default function CommunityPage() {
           </div>
         </div>
       )}
-      <div className="max-w-7xl mx-auto w-full px-4 pt-6 mb-6 hidden sm:block">
-        <h1 className="text-3xl font-bold">Community</h1>
-      </div>
+
       <div className="flex-1 flex">
-        <div className="flex-1 overflow-auto hide-scrollbar flex flex-col">
+        <div className="flex-1 flex flex-col">
           {/* Sticky Header */}
-          <div className="sticky top-0 z-40 bg-white w-full py-2 px-4">
+          <div className="sticky top-0 z-40 bg-white w-full py-2 px-4 pb-2">
+            <div className="sm:hidden flex items-center pt-4 pb-4">
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="ml-2 p-0 text-gray-700 focus:outline-none hover:bg-transparent active:bg-transparent"
+                aria-label="Open menu"
+              >
+                <Bars3Icon className="h-7 w-7" />
+              </button>
+              <h1 className="text-3xl font-bold ml-4 tracking-tight ">Community</h1>
+            </div>
+
+            <div className="max-w-7xl mx-auto w-full  pt-6 mb-6 hidden sm:block">
+              <h1 className="text-3xl font-bold">Community</h1>
+            </div>
             {/* ... */}
             <div className="hidden sm:flex items-center justify-between w-full">
               <PostButton onClick={() => setStateNewMessageModal(true)} />
@@ -300,7 +302,7 @@ export default function CommunityPage() {
               </div>
             </div>
           </div>
-          <div className="flex-1 p-4">
+          <div className="flex-1 p-4 overflow-auto hide-scrollbar">
             <CommentModal
               isActive={commentModalOpen}
               message_id={currentCommunityForCommentModal}
@@ -322,7 +324,7 @@ export default function CommunityPage() {
             <div className="mt-4">
               {currentCommunityName !== "" && (
                 <div className="w-full p-6 bg-gray-200 rounded-lg mb-4 mt-4 flex flex-row sm:flex-row flex-col justify-between items-center sm:items-center">
-                  <div className="flex flex-col max-w-xs w-full">
+                  <div className="flex flex-col w-full">
                     <h1 className="font-bold">{currentCommunityName}</h1>
                     <p className="mt-2 break-words line-clamp-3">
                       {currentCommunityDescription}
@@ -395,6 +397,7 @@ export default function CommunityPage() {
           </div>
         </div>
       </div>
+      <div className="fixed bottom-0 left-0 w-full sm:hidden"></div>
     </div>
   );
 }

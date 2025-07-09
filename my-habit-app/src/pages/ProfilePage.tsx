@@ -72,8 +72,8 @@ export default function ProfilePage({ onBack }: { onBack: () => void }) {
   return (
     <main className="flex-1 w-full p-4">
       
-        <div className="flex flex-col space-y-1.5 p-6">
-          <h1 className="text-3xl font-bold ext-left">Profile</h1>
+        <div className="flex flex-col space-y-1.5 pt-6 pb-6">
+          <h1 className="text-3xl font-bold tracking-tight ">Profile</h1>
         </div>
         <div className="p-6 pt-0">
           <div className="flex flex-col items-center gap-4">
