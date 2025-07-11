@@ -3,7 +3,7 @@ import {type Community} from "../../utils/types"
 
 
 
-export default function SearchBar({ data,onClick }: { data: Community[],onClick: (communityId:string) => {} }) {
+export default function SearchBar({ data,onClick }: { data: Community[],onClick: (communityId:string) => void }) {
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState<Community[]>([]);
 

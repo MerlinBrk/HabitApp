@@ -5,8 +5,8 @@ interface ManageHabitProps {
   habitTitle: string;
   habitId:string;
   userId:string;
-  openEditHabitModal: () => {};
-  handleDeleteHabit: () => {};
+  openEditHabitModal: () => void;
+  handleDeleteHabit: () => void;
 }
 
 export default function ManageHabitCard({
@@ -30,12 +30,12 @@ export default function ManageHabitCard({
   };
 
   const fetchpersentage = async() => {
-    const data = await getPercentageDoneByHabitId(habitId,userId);
+    const data = await getPercentageDoneByHabitId(habitId);
     setPercentage(data);
   }
 
   const fetchhabitStreak = async() =>{
-    const data = await getStreakByHabitId(habitId,userId);
+    const data = await getStreakByHabitId(habitId);
     setHabitStreak(data);
   }
   return (

@@ -12,7 +12,6 @@ import {
 import {
   getProfileImageUrl,
   uploadProfileImage,
-  getUserEmailById,
 } from "../services/profileServices";
 
 export default function ProfilePage() {

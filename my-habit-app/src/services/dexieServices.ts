@@ -68,7 +68,7 @@ export async function getNotDaysHabitsByUserId(userId: string, date: Date) {
 
 
 // Gibt alle HabitLogs eines Benutzers zurück, die zu einem bestimmten Habit gehören
-export async function getHabitLogByHabitId(habitId: number) {
+export async function getHabitLogByHabitId(habitId: string) {
   try {
     const habitLog = await db.habit_logs.where({ habit_id: habitId }).toArray();
     return habitLog;
@@ -80,7 +80,7 @@ export async function getHabitLogByHabitId(habitId: number) {
 
 // Gibt einen HabitLog für einen bestimmten Habit, ein bestimmtes Datum und einen Benutzer zurück
 export async function getHabitLogByHabitIdAndDateAndUserId(
-  habitId: number,
+  habitId: string,
   date: Date,
   userId: string
 ) {
@@ -115,7 +115,6 @@ export async function getHabitLogsByDateAndUserId(userId: string, day: Date) {
 
 export async function getPercentageDoneByHabitId(
   habitId: string,
-  userId: string
 ) {
   try {
     // Hole das Habit, um die aktiven Wochentage zu bekommen
@@ -197,7 +196,7 @@ export async function getPercentageDoneByUserId(userId: string) {
 
       if (!possible) continue;
 
-      const percent = await getPercentageDoneByHabitId(habit.id, userId);
+      const percent = await getPercentageDoneByHabitId(habit.id);
       totalPercentage += percent;
       count++;
     }
@@ -211,7 +210,7 @@ export async function getPercentageDoneByUserId(userId: string) {
   }
 }
 
-export async function getStreakByHabitId(habitId: string, userId: string) {
+export async function getStreakByHabitId(habitId: string) {
   try {
     // Hole das Habit, um die aktiven Wochentage zu bekommen
     const habit = await db.habits.where({ id: habitId }).first();
@@ -273,7 +272,7 @@ export async function getUserStreak(userId: string) {
         minStreak = 0;
         break;
       }
-      const streak = await getStreakByHabitId(habit.id, userId);
+      const streak = await getStreakByHabitId(habit.id);
       if (streak < minStreak) minStreak = streak;
       if (minStreak === 0) break;
     }
@@ -312,7 +311,7 @@ export async function addHabitToDB(
 //Hinzufügen eines neuen HabitLogs für ein besimmtes Habit
 export async function addHabitLog(
   userId: string,
-  habitId: number,
+  habitId: string,
   date: Date,
   isDone: boolean
 ) {

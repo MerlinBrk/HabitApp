@@ -14,8 +14,8 @@ interface MessageCardProps {
   title: string;
   message: string;
   habit: string;
-  handleCopyHabit: (title: string, days: string[]) => {};
-  handleCommentOpen:() =>{};
+  handleCopyHabit: (title: string, days: string[]) => void;
+  handleCommentOpen:() =>void;
 }
 
 export default function MessageCard({

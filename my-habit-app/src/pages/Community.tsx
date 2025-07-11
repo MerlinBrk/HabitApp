@@ -1,28 +1,23 @@
 import SearchBar from "../elements/communityElements/SearchBar";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import React, { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
+import { useEffect, useState } from "react";
 import {
   getAllCommunities,
   addNewCommunity,
-  getCommunityIdByCommunityTitle,
   getCommunitiesByUserId,
 } from "../services/communityServices";
 import CommentModal from "../elements/communityElements/CommentModal";
 import {
-  getAllCommunityMessages,
   getAllCommunityMessagesByCommunityId,
   getAllMessagesByUserCommunities,
 } from "../services/messageServices";
 import MessageCard from "../elements/communityElements/MessageCard";
 import NewCommunityModal from "../elements/communityElements/NewCommunityModal";
-import AddButton from "../elements/AddButton";
 import { type Community, type CommunityMessage } from "../utils/types";
 import PostButton from "../elements/communityElements/PostButton";
 import NewMessageModal from "../elements/communityElements/NewMessageModal";
 import { addNewMessage } from "../services/messageServices";
-import { addHabitToDB, getHabitById } from "../services/dexieServices";
-import { type Habit } from "../lib/db";
+import { addHabitToDB } from "../services/dexieServices";
 import { useStore } from "../lib/store";
 import { USER_ID } from "../utils/constants";
 import {
@@ -44,9 +39,7 @@ export default function CommunityPage() {
   const [userCommunities, setUserCommunities] = useState<Community[]>([]);
   const [currentCommunityForCommentModal, setCurrentCommunityForCommentModal] =
     useState("");
-  const [communityMessages, setCommunityMessages] = useState<
-    CommunityMessage[]
-  >([]);
+  const [communityMessages, setCommunityMessages] = useState<CommunityMessage[]>([]);
   const [communityTitles, setCommunityTitles] = useState<string[]>([]);
   const [stateNewCommunityModal, setStateNewCommunityModal] = useState(false);
   const [stateNewMessageModal, setStateNewMessageModal] = useState(false);
@@ -67,7 +60,7 @@ export default function CommunityPage() {
 
   useEffect(() => {
     userCommunities.forEach((community) => {
-      if (!list.includes(community.title)) {
+      if (!list.name.includes(community.title)) {
         addName(community.id, community.title);
       }
     });
@@ -92,13 +85,15 @@ export default function CommunityPage() {
   };
 
   const fetchOwnCommunities = async () => {
-    const data = await getCommunitiesByUserId(USER_ID);
+    const userCommunities = await getCommunitiesByUserId(USER_ID);
     clearList();
-    setCommunityTitles(data.map((community) => community.title));
-    setUserCommunities(data);
+    if( userCommunities) {
+    setCommunityTitles(userCommunities.map((community) => community.title));
+    setUserCommunities(userCommunities);
+    }
   };
 
-  const fetchMessages = async (communityId: string) => {
+  const fetchMessages = async () => {
     if (currentCommunityId) {
       fetchCommunityFeed();
     } else {
@@ -186,7 +181,7 @@ export default function CommunityPage() {
 
   const joinCommunity = async (communityId: string) => {
     await addNewCommunityUser(communityId, USER_ID);
-    fetchCommunityMessages();
+    fetchMessages();
     setPartOfCurrentCommunity(true);
     fetchOwnCommunities();
   };
@@ -230,9 +225,9 @@ export default function CommunityPage() {
                       }}
                     >
                       <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-200 text-blue-700 font-bold text-lg mr-2">
-                        {item.charAt(0).toUpperCase()}
+                        {item.name.charAt(0).toUpperCase()}
                       </div>
-                      {item}
+                      {item.name}
                     </button>
                   </li>
                 )

@@ -11,11 +11,12 @@ import {
 } from "../../services/commentsServices";
 import { USER_ID } from "../../utils/constants";
 import NewCommentCard from "./NewCommentCard";
+import CommentCard from "./CommentCard";
 
 interface CommentModalProps {
   isActive: boolean;
   message_id: string;
-  handleCommentModalClose: () => {};
+  handleCommentModalClose: () => void;
 }
 
 export default function CommentModal({
