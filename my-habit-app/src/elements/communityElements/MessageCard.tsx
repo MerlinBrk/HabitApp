@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { type Habit } from "../../lib/db";
-import { getHabitById } from "../../services/dexieServices";
-import CommentModal from "./CommentModal";
 import { getUsernameById ,getProfileImageUrl} from "../../services/profileServices";
 import { getHabitByIdFromSupabase } from "../../services/habitServices";
 import {
@@ -38,6 +36,7 @@ export default function MessageCard({
   const [commentAmount, setCommentAmount] = useState(0);
 
   const fetchHabit = async () => {
+    
     const data = await getHabitByIdFromSupabase(habit);
     if (data && data.title) {
       setCurrentHabitName(data.title);
@@ -141,9 +140,10 @@ export default function MessageCard({
           </div>
         </div>
         <button
+        aria-label="Open comments"
           onClick={handleCommentClick}
           className="bg-gray-100 hover:bg-gray-200 rounded-full px-4 py-2 shadow transition-colors ml-4 flex items-center gap-2 min-w-[56px]"
-          title="Kommentieren"
+          
         >
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
             <path
@@ -166,6 +166,7 @@ export default function MessageCard({
               <p className="text-sm">{curHabit?.days?.join(" ")}</p>
             </div>
             <button
+            aris-label="Copy habit"
               onClick={handleCopy}
               className="px-3 py-1 rounded-xl font-semibold transition-colors border-black cursor-pointer bg-white text-black hover:bg-gray-200"
             >

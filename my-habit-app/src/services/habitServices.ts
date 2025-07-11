@@ -9,8 +9,7 @@ export async function getHabitByIdFromSupabase(habitId: string) {
       .single();
 
     if (error) {
-      console.error("Error fetching habit by ID:", error);
-      return null;
+      throw error;
     }
 
     return data;

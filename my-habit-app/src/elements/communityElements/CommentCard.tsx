@@ -1,6 +1,6 @@
 import { type CommunityComments } from "../../utils/types";
 import { useState, useEffect } from "react";
-import { getUsernameById } from "../../services/profileServices";
+import { getUsernameById ,getProfileImageUrl} from "../../services/profileServices";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
@@ -11,6 +11,7 @@ interface CommentCardProps {
 export default function CommentCard({ comment }: CommentCardProps) {
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
   dayjs.extend(relativeTime);
 
   const fetchUsername = async () => {
@@ -20,9 +21,20 @@ export default function CommentCard({ comment }: CommentCardProps) {
     }
   };
 
+  const fetchProfileImage = async (userId: string) => {
+    if (!userId) return;
+    const data = await getProfileImageUrl(userId);
+    if (data) {
+      setProfileImageUrl(data);
+    } else {
+      console.error("Fehler beim Abrufen des Profilbilds");
+    }
+  };
+
   useEffect(() => {
     setIsLoading(true);
     fetchUsername();
+    fetchProfileImage(comment.user_id);
     setIsLoading(false);
   }, []);
 
@@ -32,14 +44,23 @@ export default function CommentCard({ comment }: CommentCardProps) {
         <div className="flex items-start mb-2 mt-0">
           {/* Avatar */}
           <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center mr-3">
-            <span className="text-white font-bold text-sm">
-              {username
-                .split(" ")
-                .map((n) => n[0])
-                .join("")
-                .toUpperCase()
-                .slice(0, 2)}
-            </span>
+            {profileImageUrl ? (
+              <img
+                src={profileImageUrl}
+                alt="Profilbild"
+                className="w-8 h-8 rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-white font-bold text-sm">
+                {username
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .toUpperCase()
+                  .slice(0, 2)}
+              </span>
+            )}
+            
           </div>
 
           {/* Username, Zeit und Nachricht in einer Spalte */}

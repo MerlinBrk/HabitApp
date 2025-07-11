@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import { useUserId } from "../services/useUserId";
 import { addHabitToDB } from "../services/dexieServices";
 import { WEEKDAYS } from "../utils/constants";
 import { USER_ID } from "../utils/constants";
@@ -89,6 +88,7 @@ export default function NewHabitModal({
           </div>
           <div className="flex items-center space-x-2 relative">
             <button
+              aria-label="Toggle Habit Privacy"
               type="button"
               role="switch"
               aria-checked={isPublic ? "true" : "false"}
@@ -134,6 +134,7 @@ export default function NewHabitModal({
             <div className="flex flex-wrap gap-2" id="weekdays">
               {WEEKDAYS.map((day) => (
                 <button
+                  aria-label={`Toggle ${day} selection`}
                   type="button"
                   key={day}
                   className={`px-3 py-1 rounded-md border text-sm transition-colors ${
@@ -152,6 +153,7 @@ export default function NewHabitModal({
         </div>
         <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
           <button
+            aria-label="Cancel Habit Creation"
             className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
             type="button"
             onClick={onClose}
@@ -159,6 +161,7 @@ export default function NewHabitModal({
             Cancel
           </button>
           <button
+            aria-label="Create Habit"
             className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2"
             type="submit"
             onClick={(e) => {
@@ -171,6 +174,7 @@ export default function NewHabitModal({
         </div>
       </form>
       <button
+        aria-label="Close Modal"
         type="button"
         className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
         onClick={onClose}

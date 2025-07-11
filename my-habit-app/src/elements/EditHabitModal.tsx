@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import { FaTimes } from "react-icons/fa";
-import { useUserId } from "../services/useUserId";
+import { useState } from "react";
 import { addHabitToDB } from "../services/dexieServices";
 import { WEEKDAYS } from "../utils/constants";
 import { USER_ID } from "../utils/constants";
@@ -74,6 +72,7 @@ export default function EditHabitModal({
               value={newHabit}
               onChange={(e) => setNewHabit(e.target.value)}
             />
+           
           </div>
           <div className="grid gap-2">
             <label
@@ -95,6 +94,7 @@ export default function EditHabitModal({
               Category
             </label>
             <button
+            aria-label="Sachen"
               title="Sachen"
               type="button"
               role="combobox"

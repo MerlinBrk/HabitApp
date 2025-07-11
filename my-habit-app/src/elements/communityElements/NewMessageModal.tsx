@@ -1,10 +1,8 @@
 
-import React from "react";
+
 import { useState, useEffect } from "react";
-import { FaTimes } from "react-icons/fa";
 import { type Habit } from "../../lib/db";
 import { getHabits } from "../../services/dexieServices";
-import { useUserId } from "../../services/useUserId";
 import { USER_ID } from "../../utils/constants";
 import {type Community} from "../../utils/types";
 
@@ -12,7 +10,7 @@ interface NewMessageModalProps {
   isActive: boolean;
   currentCommunityId:string;
   onClose: () => void;
-  communities: Community;
+  communities: Community[];
   onAddButton: (communityId: string, title: string, description: string,habitId:string) => void;
 }
 
@@ -28,7 +26,6 @@ export default function NewMessageModal({
   const [messageTitle, setMessageTitle] = useState("");
   const [messageContent, setMessageContent] = useState("");
   const [choosenHabitId, setChoosenHabitId] = useState<string>("");
-  const [isAlreadyTaken, setIsAlreadyTaken] = useState(false);
   const [noInput, setNoInput] = useState(false);
   const [choosenCommunityId, setChoosenCommunityId] = useState<string>(currentCommunityId);
 
@@ -42,7 +39,7 @@ export default function NewMessageModal({
     setHabits(data);
   };
 
-  const handleAddCommunity = async () => {
+  const handleAddMessage = async () => {
       onAddButton(choosenCommunityId,messageTitle, messageContent,choosenHabitId);
       handleClose();
     
@@ -166,6 +163,7 @@ export default function NewMessageModal({
 
         <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
           <button
+          aria-label="Abbrechen"
             type="button"
             onClick={handleClose}
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-bold shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors"
@@ -173,8 +171,9 @@ export default function NewMessageModal({
             Abbrechen
           </button>
           <button
+          aria-label="Nachricht hinzufügen"
             type="button"
-            onClick={handleAddCommunity}
+            onClick={handleAddMessage}
             className="inline-flex items-center justify-center bg-black font-bold text-white rounded-md px-4 py-2 text-sm  hover:text-black shadow hover:bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
           >
             Hinzufügen

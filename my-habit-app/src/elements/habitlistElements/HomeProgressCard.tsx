@@ -10,7 +10,7 @@ interface HomeProgressCardProps {
 }
 
 export default function HomeProgressCard({title, value, progressbar, icon, description, percentage}: HomeProgressCardProps) {
-    return (<div className="rounded-xl border bg-card text-card-foreground shadow col-span-1">
+    return (<div className="rounded-xl border bg-card text-card-foreground shadow md:col-span-1 w-full">
           <div className="flex flex-col space-y-1.5 p-6 pb-2">
             <h3 className="tracking-tight text-sm font-medium">
               {title}
