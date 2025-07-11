@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { type Habit } from "../../lib/db";
-import { getHabitById } from "../../services/dexieServices";
-import CommentModal from "./CommentModal";
 import { getUsernameById ,getProfileImageUrl} from "../../services/profileServices";
 import { getHabitByIdFromSupabase } from "../../services/habitServices";
 import {

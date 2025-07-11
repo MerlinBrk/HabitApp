@@ -1,6 +1,3 @@
-import { FaCheck } from "react-icons/fa";
-import React from "react";
-
 
 
 interface Props{

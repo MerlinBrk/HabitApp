@@ -1,7 +1,6 @@
 
-import React from "react";
+
 import { useState } from "react";
-import { FaTimes } from "react-icons/fa";
 
 
 interface NewCommunityModalProps {
@@ -21,7 +20,7 @@ export default function NewCommunityModal({
   const [communityDescription, setCommunityDescription] = useState("");
   const [isAlreadyTaken,setIsAlreadyTaken] = useState(false);
   const [noInput,setNoInput] = useState(false);
-
+  
   const handleAddCommunity = async () => {
     if (
       communityTitle !== "" &&

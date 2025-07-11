@@ -1,8 +1,13 @@
 import {create} from 'zustand';
 
+type ListItem = {
+    id: string;
+    name: string;
+}
+
 type StoreState = {
-    list: string[];
-    addName: (name: string ) => void;
+    list: ListItem[];
+    addName: (id:string, name: string ) => void;
     clearList: () => void;
     currentCommunityName: string;
     addCommunityName: (name: string) => void;
@@ -11,7 +16,7 @@ type StoreState = {
 
 export const useStore = create<StoreState>((set) => ({
     list: [],
-    addName: (name) => set((state) => ({ list: [...state.list, name] })),
+    addName: (id,name) => set((state) => ({ list: [...state.list, { id, name }] })),
     clearList: () => set({ list: [] }),
     currentCommunityName: "",
     addCommunityName: (name) => set({ currentCommunityName: name }),

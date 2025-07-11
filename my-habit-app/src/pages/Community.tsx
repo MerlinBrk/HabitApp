@@ -37,8 +37,9 @@ export default function CommunityPage() {
   const clearList = useStore((state) => state.clearList);
   const addName = useStore((state) => state.addName);
   const list = useStore((state) => state.list);
-  const addCommunityName = useStore((state) => state.addCommunityName);
-  const currentCommunityName = useStore((state) => state.currentCommunityName);
+  const addCommunityId = useStore((state) => state.addCommunityName);
+  const currentCommunityId = useStore((state) => state.currentCommunityName);
+  const clearCommunityId = useStore((state) => state.clearCommunityname);
   const [communities, setCommunities] = useState<Community[]>([]);
   const [userCommunities, setUserCommunities] = useState<Community[]>([]);
   const [currentCommunityForCommentModal, setCurrentCommunityForCommentModal] =
@@ -49,74 +50,40 @@ export default function CommunityPage() {
   const [communityTitles, setCommunityTitles] = useState<string[]>([]);
   const [stateNewCommunityModal, setStateNewCommunityModal] = useState(false);
   const [stateNewMessageModal, setStateNewMessageModal] = useState(false);
-  const [currentCommunityId, setCurrentCommunityId] = useState("");
   const [currentCommunityDescription, setCurrentCommunityDescription] =
     useState("");
   const [partOfCurrentCommunity, setPartOfCurrentCommunity] = useState(false);
-  const [loadingCommunityInfo, setLoadingCommunityInfo] = useState(false);
+  const [loadingCommunityInfo, setLoadingCommunityInfo] = useState(true);
   const [commentModalOpen, setCommentModalOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [fullSidebarOpen, setFullSidebarOpen] = useState(false);
+  const [currentCommunityName, setCurrentCommunityName] = useState("");
 
   useEffect(() => {
-    
     fetchAll();
-    const channel = supabase
-    .channel("community-messages-logging")
-    .on(
-      "postgres_changes",
-      {
-        event: "*", // "INSERT" | "UPDATE" | "DELETE" oder alles
-        schema: "public",
-        table: "Community_messages",
-      },
-      (payload) => {
-        console.log("Realtime Event:", payload.eventType);
-        console.log("Payload:", payload);
-      }
-    )
-    .subscribe();
-
-  return () => {
-    supabase.removeChannel(channel);
-  };
+    clearCommunityId();
+    clearList();
   }, []);
 
   useEffect(() => {
-    communityTitles.forEach((title) => {
-      if (!list.includes(title)) {
-        addName(title);
+    userCommunities.forEach((community) => {
+      if (!list.includes(community.title)) {
+        addName(community.id, community.title);
       }
     });
-  }, [communityTitles]);
+  }, [userCommunities]);
 
   useEffect(() => {
-    if (currentCommunityName) {
-      loadCommunityInfo(currentCommunityName);
-    }
-  }, [currentCommunityName]);
-
-  const loadCommunityInfo = async (name: string) => {
-    setLoadingCommunityInfo(true); // Start Loading
-    setCurrentCommunityDescription("");
-    await getCommunityIdByName(name); // ruft communityId und setzt es
-    setLoadingCommunityInfo(false); // End Loading
-  };
-
-  useEffect(() => {
+    
     if (currentCommunityId) {
-      fetchCommunityMessages(currentCommunityId);
-      setCurrentCommunityDescription(
-        getCommunityDescriptionById(currentCommunityId)
-      );
-      fetchpartOfCommunity(currentCommunityId);
+      fetchCommunityDetails();
     }
   }, [currentCommunityId]);
 
   const fetchAll = () => {
     fetchCommunities();
     fetchOwnCommunities();
-    fetchCommunityMessages("");
+    fetchMessages();
   };
 
   const fetchCommunities = async () => {
@@ -126,27 +93,78 @@ export default function CommunityPage() {
 
   const fetchOwnCommunities = async () => {
     const data = await getCommunitiesByUserId(USER_ID);
-    console.log("Own Communities: ", data);
     clearList();
     setCommunityTitles(data.map((community) => community.title));
     setUserCommunities(data);
   };
 
-  const fetchCommunityMessages = async (communityId: string) => {
-    if (communityId.toString() === "") {
-      const data = await getAllMessagesByUserCommunities(USER_ID);
-      setCommunityMessages(data);
+  const fetchMessages = async (communityId: string) => {
+    if (currentCommunityId) {
+      fetchCommunityFeed();
     } else {
-      const data = await getAllCommunityMessagesByCommunityId(communityId);
+      fetchUserFeed();
+    }
+  };
+
+  const fetchCommunityFeed = async () => {
+    if (currentCommunityId) {
+      const data =
+        await getAllCommunityMessagesByCommunityId(currentCommunityId);
       setCommunityMessages(data);
     }
   };
 
-  const getCommunityIdByName = async (name: string) => {
-    if (name.toString() !== "") {
-      const data = await getCommunityIdByCommunityTitle(name);
-      setCurrentCommunityId(data);
+  const fetchUserFeed = async () => {
+    const data = await getAllMessagesByUserCommunities(USER_ID);
+    setCommunityMessages(data);
+  };
+
+
+  const fetchCommunityDetails = async() => {
+    if (currentCommunityId) {
+      setLoadingCommunityInfo(true);
+      fetchMessages();
+      fetchCommunityDescriptionById(currentCommunityId);
+      await fetchpartOfCommunity(currentCommunityId);
+      fetchCommunityNameById(currentCommunityId);
+      setLoadingCommunityInfo(false);
     }
+
+  }
+
+  const fetchCommunityNameById = (communityId: string) => {
+    const community = communities.find((c) => c.id === communityId);
+    const communityTitle = community ? community.title : "Unknown Community";
+   setCurrentCommunityName(communityTitle);
+  };
+
+  const fetchCommunityDescriptionById = (communityId: string) => {
+    const community = communities.find((c) => c.id === communityId);
+    const communityDescription = community
+      ? community.description
+      : "Unknown Community";
+    setCurrentCommunityDescription(communityDescription);
+  };
+
+  const fetchpartOfCommunity = async (CommunityId: string) => {
+    if (CommunityId !== "") {
+      const data = await getIfUserIsPartOfCommunity(CommunityId, USER_ID);
+      setPartOfCurrentCommunity(data);
+    }
+  };
+
+  const getCommunityNameById = (communityId: string) => {
+    const community = communities.find((c) => c.id === communityId);
+    const communityTitle = community ? community.title : "Unknown Community";
+    return communityTitle;
+  };
+
+  const handleOpenCommunityFeed = (communityId: string) => {
+    addCommunityId(communityId);
+  };
+
+  const handleCopyHabit = async (title: string, days: string[]) => {
+    await addHabitToDB(title, USER_ID, true, days);
   };
 
   const handleAddNewCommunityButton = async (
@@ -163,30 +181,7 @@ export default function CommunityPage() {
     habitId: string
   ) => {
     await addNewMessage(communityId, title, description, USER_ID, habitId);
-    fetchCommunityMessages("");
-  };
-
-  const getCommunityNameById = (communityId: string) => {
-    const community = communities.find((c) => c.id === communityId);
-    const communityTitle = community ? community.title : "Unknown Community";
-    return communityTitle;
-  };
-
-  const getCommunityDescriptionById = (communityId: string) => {
-    const community = communities.find((c) => c.id === communityId);
-    const communityDescription = community
-      ? community.description
-      : "Unknown Community";
-    return communityDescription;
-  };
-
-  const handleOpenCommunityFeed = (communityId: string) => {
-    setCurrentCommunityId(communityId);
-    addCommunityName(getCommunityNameById(communityId));
-  };
-
-  const handleCopyHabit = async (title: string, days: string[]) => {
-    await addHabitToDB(title, USER_ID, true, days);
+    fetchMessages();
   };
 
   const joinCommunity = async (communityId: string) => {
@@ -201,12 +196,7 @@ export default function CommunityPage() {
     setPartOfCurrentCommunity(false);
     fetchOwnCommunities();
   };
-  const fetchpartOfCommunity = async (CommunityId: string) => {
-    if (CommunityId !== "") {
-      const data = await getIfUserIsPartOfCommunity(CommunityId, USER_ID);
-      setPartOfCurrentCommunity(data);
-    }
-  };
+  
 
   return (
     <div className="flex h-screen w-full flex-col bg-white">
@@ -235,7 +225,7 @@ export default function CommunityPage() {
                     <button
                       className="flex items-center block px-2 py-1 font-bold rounded-xl text-gray-700 hover:bg-blue-500 hover:text-white transition-colors no-underline flex-1 w-full"
                       onClick={() => {
-                        addCommunityName(item);
+                        addCommunityId(item.id);
                         setSidebarOpen(false);
                       }}
                     >
@@ -286,7 +276,9 @@ export default function CommunityPage() {
               >
                 <Bars3Icon className="h-7 w-7" />
               </button>
-              <h1 className="text-3xl font-bold ml-4 tracking-tight ">Community</h1>
+              <h1 className="text-3xl font-bold ml-4 tracking-tight ">
+                Community
+              </h1>
             </div>
 
             <div className="max-w-7xl mx-auto w-full  pt-6 mb-6 hidden sm:block">
@@ -341,7 +333,7 @@ export default function CommunityPage() {
               onAddButton={handleAddNewMessageButton}
             />
             <div className="mt-4">
-              {currentCommunityName !== "" && (
+              {currentCommunityId && !loadingCommunityInfo &&(
                 <div className="w-full p-6 bg-gray-200 rounded-lg mb-4 mt-4 flex flex-row sm:flex-row flex-col justify-between items-center sm:items-center">
                   <div className="flex flex-col w-full">
                     <h1 className="font-bold">{currentCommunityName}</h1>

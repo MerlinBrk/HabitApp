@@ -1,7 +1,6 @@
 
-import React from "react";
+
 import { useState, useEffect } from "react";
-import { FaTimes } from "react-icons/fa";
 import { type Habit } from "../../lib/db";
 import { getHabits } from "../../services/dexieServices";
 import { USER_ID } from "../../utils/constants";
@@ -11,7 +10,7 @@ interface NewMessageModalProps {
   isActive: boolean;
   currentCommunityId:string;
   onClose: () => void;
-  communities: Community;
+  communities: Community[];
   onAddButton: (communityId: string, title: string, description: string,habitId:string) => void;
 }
 
@@ -27,7 +26,6 @@ export default function NewMessageModal({
   const [messageTitle, setMessageTitle] = useState("");
   const [messageContent, setMessageContent] = useState("");
   const [choosenHabitId, setChoosenHabitId] = useState<string>("");
-  const [isAlreadyTaken, setIsAlreadyTaken] = useState(false);
   const [noInput, setNoInput] = useState(false);
   const [choosenCommunityId, setChoosenCommunityId] = useState<string>(currentCommunityId);
 

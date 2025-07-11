@@ -15,7 +15,7 @@ import {
   getUserEmailById,
 } from "../services/profileServices";
 
-export default function ProfilePage({ onBack }: { onBack: () => void }) {
+export default function ProfilePage() {
   const [userStreak, setUserStreak] = useState(0);
   const [userPercentage, setUserPercentage] = useState(0);
   const [userHabitAmount, setUserHabitAmount] = useState(0);
@@ -23,12 +23,13 @@ export default function ProfilePage({ onBack }: { onBack: () => void }) {
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
 
+  const [loading, setLoading] = useState(true);
+
   const handleLogout = async () => {
     await clearHabitDB();
     await clearHabitLogsDB();
     await supabase.auth.signOut();
     localStorage.clear();
-    window.location.reload();
   };
 
   const handleImageUpload = async (
@@ -40,7 +41,6 @@ export default function ProfilePage({ onBack }: { onBack: () => void }) {
     try {
       const imageUrl = await uploadProfileImage(USER_ID, file);
       setProfileImageUrl(imageUrl);
-      console.log("Profilbild hochgeladen:", imageUrl);
     } catch (error: any) {
       console.error("Fehler beim Hochladen des Profilbilds:", error.message);
     }
@@ -65,14 +65,22 @@ export default function ProfilePage({ onBack }: { onBack: () => void }) {
     const name = await getUsernameBySession();
     setUserName(name);
   };
-  const fetchAllData = (id: string) => {
-    fetchUserEmail();
-    fetchUserName(id);
-    fetchStreak(id);
-    fetchUserDonePercentage(id);
-    fetchUserHabitAmount(id);
-    fetchProfileImage(id);
-  };
+  const fetchAllData = async (id: string) => {
+  try {
+    await Promise.all([
+      fetchUserEmail(),
+      fetchUserName(),
+      fetchStreak(id),
+      fetchUserDonePercentage(id),
+      fetchUserHabitAmount(id),
+      fetchProfileImage(id),
+    ]);
+  } catch (error) {
+    console.error("Fehler beim Laden der Profildaten:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const fetchStreak = async (id: string) => {
     const data = await getUserStreak(id);
@@ -98,6 +106,20 @@ export default function ProfilePage({ onBack }: { onBack: () => void }) {
       console.error("Fehler beim Abrufen des Profilbilds");
     }
   };
+if (loading) {
+  return (
+    <main className="flex-1 w-full p-4 flex items-center justify-center">
+      <div className="text-center">
+        <div
+          className="animate-spin h-10 w-10 border-4 border-black border-t-transparent rounded-full mx-auto mb-4"
+          role="status"
+          aria-label="Lädt..."
+        />
+        <p className="text-sm text-muted-foreground">Profil wird geladen...</p>
+      </div>
+    </main>
+  );
+}
 
   return (
     <main className="flex-1 w-full p-4">

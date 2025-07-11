@@ -23,7 +23,7 @@ export async function syncUserIdToLocalStorage() {
   }
 
   if (!profile) {
-    console.log("Kein Profil gefunden");
+    
     return null;
   }
   localStorage.setItem("user_id", userId);

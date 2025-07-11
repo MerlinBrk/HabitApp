@@ -345,10 +345,6 @@ export async function deleteHabit(habitId: string, userId: string) {
 
       if (error) {
         console.error("Fehler beim Löschen des Habits aus Supabase:", error);
-      } else {
-        console.log(
-          `Habit mit ID ${habitId} erfolgreich aus Supabase gelöscht.`
-        );
       }
       await deleteHabitLog(habitId, userId);
     } catch (err) {
@@ -389,9 +385,7 @@ export async function deleteHabitLog(habitId: string, userId: string) {
       if (error) {
         console.error("Fehler beim Löschen des HabitLogs aus Supabase:", error);
       } else {
-        console.log(
-          `HabitLog mit ID ${habitId} erfolgreich aus Supabase gelöscht.`
-        );
+        
       }
     }
   } catch (err) {

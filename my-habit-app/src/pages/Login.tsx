@@ -1,6 +1,7 @@
 import React, { useState ,useEffect} from "react";
 import { supabase } from "../lib/supabase";
 import { clearHabitDB, clearHabitLogsDB } from "../services/dexieServices";
+import { useNavigate } from "react-router-dom";
 
 export default function Login({ onLogin }: { onLogin: () => void }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -8,6 +9,7 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [name, setName] = useState("");
+  //const navigate = useNavigate();
 
 
   useEffect(()=>{
@@ -44,7 +46,11 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
 
 
     if (error) setError(error.message);
-    else onLogin();
+    else{ 
+      //navigate("/");
+      onLogin();
+      
+    }
   };
 
   return (
