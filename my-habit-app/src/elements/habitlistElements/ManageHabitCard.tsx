@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from "react";
-import {getPercentageDoneByHabitId, getStreakByHabitId} from "../../services/dexieServices";
+import {useState, useEffect} from "react";
+import {getLongestStreakByHabitId, getPercentageDoneByHabitId, getStreakByHabitId} from "../../services/dexieServices";
 
 interface ManageHabitProps {
     habitTitle: string;
@@ -22,27 +22,34 @@ export default function ManageHabitCard({
                                         }: ManageHabitProps) {
     const [openMoreDetails, setOpenMoreDetails] = useState(false);
     const [habitStreak, setHabitStreak] = useState(0);
+    const [longestHabitStreak, setLongestHabitStreak] = useState(0);
     const [percentage, setPercentage] = useState(0);
 
 
     useEffect(() => {
-        fetchhabitStreak();
-        fetchpersentage();
+        fetchPercentage();
+        fetchHabitStreak();
+        fetchLongestHabitStreak();
     }, [])
 
     const handleOpenMoreClick = () => {
         setOpenMoreDetails(!openMoreDetails);
     };
 
-    const fetchpersentage = async () => {
+    const fetchPercentage = async () => {
         const data = await getPercentageDoneByHabitId(habitId, userId);
         console.log(data);
         setPercentage(data);
     }
 
-    const fetchhabitStreak = async () => {
-        const data = await getStreakByHabitId(habitId, userId);
+    const fetchHabitStreak = async () => {
+        const data = await getStreakByHabitId(habitId);
         setHabitStreak(data);
+    }
+
+    const fetchLongestHabitStreak = async () => {
+        const data = await getLongestStreakByHabitId(habitId);
+        setLongestHabitStreak(data);
     }
     return (
         <div className="rounded-xl border text-card-foreground shadow bg-card">
@@ -206,7 +213,7 @@ export default function ManageHabitCard({
                                         <div className="text-xs text-muted-foreground">
                                             Longest Streak
                                         </div>
-                                        <div className="text-xl font-bold">{habitStreak}</div>
+                                        <div className="text-xl font-bold">{longestHabitStreak}</div>
                                     </div>
                                     <div className="bg-muted/50 p-3 rounded-md border shadow">
                                         <div className="text-xs text-muted-foreground">

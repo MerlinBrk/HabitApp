@@ -216,7 +216,7 @@ export async function getPercentageDoneByUserId(userId: string) {
 }
 
 
-export async function getStreakByHabitId(habitId: string, userId: string) {
+export async function getStreakByHabitId(habitId: string) {
     try {
         // Hole das Habit, um die aktiven Wochentage zu bekommen
         const habit = await db.habits.where({id: habitId}).first();
@@ -224,7 +224,7 @@ export async function getStreakByHabitId(habitId: string, userId: string) {
 
         // Hole alle HabitLogs für dieses Habit, die erledigt wurden, sortiert nach Datum absteigend
         const habitLog = await db.habit_logs.where({habit_id: habitId}).toArray();
-        const logs = habitLog.filter((log) => log.is_done === true);
+        const logs = habitLog.filter((log) => log.is_done);
 
         // Sortiere die Logs absteigend nach Datum
         logs.sort((a, b) => b.date.localeCompare(a.date));
@@ -277,7 +277,7 @@ export async function getUserStreak(userId: string) {
                 minStreak = 0;
                 break;
             }
-            const streak = await getStreakByHabitId(habit.id, userId);
+            const streak = await getStreakByHabitId(habit.id);
             if (streak < minStreak) minStreak = streak;
             if (minStreak === 0) break;
         }
@@ -290,7 +290,7 @@ export async function getUserStreak(userId: string) {
 }
 
 // Hinzufügen eines Habits zur IndexedDB
-export async function  addHabitToDB(
+export async function addHabitToDB(
     title: string,
     description: string,
     userId: string,
@@ -398,7 +398,108 @@ export async function updateHabitLogIsDoneById(
             synced: false,
             is_done: isDone,
         });
+
+        const habitLog = await db.habit_logs.where({id: habitLogId}).first();
+        if (!habitLog) return;
+
+        if (isDone) {
+            // Check if marking as done increases the streak
+            await updateStreakOnLogCreate(habitLog.habit_id);
+        } else {
+            // Recalculate in case undoing breaks a streak
+            await recalculateLongestStreak(habitLog.habit_id);
+        }
     } catch (err) {
         console.error("Fehler beim Updaten eines Habit Logs", err);
+    }
+}
+
+export async function getLongestStreakByHabitId(habitId: string) {
+    try {
+        const habit = await db.habits.where({id: habitId}).first();
+        if (!habit || !habit.days || habit.days.length === 0) return 0;
+
+        const habitLog = await db.habit_logs.where({habit_id: habitId}).toArray();
+        const logs = habitLog
+            .filter((log) => log.is_done)
+            .map((log) => log.date)
+            .sort();
+
+        if (logs.length === 0) return 0;
+
+        let longestStreak = 0;
+        let currentStreak = 1;
+
+        for (let i = 1; i < logs.length; i++) {
+            const prevDate = new Date(logs[i - 1]);
+            const currDate = new Date(logs[i]);
+
+            // Move prevDate forward until currDate is reached, checking only habit.days
+            let streakContinues = false;
+            let checkDate = new Date(prevDate);
+            checkDate.setDate(checkDate.getDate() + 1);
+
+            while (checkDate <= currDate) {
+                const weekday = WEEKDAYS[checkDate.getDay()];
+                if (habit.days.includes(weekday)) {
+                    streakContinues = checkDate.toISOString().split("T")[0] === currDate.toISOString().split("T")[0];
+                    break;
+                }
+                checkDate.setDate(checkDate.getDate() + 1);
+            }
+
+            if (streakContinues) {
+                currentStreak++;
+            } else {
+                longestStreak = Math.max(longestStreak, currentStreak);
+                currentStreak = 1;
+            }
+        }
+
+        longestStreak = Math.max(longestStreak, currentStreak);
+
+        return longestStreak;
+    } catch (err) {
+        console.error("Fehler beim Abrufen der längsten Streak", err);
+        return 0;
+    }
+}
+
+/*
+ * Updates the longest streak using the current streak once the habit log is created.
+ */
+export async function updateStreakOnLogCreate(habitId: string) {
+    const habit = await db.habits.where({id: habitId}).first();
+    if (!habit) return;
+
+    const currentStreak = await getStreakByHabitId(habitId);
+
+    if (currentStreak > habit.longest_streak) {
+        try {
+            await db.habits.update(habitId, {
+                longest_streak: currentStreak
+            });
+
+        } catch (err) {
+            console.error("Error updating longest streak.")
+        }
+    }
+}
+
+/*
+ * Recalculates the longest streak using getLongestStreakByHabitId().
+ * Updates the db with new longest streak.
+ *
+ */
+export async function recalculateLongestStreak(habitId: string) {
+    const longestStreak = await getLongestStreakByHabitId(habitId);
+
+    try {
+        await db.habits.update(habitId, {
+            longest_streak: longestStreak
+        });
+
+    } catch (err) {
+        console.error("Error updating longest streak.")
     }
 }

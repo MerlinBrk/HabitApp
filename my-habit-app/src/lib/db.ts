@@ -10,6 +10,7 @@ export interface Habit {
     is_public: boolean;
     synced: boolean;
     days?: string[];
+    longest_streak: number;
 }
 
 export interface HabitLog {
