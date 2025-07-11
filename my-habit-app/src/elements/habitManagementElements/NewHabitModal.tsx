@@ -1,9 +1,7 @@
-import React, {useState} from "react";
-import {FaTimes} from "react-icons/fa";
-import {useUserId} from "../services/useUserId";
-import {addHabitToDB} from "../services/dexieServices";
-import {WEEKDAYS} from "../utils/constants";
-import {USER_ID} from "../utils/constants";
+import {useState} from "react";
+import {addHabitToDB} from "../../services/dexieServices.ts";
+import {WEEKDAYS} from "../../utils/constants.tsx";
+import {USER_ID} from "../../utils/constants.tsx";
 
 interface NewHabitModalProps {
     isActive: boolean;

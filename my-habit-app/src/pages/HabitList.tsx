@@ -12,7 +12,7 @@ import {
 } from "../services/dexieServices";
 import Calendar from "../elements/Calender"; // Assuming you have a Calendar component
 import { syncAll } from "../lib/sync";
-import NewHabitModal from "../elements/NewHabitModal";
+import NewHabitModal from "../elements/habitManagementElements/NewHabitModal.tsx";
 import SelectDaysCalendar from "../elements/SelectDays";
 import DateSelector from "../elements/DateSelector";
 import SmallHabitCard from "../elements/habitlistElements/SmallHabitCard";

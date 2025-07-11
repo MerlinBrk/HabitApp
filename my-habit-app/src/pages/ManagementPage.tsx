@@ -1,8 +1,8 @@
-import ManageHabitCard from "../elements/habitlistElements/ManageHabitCard";
-import React, {useEffect, useState} from "react";
+import ManageHabitCard from "../elements/habitManagementElements/ManageHabitCard.tsx";
+import {useEffect, useState} from "react";
 import {type Habit} from "../lib/db";
 import {deleteHabit, getHabits, getUserStreak} from "../services/dexieServices";
-import NewHabitModal from "../elements/NewHabitModal";
+import NewHabitModal from "../elements/habitManagementElements/NewHabitModal.tsx";
 
 import {USER_ID} from "../utils/constants";
 

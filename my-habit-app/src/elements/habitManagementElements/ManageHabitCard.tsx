@@ -1,5 +1,10 @@
 import {useState, useEffect} from "react";
-import {getLongestStreakByHabitId, getPercentageDoneByHabitId, getStreakByHabitId} from "../../services/dexieServices";
+import {
+    getLongestStreakByHabitId,
+    getPercentageDoneByHabitId,
+    getStreakByHabitId
+} from "../../services/dexieServices.ts";
+import AnalyticsModal from "./AnalyticsModal.tsx";
 
 interface ManageHabitProps {
     habitTitle: string;
@@ -9,6 +14,7 @@ interface ManageHabitProps {
     days: string[];
     openEditHabitModal: () => {};
     handleDeleteHabit: () => {};
+    openAnalyticsModal: () => {};
 }
 
 export default function ManageHabitCard({
@@ -24,6 +30,7 @@ export default function ManageHabitCard({
     const [habitStreak, setHabitStreak] = useState(0);
     const [longestHabitStreak, setLongestHabitStreak] = useState(0);
     const [percentage, setPercentage] = useState(0);
+    const [openAnalyticsModal, setOpenAnalyticsModal] = useState(false);
 
 
     useEffect(() => {
@@ -35,6 +42,14 @@ export default function ManageHabitCard({
     const handleOpenMoreClick = () => {
         setOpenMoreDetails(!openMoreDetails);
     };
+
+    const handleOpenAnalyticsModal = () => {
+        setOpenAnalyticsModal(true);
+    }
+
+    const handleCloseAnalyticsModal = () => {
+        setOpenAnalyticsModal(false);
+    }
 
     const fetchPercentage = async () => {
         const data = await getPercentageDoneByHabitId(habitId, userId);
@@ -197,6 +212,29 @@ export default function ManageHabitCard({
                         ></div>
                     </div>
                 </div>
+                <button
+                    className="bg-white inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs mt-4 w-full"
+                    onClick={handleOpenAnalyticsModal}
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-bar-chart mr-2 h-4 w-4"
+                    >
+                        <line x1="12" x2="12" y1="20" y2="10"></line>
+                        <line x1="18" x2="18" y1="20" y2="4"></line>
+                        <line x1="6" x2="6" y1="20" y2="16"></line>
+                    </svg>
+                    {" "}
+                    View Detailed Analytics
+                </button>
                 {openMoreDetails &&
                     (
                         <>
@@ -231,6 +269,16 @@ export default function ManageHabitCard({
                             </div>
                         </>
                     )}
+                {openAnalyticsModal &&
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                        <div className="bg-white rounded-xl shadow-2xl p-8 relative min-w-[320px]">
+                            <AnalyticsModal habitStreak={habitStreak} longestHabitStreak={longestHabitStreak}
+                                            completionRate={percentage} isActive={openAnalyticsModal}
+                                            onClose={handleCloseAnalyticsModal}/>
+
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     );
