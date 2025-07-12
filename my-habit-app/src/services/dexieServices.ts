@@ -2,6 +2,7 @@ import {db} from "../lib/db";
 import {supabase} from "../lib/supabase";
 import {v4 as uuidv4} from "uuid";
 import {WEEKDAYS} from "../utils/constants";
+import {format, eachDayOfInterval, startOfYear, endOfYear} from "date-fns";
 
 
 // Gibt ein Habit anhand der ID zurück
@@ -414,6 +415,11 @@ export async function updateHabitLogIsDoneById(
     }
 }
 
+/**
+ * Calculates the longest streak for a specific habit.
+ * @param habitId - The ID of the habit to check.
+ * @return The longest streak for the habit.
+ */
 export async function getLongestStreakByHabitId(habitId: string) {
     try {
         const habit = await db.habits.where({id: habitId}).first();
@@ -502,4 +508,58 @@ export async function recalculateLongestStreak(habitId: string) {
     } catch (err) {
         console.error("Error updating longest streak.")
     }
+}
+
+/**
+ * Get a map of dates for a habit showing whether it was completed.
+ * @param habitId - The habit to check.
+ * @param year - The year to generate data for.
+ * @returns Record<string, boolean> where key = 'YYYY-MM-DD', value = true (completed) or false.
+ */
+export async function getHabitCompletionMap(habitId: string, year: number): Promise<Record<string, boolean>> {
+    const start = startOfYear(new Date(year, 0, 1));
+    const end = endOfYear(new Date(year, 0, 1));
+
+    // Fetch all logs for that habit within the year
+    const logs = await db.habit_logs
+        .where("habit_id")
+        .equals(habitId)
+        .and((log) => {
+            const logDate = new Date(log.date);
+            return logDate >= start && logDate <= end;
+        })
+        .toArray();
+
+    // Build date map initialized with false
+    const days = eachDayOfInterval({start, end});
+    const completionMap: Record<string, boolean> = {};
+
+    days.forEach(day => {
+        const dateStr = format(day, "yyyy-MM-dd");
+        completionMap[dateStr] = false;
+    });
+
+    // Set true for dates where is_done is true
+    logs.forEach(log => {
+        if (log.is_done) {
+            completionMap[log.date] = true;
+        }
+    });
+
+    return completionMap;
+}
+
+/**
+ * Get the completion count for a specific habit in a given year.
+ * @param habitId - The ID of the habit to check.
+ * @param year - The year to filter logs by.
+ * @returns Number of completed logs for that habit in the specified year.
+ */
+export async function getHabitLogCountForYear(habitId: string, year: number): Promise<number> {
+    const startDate = `${year}-01-01`;
+    const endDate = `${year}-12-31`;
+
+    const logs = await db.habit_logs.where("habit_id").equals(habitId).and(log => log.is_done && log.date >= startDate && log.date <= endDate).toArray();
+
+    return logs.length;
 }

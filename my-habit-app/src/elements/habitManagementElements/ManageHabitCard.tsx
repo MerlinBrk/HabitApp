@@ -272,7 +272,7 @@ export default function ManageHabitCard({
                 {openAnalyticsModal &&
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
                         <div className="bg-white rounded-xl shadow-2xl p-8 relative min-w-[320px]">
-                            <AnalyticsModal habitStreak={habitStreak} longestHabitStreak={longestHabitStreak}
+                            <AnalyticsModal habitId={habitId} habitStreak={habitStreak} longestHabitStreak={longestHabitStreak}
                                             completionRate={percentage} isActive={openAnalyticsModal}
                                             onClose={handleCloseAnalyticsModal}/>
 

@@ -1,4 +1,7 @@
+import HabitHeatMap from "./HabitHeatMap.tsx";
+
 interface AnalyticsProps {
+    habitId: string;
     habitStreak: number;
     longestHabitStreak: number;
     completionRate: number;
@@ -7,6 +10,7 @@ interface AnalyticsProps {
 }
 
 export default function AnalyticsModal({
+                                           habitId,
                                            habitStreak,
                                            longestHabitStreak,
                                            completionRate,
@@ -58,6 +62,7 @@ export default function AnalyticsModal({
                         <div className="text-xl font-bold">{completionRate}%</div>
                     </div>
                 </div>
+                <HabitHeatMap habitId={habitId}/>
             </div>
 
             <div className="flex justify-end space-x-2">
