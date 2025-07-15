@@ -11,6 +11,7 @@ export interface Habit {
     synced: boolean;
     days?: string[];
     longest_streak: number;
+    deleted: boolean;
 }
 
 export interface HabitLog {
@@ -29,7 +30,7 @@ class MyDatabase extends Dexie {
     constructor() {
         super("HabitTrackerDB");
         this.version(1).stores({
-            habits: "id,user_id,created_at,synced",  // Sicherstellen, dass "synced" auch indexiert ist
+            habits: "id,user_id,created_at,synced,deleted",  // Sicherstellen, dass "synced" auch indexiert ist
             habit_logs: "id,[user_id+synced],[habit_id+user_id+date],user_id,habit_id,date,synced",  // Compound index for user_id+synced
         });
     }

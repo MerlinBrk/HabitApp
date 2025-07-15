@@ -1,6 +1,6 @@
 // utils/constants.ts
-import {useUserId} from "../services/useUserId";
+import { getUserIdFromSession } from "../lib/auth";
 
 export const WEEKDAYS = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 
-export const USER_ID = useUserId();
+export const USER_ID = await getUserIdFromSession();

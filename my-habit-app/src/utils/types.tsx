@@ -15,3 +15,11 @@ export type CommunityMessage = {
   habit_id: string;
   created_at: string;
 }
+
+export type CommunityComments = {
+  id:string;
+  message_id:string;
+  user_id:string;
+  message:string;
+  created_at:string;
+}

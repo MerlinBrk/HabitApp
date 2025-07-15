@@ -1,8 +1,9 @@
 import ManageHabitCard from "../elements/habitManagementElements/ManageHabitCard.tsx";
 import {useEffect, useState} from "react";
 import {type Habit} from "../lib/db";
-import {deleteHabit, getHabits, getUserStreak} from "../services/dexieServices";
+import {deleteHabit, getHabits} from "../services/dexieServices";
 import NewHabitModal from "../elements/habitManagementElements/NewHabitModal.tsx";
+import {syncAll} from "../lib/sync";
 
 import {USER_ID} from "../utils/constants";
 
@@ -22,11 +23,11 @@ export default function ManagementPage() {
 
     useEffect(() => {
         loadHabits();
-    }, [habits]);
+        syncAll(); // Synchronize data with Supabase when the component mounts
+    }, [habits, openNewHabitModal]);
 
     const loadHabits = async () => {
         const data = await getHabits(USER_ID);
-        console.log(data);
         setHabits(prev =>
             JSON.stringify(prev) !== JSON.stringify(data) ? data : prev
         );
@@ -57,7 +58,7 @@ export default function ManagementPage() {
             <div className="max-w-7xl mx-auto">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-3xl font-bold">Habit Management</h1>
-                    <button onClick={handleOpenNewHabitModal}
+                    <button aria-label="Create new habit" onClick={handleOpenNewHabitModal}
                             className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-black text-white shadow hover:bg-black/90 h-9 px-4 py-2 text-bold">
                         + Create New Habit
                     </button>
@@ -76,6 +77,7 @@ export default function ManagementPage() {
                     <div className="inline-flex rounded-full bg-[#f4f6f9] p-1">
                         {tabs.map((tab) => (
                             <button
+                                aria-label={`Switch to ${tab} tab`}
                                 type="button"
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
