@@ -13,7 +13,6 @@ import {
   getUserStreak,
   getPercentageDoneByUserId,
 } from "../services/dexieServices";
-import DropDownButton from "../elements/habitlistElements/DropDownButton";
 import { USER_ID } from "../utils/constants";
 import HabitHomeCard from "../elements/habitlistElements/HabitHomeCard";
 import { syncAll } from "../lib/sync";
