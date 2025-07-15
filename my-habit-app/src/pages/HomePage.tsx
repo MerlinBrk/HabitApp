@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from "react";
-import ProgressBar from "react-bootstrap/ProgressBar";
+import { useState, useEffect } from "react";
 import { type Habit } from "../lib/db";
 import {
-  deleteHabit,
   getDaysHabitsByUserId,
   getNotDaysHabitsByUserId,
   getHabitLogsByDateAndUserId,
   getHabitLogByHabitIdAndDateAndUserId,
   updateHabitLogIsDoneById,
   addHabitLog,
-  getHabits,
   getUserStreak,
   getPercentageDoneByUserId,
 } from "../services/dexieServices";
@@ -17,7 +14,6 @@ import { USER_ID } from "../utils/constants";
 import HabitHomeCard from "../elements/habitlistElements/HabitHomeCard";
 import { syncAll } from "../lib/sync";
 import HomeProgressCard from "../elements/habitlistElements/HomeProgressCard";
-import { getUsernameBySession } from "../lib/auth";
 
 type CheckInMap = {
   [habitId: string]: boolean;
@@ -28,11 +24,9 @@ const tabs: Tab[] = ["Today", "All Habits"];
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<Tab>("Today");
-  const userName = getUsernameBySession();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [notDaysHabits, setNotDaysHabits] = useState<Habit[]>([]);
   const [checkInsToday, setCheckInsToday] = useState<CheckInMap>({});
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [todaysHabitAmount, setTodaysHabitAmount] = useState(0);
   const [trueHabitLogs, setTrueHabitLogs] = useState(0);
@@ -66,7 +60,7 @@ export default function HomePage() {
     fetchUserStreak();
   };
 
-  const handleDateChange = (newDate) => {
+  const handleDateChange = (newDate:Date) => {
     setCurrentDate(newDate);
   };
 

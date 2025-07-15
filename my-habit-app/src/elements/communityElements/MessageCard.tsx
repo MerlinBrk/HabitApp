@@ -14,8 +14,8 @@ interface MessageCardProps {
   title: string;
   message: string;
   habit: string;
-  handleCopyHabit: (title: string, days: string[]) => {};
-  handleCommentOpen:() =>{};
+  handleCopyHabit: (title: string, description: string, days: string[]) => void;
+  handleCommentOpen: () => void;
 }
 
 export default function MessageCard({
@@ -76,7 +76,7 @@ export default function MessageCard({
 
   const handleCopy = () => {
     if (curHabit) {
-      handleCopyHabit(curHabit.title, curHabit.days);
+      handleCopyHabit(curHabit.title, curHabit.description, curHabit.days);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 1500);
     }

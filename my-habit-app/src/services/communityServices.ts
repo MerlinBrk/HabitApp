@@ -79,6 +79,9 @@ export async function addNewCommunity(userId: string, newTitle:string, newDescri
   .insert([
     { owner_id: userId, title: newTitle,description:newDescription },
   ])
+  if(error) {
+    throw error;
+  }
 
 }
 
