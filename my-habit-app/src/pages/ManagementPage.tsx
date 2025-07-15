@@ -103,9 +103,10 @@ export default function ManagementPage() {
                 habitId={habit.id}
                 description={habit.description}
                 habitTitle={habit.title}
-                days={habit.days?.join(", ")}
+                days={habit.days ?? []}
                 openEditHabitModal={() => {}}
                 handleDeleteHabit={() => handleDeleteHabit(habit.id)}
+                openAnalyticsModal={() => {}}
               />
             ))}
           </div>

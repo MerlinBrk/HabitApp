@@ -76,7 +76,7 @@ export default function MessageCard({
 
   const handleCopy = () => {
     if (curHabit) {
-      handleCopyHabit(curHabit.title, curHabit.description, curHabit.days);
+      handleCopyHabit(curHabit.title, curHabit.description, curHabit.days ?? []);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 1500);
     }

@@ -5,6 +5,7 @@ import './index.css';
 import App from './App.tsx';
 import { syncUserIdToLocalStorage } from './lib/sync';
 import { syncAll } from './lib/sync.ts';
+import { registerSW } from 'virtual:pwa-register';
 
 
 setInterval(() => {
@@ -19,6 +20,15 @@ window.addEventListener('online', () => {
 });
 
 syncUserIdToLocalStorage(); 
+registerSW({
+  immediate: true,
+  onNeedRefresh() {
+    console.log('New content is available, please refresh.');
+  },
+  onOfflineReady() {
+    console.log('App is ready to work offline.');
+  },
+});
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

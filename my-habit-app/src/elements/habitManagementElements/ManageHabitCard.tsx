@@ -198,8 +198,8 @@ export default function ManageHabitCard({
           </div>
           <div
             title="Completion Rate Progress bar"
-            aria-valuemax="100"
-            aria-valuemin="0"
+            aria-valuemax={100}
+            aria-valuemin={0}
             role="progressbar"
             data-state="indeterminate"
             data-max="100"

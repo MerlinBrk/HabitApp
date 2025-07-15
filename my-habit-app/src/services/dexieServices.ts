@@ -318,6 +318,7 @@ export async function addHabitToDB(
             synced: false,
             deleted: false,
             days,
+            longest_streak: 0,
         };
         await db.habits.add(newHabit);
     } catch (err) {
@@ -368,13 +369,14 @@ export async function deleteHabit(habitId: string, userId: string) {
         }
     } else {
         try {
-            const {error} = await db.habits.update(habitId, {
+            const updatedCount = await db.habits.update(habitId, {
                 synced: false,
                 deleted: true, // Markiere das Habit als gelöscht
             });
-            if (error) {
-                throw error;
+            if (updatedCount === 0) {
+                throw new Error("Habit nicht gefunden");
             }
+            
         } catch (err) {
             console.error("Fehler beim Markieren des Habits als gelöscht:", err);
         }
