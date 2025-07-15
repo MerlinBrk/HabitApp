@@ -25,7 +25,7 @@ export interface HabitLog {
 
 class MyDatabase extends Dexie {
     habits!: Dexie.Table<Habit, string>;
-    habit_logs!: Dexie.Table<HabitLog, number>;
+    habit_logs!: Dexie.Table<HabitLog, string>;
 
     constructor() {
         super("HabitTrackerDB");

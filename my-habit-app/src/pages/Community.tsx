@@ -1,28 +1,23 @@
 import SearchBar from "../elements/communityElements/SearchBar";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import React, { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
+import { useEffect, useState } from "react";
 import {
   getAllCommunities,
   addNewCommunity,
-  getCommunityIdByCommunityTitle,
   getCommunitiesByUserId,
 } from "../services/communityServices";
 import CommentModal from "../elements/communityElements/CommentModal";
 import {
-  getAllCommunityMessages,
   getAllCommunityMessagesByCommunityId,
   getAllMessagesByUserCommunities,
 } from "../services/messageServices";
 import MessageCard from "../elements/communityElements/MessageCard";
 import NewCommunityModal from "../elements/communityElements/NewCommunityModal";
-import AddButton from "../elements/AddButton";
 import { type Community, type CommunityMessage } from "../utils/types";
 import PostButton from "../elements/communityElements/PostButton";
 import NewMessageModal from "../elements/communityElements/NewMessageModal";
 import { addNewMessage } from "../services/messageServices";
-import { addHabitToDB, getHabitById } from "../services/dexieServices";
-import { type Habit } from "../lib/db";
+import { addHabitToDB} from "../services/dexieServices";
 import { useStore } from "../lib/store";
 import { USER_ID } from "../utils/constants";
 import {
@@ -93,12 +88,16 @@ export default function CommunityPage() {
 
   const fetchOwnCommunities = async () => {
     const data = await getCommunitiesByUserId(USER_ID);
+    if (!data) {
+      console.error("No communities found for this user.");
+      return;
+    }
     clearList();
     setCommunityTitles(data.map((community) => community.title));
     setUserCommunities(data);
   };
 
-  const fetchMessages = async (communityId: string) => {
+  const fetchMessages = async () => {
     if (currentCommunityId) {
       fetchCommunityFeed();
     } else {
@@ -163,8 +162,8 @@ export default function CommunityPage() {
     addCommunityId(communityId);
   };
 
-  const handleCopyHabit = async (title: string, days: string[]) => {
-    await addHabitToDB(title, USER_ID, true, days);
+  const handleCopyHabit = async (title: string, description: string, days: string[]) => {
+    await addHabitToDB(title, description, USER_ID, true, days);
   };
 
   const handleAddNewCommunityButton = async (
@@ -186,7 +185,7 @@ export default function CommunityPage() {
 
   const joinCommunity = async (communityId: string) => {
     await addNewCommunityUser(communityId, USER_ID);
-    fetchCommunityMessages();
+    fetchMessages();
     setPartOfCurrentCommunity(true);
     fetchOwnCommunities();
   };
@@ -230,9 +229,9 @@ export default function CommunityPage() {
                       }}
                     >
                       <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-200 text-blue-700 font-bold text-lg mr-2">
-                        {item.charAt(0).toUpperCase()}
+                        {item.name.charAt(0).toUpperCase()}
                       </div>
-                      {item}
+                      {item.name}
                     </button>
                   </li>
                 )

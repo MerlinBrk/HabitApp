@@ -7,7 +7,7 @@ export async function addNewCommunityUser(communityId:string,userId: string){
   .insert([
     { community_id:communityId,user_id:userId },
   ])
-
+  if(error) throw error;
 }
 
   catch(err){

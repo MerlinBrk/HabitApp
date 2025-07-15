@@ -1,4 +1,4 @@
-export default function NewCommunityButton({onClick}:{onClick: () => {}}){
+export default function NewCommunityButton({onClick}:{onClick: () => void}){
     return (
       <button
         onClick={onClick}

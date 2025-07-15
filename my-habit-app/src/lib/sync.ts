@@ -28,7 +28,7 @@ export async function syncUserIdToLocalStorage() {
   }
   localStorage.setItem("user_id", userId);
   localStorage.setItem("user_name", profile.username);
-  localStorage.setItem("user_email", userEmail);
+  localStorage.setItem("user_email", userEmail ?? "");
 }
 
 export async function syncAll() {

@@ -1,23 +1,23 @@
 import { supabase } from "./supabase";
 import { getUsernameById } from "../services/profileServices";
 
-export async function getUserIdFromSession(): Promise<string | null> {
+export async function getUserIdFromSession(): Promise<string > {
     if(navigator.onLine) {
   const { data, error } = await supabase.auth.getSession();
-  if (error || !data.session?.user?.id) return null;
+  if (error || !data.session?.user?.id) return "";
   return data.session.user.id;
 }else{
-    return localStorage.getItem("user_id");
+    return localStorage.getItem("user_id") || "";
 }
 }
 
-export async function getUserEmailFromSession():Promise<string | null> {
+export async function getUserEmailFromSession():Promise<string> {
     if(navigator.onLine) {
         const { data, error } = await supabase.auth.getSession();
-        if (error || !data.session?.user?.email) return null;
+        if (error || !data.session?.user?.email) return "";
         return data.session.user.email;
     }else{
-        return localStorage.getItem("user_email");
+        return localStorage.getItem("user_email") || "";
     }
 }
 

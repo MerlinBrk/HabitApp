@@ -26,7 +26,7 @@ export default function NewMessageModal({
   const [messageTitle, setMessageTitle] = useState("");
   const [messageContent, setMessageContent] = useState("");
   const [choosenHabitId, setChoosenHabitId] = useState<string>("");
-  const [noInput, setNoInput] = useState(false);
+  
   const [choosenCommunityId, setChoosenCommunityId] = useState<string>(currentCommunityId);
 
   useEffect(() => {
@@ -157,9 +157,7 @@ export default function NewMessageModal({
           </div>
         </div>
 
-        {noInput && (
-          <p className="text-sm text-red-600">Bitte alle Felder ausfüllen.</p>
-        )}
+        
 
         <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
           <button

@@ -36,7 +36,7 @@ export async function getDaysHabitsByUserId(userId: string, date: Date) {
         const habits = await db.habits
             .where("user_id")
             .equals(userId)
-            .filter((habit) => habit.days?.includes(todayWeekday))
+            .filter((habit) => !!habit.days?.includes(todayWeekday))
             .filter((habit) => !habit.deleted) // Filtere gelöschte Habits aus
             .toArray();
         return habits;
@@ -79,7 +79,7 @@ export async function getAllHabitLogs(userId: string) {
 }
 
 // Gibt alle HabitLogs eines Benutzers zurück, die zu einem bestimmten Habit gehören
-export async function getHabitLogByHabitId(habitId: number) {
+export async function getHabitLogByHabitId(habitId: string) {
     try {
         const habitLog = await db.habit_logs.where({habit_id: habitId}).toArray();
         return habitLog;
@@ -91,7 +91,7 @@ export async function getHabitLogByHabitId(habitId: number) {
 
 // Gibt einen HabitLog für einen bestimmten Habit, ein bestimmtes Datum und einen Benutzer zurück
 export async function getHabitLogByHabitIdAndDateAndUserId(
-    habitId: number,
+    habitId: string,
     date: Date,
     userId: string
 ) {
@@ -110,7 +110,7 @@ export async function getHabitLogByHabitIdAndDateAndUserId(
 // Gibt alle HabitLogs eines Benutzers für einen bestimmten Tag zurück
 export async function getHabitLogsByDateAndUserId(
     userId: string,
-    day: Date
+    day: Date | string
 ) {
     try {
         const formattedDate =
@@ -129,7 +129,7 @@ export async function getHabitLogsByDateAndUserId(
 
 export async function getPercentageDoneByHabitId(
     habitId: string,
-    userId: string
+    
 ) {
     try {
         // Hole das Habit, um die aktiven Wochentage zu bekommen
@@ -211,7 +211,7 @@ export async function getPercentageDoneByUserId(userId: string) {
 
             if (!possible) continue;
 
-            const percent = await getPercentageDoneByHabitId(habit.id, userId);
+            const percent = await getPercentageDoneByHabitId(habit.id);
             totalPercentage += percent;
             count++;
         }
@@ -328,7 +328,7 @@ export async function addHabitToDB(
 //Hinzufügen eines neuen HabitLogs für ein besimmtes Habit
 export async function addHabitLog(
     userId: string,
-    habitId: number,
+    habitId: string,
     date: Date,
     isDone: boolean
 ) {
@@ -382,7 +382,7 @@ export async function deleteHabit(habitId: string, userId: string) {
 }
 
 // Löschen eines Habit Logs aus IndexedDB
-export async function deleteHabitLog(habitId: number, userId: string) {
+export async function deleteHabitLog(habitId: string, userId: string) {
     try {
         const habitLog = await db.habit_logs.where({habit_id: habitId}).toArray();
         if (!habitLog) {
@@ -411,7 +411,7 @@ export async function deleteHabitLog(habitId: number, userId: string) {
 
 // Aktualisieren von IsDone-Wert für ein Habit Log
 export async function updateHabitLogIsDoneById(
-    habitLogId: number,
+    habitLogId: string,
     isDone: boolean
 ) {
     try {
