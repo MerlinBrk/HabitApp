@@ -52,7 +52,7 @@ export default function ManagementPage() {
         );
 
   return (
-    <div className="bg-white p-6 min-h-screen">
+    <div className="bg-white p-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Habit Management</h1>
@@ -96,7 +96,7 @@ export default function ManagementPage() {
               </button>
             ))}
           </div>
-          <div className="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
+          <div className="max-h-[calc(100vh-200px)] overflow-y-auto mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
             {getFilteredHabits.map((habit) => (
               <ManageHabitCard
                 key={habit.id}
