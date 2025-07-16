@@ -10,10 +10,10 @@ import {
   getUserStreak,
   getPercentageDoneByUserId,
 } from "../services/dexieServices";
-import { USER_ID } from "../utils/constants";
 import HabitHomeCard from "../elements/habitlistElements/HabitHomeCard";
 import { syncAll } from "../lib/sync";
 import HomeProgressCard from "../elements/habitlistElements/HomeProgressCard";
+import { getUserIdFromSession } from "../lib/auth";
 
 type CheckInMap = {
   [habitId: string]: boolean;
@@ -32,15 +32,18 @@ export default function HomePage() {
   const [trueHabitLogs, setTrueHabitLogs] = useState(0);
   const [userStreak, setUserStreak] = useState(0);
   const [userpercentage, setUserPercentage] = useState(0);
+  const [USER_ID, setUserId] = useState<string>("");
 
   useEffect(() => {
     loadAllData();
     syncAll();
+    fetchUserId();
   }, []);
 
+  
   useEffect(() => {
     loadAllData();
-  }, [activeTab]);
+  }, [activeTab,USER_ID]);
 
   useEffect(() => {
     getDailyDoneHabits();
@@ -53,6 +56,10 @@ export default function HomePage() {
     loadAllData();
   }, [currentDate]);
 
+  const fetchUserId = async () => {
+    const userId = await getUserIdFromSession();
+    setUserId(userId);
+  };
   const loadAllData = () => {
     loadHabits();
     loadNotDaysHabits();

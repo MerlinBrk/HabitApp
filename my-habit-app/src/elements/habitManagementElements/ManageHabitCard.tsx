@@ -167,7 +167,7 @@ export default function ManageHabitCard({
               <rect width="18" height="18" x="3" y="4" rx="2"></rect>
               <path d="M3 10h18"></path>
             </svg>
-            <span className="text-sm">{days}</span>
+            <span className="text-sm">{days.join(", ")}</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
