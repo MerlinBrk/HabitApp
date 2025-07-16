@@ -10,6 +10,7 @@ import {
   getUserStreak,
   getPercentageDoneByUserId,
 } from "../services/dexieServices";
+import { USER_ID } from "../utils/constants";
 import HabitHomeCard from "../elements/habitlistElements/HabitHomeCard";
 import { syncAll } from "../lib/sync";
 import HomeProgressCard from "../elements/habitlistElements/HomeProgressCard";
@@ -40,7 +41,7 @@ export default function HomePage() {
     fetchUserId();
   }, []);
 
-  
+
   useEffect(() => {
     loadAllData();
   }, [activeTab,USER_ID]);
