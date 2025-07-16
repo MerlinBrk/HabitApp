@@ -1,16 +1,17 @@
 import {useState} from "react";
 import {addHabitToDB} from "../../services/dexieServices.ts";
 import {WEEKDAYS} from "../../utils/constants.tsx";
-import {USER_ID} from "../../utils/constants.tsx";
 
 interface NewHabitModalProps {
     isActive: boolean;
     onClose: () => void;
+    userId: string; // Optional userId prop
 }
 
 export default function NewHabitModal({
                                           isActive,
                                           onClose,
+                                            userId, 
                                       }: NewHabitModalProps) {
     const [newHabit, setNewHabit] = useState("");
     const [description, setDescription] = useState("");
@@ -21,7 +22,7 @@ export default function NewHabitModal({
 
     const addHabit = async () => {
         if (!newHabit.trim()) return;
-        await addHabitToDB(newHabit, description, USER_ID, isPublic, selectedDays);
+        await addHabitToDB(newHabit, description, userId, isPublic, selectedDays);
         setNewHabit("");
         setDescription(description);
         setIsPublic(false);

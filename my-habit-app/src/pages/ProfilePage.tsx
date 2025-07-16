@@ -1,6 +1,5 @@
 import { supabase } from "../lib/supabase";
 import React, { useState, useEffect } from "react";
-import { USER_ID } from "../utils/constants";
 import { getUserEmailFromSession, getUserIdFromSession ,getUsernameBySession} from "../lib/auth";
 import {
   clearHabitDB,
@@ -21,8 +20,8 @@ export default function ProfilePage() {
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
-
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string>("");
 
   const handleLogout = async () => {
     await clearHabitDB();
@@ -38,7 +37,7 @@ export default function ProfilePage() {
     if (!file) return;
 
     try {
-      const imageUrl = await uploadProfileImage(USER_ID, file);
+      const imageUrl = await uploadProfileImage(userId, file);
       setProfileImageUrl(imageUrl);
     } catch (error: any) {
       console.error("Fehler beim Hochladen des Profilbilds:", error.message);
@@ -49,6 +48,7 @@ export default function ProfilePage() {
     const load = async () => {
       const id = await getUserIdFromSession(); // NEU
       if (!id) return;
+      setUserId(id);
       fetchAllData(id);
     };
 

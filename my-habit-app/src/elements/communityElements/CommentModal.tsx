@@ -9,7 +9,6 @@ import {
   addNewCommentToMessage,
   getAllCommentsByMessageId,
 } from "../../services/commentsServices";
-import { USER_ID } from "../../utils/constants";
 import NewCommentCard from "./NewCommentCard";
 import CommentCard from "./CommentCard";
 
@@ -17,12 +16,14 @@ interface CommentModalProps {
   isActive: boolean;
   message_id: string;
   handleCommentModalClose: () => void;
+  userId: string; // Optional userId prop for fetching profile image
 }
 
 export default function CommentModal({
   isActive,
   message_id,
   handleCommentModalClose,
+  userId, 
 }: CommentModalProps) {
   const [message, setMessage] = useState<CommunityMessage>();
   const [username, setUsername] = useState("");
@@ -70,7 +71,7 @@ export default function CommentModal({
   }, [message]);
 
   const handleCommentSubmit = async (commentText: string) => {
-    await addNewCommentToMessage(message_id, USER_ID, commentText);
+    await addNewCommentToMessage(message_id, userId, commentText);
   };
 
   if (!isActive) return;

@@ -10,7 +10,10 @@ import Layout from "./responsive/Layout.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import useIsMobile from "./responsive/useIsMobile.ts"
 import ManagementPage from "./pages/ManagementPage.tsx";
-import { USER_ID } from "./utils/constants.tsx";
+import {
+  getUserIdFromSession,
+} from "./lib/auth.ts";
+
 import {
   pullHabitLogsFromSupabase,
   pullHabitsFromSupabase,
@@ -20,6 +23,7 @@ export default function App() {
     const isMobile = useIsMobile();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [userId, setUserId] = useState<string>("");
 
     useEffect(() => {
         supabase.auth.getSession().then(({data: {session}}) => {
@@ -39,13 +43,19 @@ export default function App() {
    useEffect(() => {
     if (isLoggedIn) {
       // Navigiere zur Homepage, sobald eingeloggt
-
+      fetchUserId();
       setLoading(true);
-      (async () => {
+      
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
         try {
 
-          await pullHabitLogsFromSupabase(USER_ID);
-          await pullHabitsFromSupabase(USER_ID);
+          await pullHabitLogsFromSupabase(userId);
+          await pullHabitsFromSupabase(userId);
         } catch (error) {
           console.error("Error pulling data:", error);
         } finally {
@@ -53,8 +63,12 @@ export default function App() {
 
         }
       })();
-    }
-  }, [isLoggedIn]);
+  }, [userId]);
+
+  const fetchUserId = async () => {
+    const userID = await getUserIdFromSession();
+    setUserId(userID);
+  };
 
   if (loading)
     return (

@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { type Habit } from "../../lib/db";
 import { getHabits } from "../../services/dexieServices";
-import { USER_ID } from "../../utils/constants";
 import {type Community} from "../../utils/types";
 
 interface NewMessageModalProps {
@@ -12,6 +11,7 @@ interface NewMessageModalProps {
   onClose: () => void;
   communities: Community[];
   onAddButton: (communityId: string, title: string, description: string,habitId:string) => void;
+  userId: string; // Optional userId prop
 }
 
 export default function NewMessageModal({
@@ -20,6 +20,7 @@ export default function NewMessageModal({
   onClose,
   communities,
   onAddButton,
+  userId,
 }: NewMessageModalProps) {
 
   const [habits, setHabits] = useState<Habit[]>([]);
@@ -35,7 +36,7 @@ export default function NewMessageModal({
   }, [isActive]);
 
   const loadPublicUserHabits = async () => {
-    const data = await getHabits(USER_ID);
+    const data = await getHabits(userId);
     setHabits(data);
   };
 

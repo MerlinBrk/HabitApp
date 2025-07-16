@@ -19,7 +19,7 @@ import NewMessageModal from "../elements/communityElements/NewMessageModal";
 import { addNewMessage } from "../services/messageServices";
 import { addHabitToDB} from "../services/dexieServices";
 import { useStore } from "../lib/store";
-import { USER_ID } from "../utils/constants";
+import { getUserIdFromSession } from "../lib/auth";
 import {
   addNewCommunityUser,
   deleteCommunityUser,
@@ -53,12 +53,18 @@ export default function CommunityPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [fullSidebarOpen, setFullSidebarOpen] = useState(false);
   const [currentCommunityName, setCurrentCommunityName] = useState("");
+  const [userId, setUserId] = useState<string>("");
 
   useEffect(() => {
+    fetchUserId(); 
+  }, []);
+
+  useEffect(() => {
+    if(!userId) return;
     fetchAll();
     clearCommunityId();
     clearList();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     userCommunities.forEach((community) => {
@@ -75,6 +81,15 @@ export default function CommunityPage() {
     }
   }, [currentCommunityId]);
 
+  const fetchUserId = async () => {
+    const userID = await getUserIdFromSession();
+    if (userID) {
+      setUserId(userID); // Set the global userId variable
+    } else {
+      console.error("User ID not found");
+    }
+  };
+
   const fetchAll = () => {
     fetchCommunities();
     fetchOwnCommunities();
@@ -87,7 +102,7 @@ export default function CommunityPage() {
   };
 
   const fetchOwnCommunities = async () => {
-    const data = await getCommunitiesByUserId(USER_ID);
+    const data = await getCommunitiesByUserId(userId);
     if (!data) {
       console.error("No communities found for this user.");
       return;
@@ -114,7 +129,7 @@ export default function CommunityPage() {
   };
 
   const fetchUserFeed = async () => {
-    const data = await getAllMessagesByUserCommunities(USER_ID);
+    const data = await getAllMessagesByUserCommunities(userId);
     setCommunityMessages(data);
   };
 
@@ -145,7 +160,7 @@ export default function CommunityPage() {
 
   const fetchpartOfCommunity = async (CommunityId: string) => {
     if (CommunityId !== "") {
-      const data = await getIfUserIsPartOfCommunity(CommunityId, USER_ID);
+      const data = await getIfUserIsPartOfCommunity(CommunityId, userId);
       setPartOfCurrentCommunity(data);
     }
   };
@@ -161,14 +176,14 @@ export default function CommunityPage() {
   };
 
   const handleCopyHabit = async (title: string, description: string, days: string[]) => {
-    await addHabitToDB(title, description, USER_ID, true, days);
+    await addHabitToDB(title, description, userId, true, days);
   };
 
   const handleAddNewCommunityButton = async (
     title: string,
     description: string
   ) => {
-    await addNewCommunity(USER_ID, title, description);
+    await addNewCommunity(userId, title, description);
   };
 
   const handleAddNewMessageButton = async (
@@ -177,19 +192,19 @@ export default function CommunityPage() {
     description: string,
     habitId: string
   ) => {
-    await addNewMessage(communityId, title, description, USER_ID, habitId);
+    await addNewMessage(communityId, title, description, userId, habitId);
     fetchMessages();
   };
 
   const joinCommunity = async (communityId: string) => {
-    await addNewCommunityUser(communityId, USER_ID);
+    await addNewCommunityUser(communityId, userId);
     fetchMessages();
     setPartOfCurrentCommunity(true);
     fetchOwnCommunities();
   };
 
   const leaveCommunity = async (communityId: string) => {
-    await deleteCommunityUser(communityId, USER_ID);
+    await deleteCommunityUser(communityId, userId);
     setPartOfCurrentCommunity(false);
     fetchOwnCommunities();
   };
@@ -315,6 +330,7 @@ export default function CommunityPage() {
               isActive={commentModalOpen}
               message_id={currentCommunityForCommentModal}
               handleCommentModalClose={() => setCommentModalOpen(false)}
+              userId={userId}
             />
             <NewCommunityModal
               currentTitles={communityTitles}
@@ -328,6 +344,7 @@ export default function CommunityPage() {
               communities={userCommunities}
               onClose={() => setStateNewMessageModal(false)}
               onAddButton={handleAddNewMessageButton}
+              userId={userId} 
             />
             <div className="mt-4">
               {currentCommunityId && !loadingCommunityInfo &&(

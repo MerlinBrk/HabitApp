@@ -10,7 +10,6 @@ import {
   getUserStreak,
   getPercentageDoneByUserId,
 } from "../services/dexieServices";
-import { USER_ID } from "../utils/constants";
 import HabitHomeCard from "../elements/habitlistElements/HabitHomeCard";
 import { syncAll } from "../lib/sync";
 import HomeProgressCard from "../elements/habitlistElements/HomeProgressCard";
@@ -33,18 +32,18 @@ export default function HomePage() {
   const [trueHabitLogs, setTrueHabitLogs] = useState(0);
   const [userStreak, setUserStreak] = useState(0);
   const [userpercentage, setUserPercentage] = useState(0);
-  const [USER_ID, setUserId] = useState<string>("");
+  const [userId, setUserId] = useState<string>("");
 
   useEffect(() => {
     loadAllData();
     syncAll();
     fetchUserId();
-  }, []);
+  }, [userId]);
 
 
   useEffect(() => {
     loadAllData();
-  }, [activeTab,USER_ID]);
+  }, [activeTab]);
 
   useEffect(() => {
     getDailyDoneHabits();
@@ -73,17 +72,17 @@ export default function HomePage() {
   };
 
   const loadNotDaysHabits = async () => {
-    const data = await getNotDaysHabitsByUserId(USER_ID, currentDate);
+    const data = await getNotDaysHabitsByUserId(userId, currentDate);
     setNotDaysHabits(data);
   };
   const loadHabits = async () => {
-    const data = await getDaysHabitsByUserId(USER_ID, currentDate);
+    const data = await getDaysHabitsByUserId(userId, currentDate);
     setHabits(data);
     setTodaysHabitAmount(data.length);
   };
 
   const loadDaysCheckIns = async () => {
-    const logs = await getHabitLogsByDateAndUserId(USER_ID, currentDate);
+    const logs = await getHabitLogsByDateAndUserId(userId, currentDate);
     const map: CheckInMap = {};
     logs.forEach((log) => {
       map[log.habit_id] = log.is_done;
@@ -103,12 +102,12 @@ export default function HomePage() {
   };
 
   const fetchUserStreak = async () => {
-    const data = await getUserStreak(USER_ID);
+    const data = await getUserStreak(userId);
     setUserStreak(data);
   };
 
   const fetchUserDonePercentage = async () => {
-    const data = await getPercentageDoneByUserId(USER_ID);
+    const data = await getPercentageDoneByUserId(userId);
     setUserPercentage(data);
   };
 
@@ -116,13 +115,13 @@ export default function HomePage() {
     const existing = await getHabitLogByHabitIdAndDateAndUserId(
       habitId,
       currentDate,
-      USER_ID
+      userId
     );
 
     if (existing) {
       await updateHabitLogIsDoneById(existing.id, isNowDone);
     } else {
-      await addHabitLog(USER_ID, habitId, currentDate, isNowDone);
+      await addHabitLog(userId, habitId, currentDate, isNowDone);
     }
 
     setCheckInsToday((prev) => ({

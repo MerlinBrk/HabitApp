@@ -5,7 +5,7 @@ import {deleteHabit, getHabits} from "../services/dexieServices";
 import NewHabitModal from "../elements/habitManagementElements/NewHabitModal.tsx";
 import {syncAll} from "../lib/sync";
 
-import {USER_ID} from "../utils/constants";
+import {getUserIdFromSession} from "../lib/auth";
 
 type Tab = "All Habits" | "Daily" | "Weekly" | "Monthly";
 const tabs: Tab[] = ["All Habits", "Daily", "Weekly", "Monthly"];
@@ -15,26 +15,33 @@ export default function ManagementPage() {
     const [activeTab, setActiveTab] = useState<Tab>("All Habits");
     const [openNewHabitModal, setOpenNewHabitModal] = useState(false);
     const [searchKey, setSearchKey] = useState("");
-
+    const [userId, setUserId] = useState<string>("");
 
     useEffect(() => {
-        loadHabits();
+        const loadUserId = async () => {
+            const id = await getUserIdFromSession();
+            if (id) {
+                setUserId(id);
+            }
+        };
+
+        loadUserId();
     }, []);
 
     useEffect(() => {
         loadHabits();
         syncAll(); // Synchronize data with Supabase when the component mounts
-    }, [habits, openNewHabitModal]);
+    }, [habits, openNewHabitModal,userId]);
 
     const loadHabits = async () => {
-        const data = await getHabits(USER_ID);
+        const data = await getHabits(userId);
         setHabits(prev =>
             JSON.stringify(prev) !== JSON.stringify(data) ? data : prev
         );
     };
 
     const handleDeleteHabit = async (habitId: string) => {
-        await deleteHabit(habitId, USER_ID);
+        await deleteHabit(habitId, userId);
         setHabits(prev => prev.filter(habit => habit.id !== habitId)); // Remove from UI
     };
 
@@ -101,9 +108,8 @@ export default function ManagementPage() {
                                 <ManageHabitCard key={habit.id}
                                                  habitId={habit.id}
                                                  description={habit.description}
-                                                 userId={USER_ID}
                                                  habitTitle={habit.title}
-                                                 days={habit.days.join(", ")}
+                                                 days={habit.days || []}
                                                  openEditHabitModal={() => {
                                                  }}
                                                  handleDeleteHabit={() => handleDeleteHabit(habit.id)}
@@ -116,7 +122,7 @@ export default function ManagementPage() {
             {openNewHabitModal &&
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
                     <div className="bg-white rounded-xl shadow-2xl p-8 relative min-w-[320px]">
-                        <NewHabitModal isActive={openNewHabitModal} onClose={handleCloseNewHabitModal}/>
+                        <NewHabitModal isActive={openNewHabitModal} onClose={handleCloseNewHabitModal} userId={userId}/>
 
                     </div>
                 </div>

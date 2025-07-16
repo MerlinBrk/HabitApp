@@ -14,7 +14,6 @@ interface ManageHabitProps {
   days: string[];
   openEditHabitModal: () => void;
   handleDeleteHabit: () => void;
-  openAnalyticsModal: () => void;
 }
 
 export default function ManageHabitCard({
@@ -59,7 +58,7 @@ export default function ManageHabitCard({
     }
 
     const fetchPercentage = async () => {
-        const data = await getPercentageDoneByHabitId(habitId, userId);
+        const data = await getPercentageDoneByHabitId(habitId);
         console.log(data);
         setPercentage(data);
     }
@@ -179,7 +178,7 @@ export default function ManageHabitCard({
                             <rect width="18" height="18" x="3" y="4" rx="2"></rect>
                             <path d="M3 10h18"></path>
                         </svg>
-                        <span className="text-sm">{days}</span>
+                        <span className="text-sm">{days.join(", ")}</span>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"
@@ -207,8 +206,9 @@ export default function ManageHabitCard({
                         <span>{percentage}%</span>
                     </div>
                     <div
-                        aria-valuemax="100"
-                        aria-valuemin="0"
+
+                        aria-valuemax={100}
+                        aria-valuemin={0}
                         role="progressbar"
                         data-state="indeterminate"
                         data-max="100"
