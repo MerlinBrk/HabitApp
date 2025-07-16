@@ -225,7 +225,7 @@ export default function HomePage() {
           />
           <HomeProgressCard
             title="Current Streak"
-            value={userStreak}
+            value={userStreak.toString()}
             progressbar={false}
             icon={true}
             description="Keep going to Push your Streak"

@@ -20,18 +20,14 @@ export default function EditHabitModal({
 
     const addHabit = async () => {
         if (!newHabit.trim()) return;
-        await addHabitToDB(newHabit, USER_ID, isPublic, selectedDays);
+        await addHabitToDB(newHabit,"", USER_ID, isPublic, selectedDays);
         setNewHabit("");
         setIsPublic(false);
         setSelectedDays([]);
         onClose();
     };
 
-    const toggleDay = (day: string) => {
-        setSelectedDays((prev) =>
-            prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
-        );
-    };
+    
 
     if (!isActive) return null;
 

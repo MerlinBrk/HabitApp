@@ -62,7 +62,7 @@ export default function CommunityPage() {
 
   useEffect(() => {
     userCommunities.forEach((community) => {
-      if (!list.includes(community.title)) {
+      if (!list.some(item => item.name === community.title)) {
         addName(community.id, community.title);
       }
     });
@@ -139,9 +139,7 @@ export default function CommunityPage() {
 
   const fetchCommunityDescriptionById = (communityId: string) => {
     const community = communities.find((c) => c.id === communityId);
-    const communityDescription = community
-      ? community.description
-      : "Unknown Community";
+    const communityDescription = community?.description ?? "Unknown Community";
     setCurrentCommunityDescription(communityDescription);
   };
 
