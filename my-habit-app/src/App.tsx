@@ -3,11 +3,8 @@ import {supabase} from "./lib/supabase";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 
 import Login from "./pages/Login";
-import HabitList from "./pages/HabitList";
 import ProfilePage from "./pages/ProfilePage";
-import ProgressPage from "./pages/ProgressPage";
 import Community from "./pages/Community";
-import AppNotInstalled from "./components/AppNotInstalled";
 
 import Layout from "./responsive/Layout.tsx";
 import HomePage from "./pages/HomePage.tsx";

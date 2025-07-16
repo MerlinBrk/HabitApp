@@ -2,14 +2,13 @@ import {db} from "../lib/db";
 import {supabase} from "../lib/supabase";
 import {v4 as uuidv4} from "uuid";
 import {WEEKDAYS} from "../utils/constants";
-import {format, eachDayOfInterval, startOfYear, endOfYear} from "date-fns";
+import {eachDayOfInterval, endOfYear, format, startOfYear} from "date-fns";
 
 
 // Gibt ein Habit anhand der ID zurück
 export async function getHabitById(habitId: string) {
     try {
-        const habit = await db.habits.where({id: habitId}).first();
-        return habit;
+        return await db.habits.where({id: habitId}).first();
     } catch (err) {
         console.error("Fehler beim Abrufen des Habits:", err);
         return null;
@@ -597,5 +596,14 @@ export async function clearHabitLogsDB() {
         await db.habit_logs.clear();
     } catch (err) {
         console.error("Fehler beim Clearen der Indexed DB HabitLogs", err);
+    }
+}
+
+export async function editHabitInDB(habitId: string, title?: string, description?: string, days?: string[], isPublic?: boolean) {
+    try {
+        await db.habits.update(habitId, {title: title, description: description, days: days, is_public: isPublic});
+    }
+    catch (err) {
+        console.error("Error updating Habit", err);
     }
 }

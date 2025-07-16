@@ -5,6 +5,7 @@ import {
     getStreakByHabitId
 } from "../../services/dexieServices.ts";
 import AnalyticsModal from "./AnalyticsModal.tsx";
+import EditHabitModal from "./EditHabitModal.tsx";
 
 interface ManageHabitProps {
     habitTitle: string;
@@ -23,7 +24,6 @@ export default function ManageHabitCard({
                                             habitId,
                                             userId,
                                             days,
-                                            openEditHabitModal,
                                             handleDeleteHabit,
                                         }: ManageHabitProps) {
     const [openMoreDetails, setOpenMoreDetails] = useState(false);
@@ -31,6 +31,7 @@ export default function ManageHabitCard({
     const [longestHabitStreak, setLongestHabitStreak] = useState(0);
     const [percentage, setPercentage] = useState(0);
     const [openAnalyticsModal, setOpenAnalyticsModal] = useState(false);
+    const [openEditHabitModal, setOpenEditHabitModal] = useState(false);
 
 
     useEffect(() => {
@@ -49,6 +50,14 @@ export default function ManageHabitCard({
 
     const handleCloseAnalyticsModal = () => {
         setOpenAnalyticsModal(false);
+    }
+
+    const handleOpenEditHabitModal = () => {
+        setOpenEditHabitModal(true);
+    }
+
+    const handleCloseEditHabitModal = () => {
+        setOpenEditHabitModal(false);
     }
 
     const fetchPercentage = async () => {
@@ -70,19 +79,21 @@ export default function ManageHabitCard({
         <div className="rounded-xl border text-card-foreground shadow bg-card">
             <div className="flex flex-col space-y-1.5 p-6 pb-2">
                 <div className="flex justify-between items-start">
-                    <div>
+                    <div className="max-w-xs">
                         <h3 className="font-semibold leading-none tracking-tight flex items-center">
                             {habitTitle}
                         </h3>
-                        <p className="text-sm text-muted-foreground mt-1">
+                        <p className="text-sm text-muted-foreground mt-1 truncate">
                             {description}
                         </p>
+
                     </div>
                     <div className="flex space-x-2">
                         <button
                             type="button"
                             title="Edit habit"
                             className="bg-white hover:border-white inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs"
+                            onClick={handleOpenEditHabitModal}
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -272,12 +283,17 @@ export default function ManageHabitCard({
                 {openAnalyticsModal &&
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
                         <div className="bg-white rounded-xl shadow-2xl p-8 relative min-w-[320px]">
-                            <AnalyticsModal habitId={habitId} habitStreak={habitStreak} longestHabitStreak={longestHabitStreak}
+                            <AnalyticsModal habitId={habitId} habitStreak={habitStreak}
+                                            longestHabitStreak={longestHabitStreak}
                                             completionRate={percentage} isActive={openAnalyticsModal}
                                             onClose={handleCloseAnalyticsModal}/>
 
                         </div>
                     </div>
+                }
+                {openEditHabitModal &&
+                    <EditHabitModal habitId={habitId} isActive={openEditHabitModal}
+                                    onClose={handleCloseEditHabitModal}/>
                 }
             </div>
         </div>
