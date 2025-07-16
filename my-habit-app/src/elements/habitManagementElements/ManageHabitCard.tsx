@@ -132,28 +132,6 @@ export default function ManageHabitCard({
                                 <line x1="14" x2="14" y1="11" y2="17"></line>
                             </svg>
                         </button>
-                        <button
-                            title="Expand habit details"
-                            onClick={handleOpenMoreClick}
-                            className="bg-white hover:border-white inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="lucide lucide-bar-chart mr-2 h-4 w-4"
-                            >
-                                <line x1="12" x2="12" y1="20" y2="10"></line>
-                                <line x1="18" x2="18" y1="20" y2="4"></line>
-                                <line x1="6" x2="6" y1="20" y2="16"></line>
-                            </svg>
-                        </button>
                     </div>
                 </div>
             </div>
