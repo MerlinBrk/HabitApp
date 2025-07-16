@@ -31,7 +31,7 @@ export default function ManagementPage() {
     useEffect(() => {
         loadHabits();
         syncAll(); // Synchronize data with Supabase when the component mounts
-    }, [habits, openNewHabitModal,userId]);
+    }, [habits, openNewHabitModal, userId]);
 
     const loadHabits = async () => {
         const data = await getHabits(userId);
@@ -103,7 +103,7 @@ export default function ManagementPage() {
                         ))}
                     </div>
                     <div
-                        className="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
+                        className="max-h-[calc(100vh-200px)] overflow-y-auto mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
                         {getFilteredHabits.map((habit) => (
                                 <ManageHabitCard key={habit.id}
                                                  habitId={habit.id}
@@ -119,7 +119,8 @@ export default function ManagementPage() {
                     </div>
                 </div>
             </div>
-            {openNewHabitModal &&
+            {
+                openNewHabitModal &&
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
                     <div className="bg-white rounded-xl shadow-2xl p-8 relative min-w-[320px]">
                         <NewHabitModal isActive={openNewHabitModal} onClose={handleCloseNewHabitModal} userId={userId}/>
@@ -128,5 +129,6 @@ export default function ManagementPage() {
                 </div>
             }
         </div>
-    );
+    )
+        ;
 }

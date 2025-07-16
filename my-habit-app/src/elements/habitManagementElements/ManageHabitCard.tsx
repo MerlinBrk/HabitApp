@@ -8,12 +8,12 @@ import AnalyticsModal from "./AnalyticsModal.tsx";
 import EditHabitModal from "./EditHabitModal.tsx";
 
 interface ManageHabitProps {
-  habitTitle: string;
-  description: string;
-  habitId: string;
-  days: string[];
-  openEditHabitModal: () => void;
-  handleDeleteHabit: () => void;
+    habitTitle: string;
+    description: string;
+    habitId: string;
+    days: string[];
+    openEditHabitModal: () => void;
+    handleDeleteHabit: () => void;
 }
 
 export default function ManageHabitCard({
@@ -36,10 +36,6 @@ export default function ManageHabitCard({
         fetchHabitStreak();
         fetchLongestHabitStreak();
     }, [])
-
-    const handleOpenMoreClick = () => {
-        setOpenMoreDetails(!openMoreDetails);
-    };
 
     const handleOpenAnalyticsModal = () => {
         setOpenAnalyticsModal(true);
@@ -76,7 +72,7 @@ export default function ManageHabitCard({
         <div className="rounded-xl border text-card-foreground shadow bg-card">
             <div className="flex flex-col space-y-1.5 p-6 pb-2">
                 <div className="flex justify-between items-start">
-                    <div className="max-w-xs">
+                    <div className="max-w-[200px]">
                         <h3 className="font-semibold leading-none tracking-tight flex items-center">
                             {habitTitle}
                         </h3>
@@ -157,22 +153,6 @@ export default function ManageHabitCard({
                             <path d="M3 10h18"></path>
                         </svg>
                         <span className="text-sm">{days.join(", ")}</span>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="lucide lucide-bell h-4 w-4 ml-4 mr-2 text-muted-foreground"
-                        >
-                            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-                            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-                        </svg>
-                        <span className="text-sm">07:00</span>
                     </div>
                     <div className="flex items-center">
                         <span className="text-sm font-medium mr-2">Streak: {habitStreak} days</span>
