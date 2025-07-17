@@ -2,10 +2,10 @@ import { FaHome, FaTasks, FaUsers, FaUser } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
 const navItems = [
-    { href: "/", icon: <FaHome size={22} />, label: "Home" },
-    { href: "/management", icon: <FaTasks size={22} />, label: "Habits" },
-    { href: "/community", icon: <FaUsers size={22} />, label: "Community" },
-    { href: "/profile", icon: <FaUser size={22} />, label: "Profile" },
+    { href: "/#/", icon: <FaHome size={22} />, label: "Home" },
+    { href: "/#/management", icon: <FaTasks size={22} />, label: "Habits" },
+    { href: "/#/community", icon: <FaUsers size={22} />, label: "Community" },
+    { href: "/#/profile", icon: <FaUser size={22} />, label: "Profile" },
 ];
 
 export default function MobileNavBar() {
