@@ -19,7 +19,7 @@ interface CommentModalProps {
   isActive: boolean;
   message_id: string;
   handleCommentModalClose: () => void;
-  userId: string; // Optional userId prop for fetching profile image
+  userId: string; 
 }
 
 export default function CommentModal({
@@ -34,7 +34,7 @@ export default function CommentModal({
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
 
   const fetchCommentById = async () => {
-    if (message_id !== "") {
+    if (message_id) {
       const data = await getCommunityMessageById(message_id);
       setMessage(data);
     }
@@ -54,8 +54,6 @@ export default function CommentModal({
     const data = await getProfileImageUrl(userId);
     if (data) {
       setProfileImageUrl(data);
-    } else {
-      console.error("Fehler beim Abrufen des Profilbilds");
     }
   };
 
@@ -71,9 +69,9 @@ export default function CommentModal({
       fetchComments();
       const interval = setInterval(() => {
         fetchComments();
-      }, 1000); // jede Sekunde
+      }, 1000);
 
-      return () => clearInterval(interval); // Clean-up beim Unmount
+      return () => clearInterval(interval);
 
       fetchProfileImage(message.user_id);
     }
@@ -86,13 +84,10 @@ export default function CommentModal({
   if (!isActive) return;
   return (
     <>
-      {/* Overlay */}
       <div className="fixed inset-0 z-40 bg-black bg-opacity-40"></div>
 
-      {/* Modal Container */}
       <div className="fixed inset-0 bg-opacity-40 flex items-center justify-center z-40">
         <div className="relative bg-white rounded-lg p-6 shadow-lg w-[90vw] max-w-[1280px] h-[85vh] overflow-y-auto  hide-scrollbar ">
-          {/* Close Button */}
           <button
             className="absolute top-3 right-3 text-2xl text-gray-500 hover:text-gray-700 focus:outline-none"
             aria-label="Close comment modal"
@@ -101,7 +96,7 @@ export default function CommentModal({
             ×
           </button>
           <h1 className="text-3xl font-bold">Message</h1>
-          {/* Message Display */}
+          
           {message && (
             <div className="mt-8 bg-white border shadow rounded-xl p-4 mb-4 relative">
               <div className="flex items-center mb-2">
@@ -109,7 +104,7 @@ export default function CommentModal({
                   {profileImageUrl ? (
                     <img
                       src={profileImageUrl}
-                      alt="Profilbild"
+                      alt="Profile Image"
                       className="w-10 h-10 rounded-full object-cover"
                     />
                   ) : (
@@ -132,10 +127,10 @@ export default function CommentModal({
             </div>
           )}
 
-          {/* Kommentar-Eingabe */}
+          
           <NewCommentCard handleCommentSubmit={handleCommentSubmit} />
 
-          {/* Kommentare anzeigen */}
+          
 
           <div className="space-y-4">
             <h2 className="text-2xl font-bold mt-8 mb-4">

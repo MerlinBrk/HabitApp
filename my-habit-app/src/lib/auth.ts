@@ -28,7 +28,7 @@ export async function getUsernameBySession(){
         if (data) {
             return data;
         } else {
-            console.error("Fehler beim Abrufen des Benutzernamens");
+            console.error("Error fetching Username");
         }
     }
     else{

@@ -42,7 +42,6 @@ export default function App() {
 
    useEffect(() => {
     if (isLoggedIn) {
-      // Navigiere zur Homepage, sobald eingeloggt
       fetchUserId();
       setLoading(true);
       
@@ -79,7 +78,7 @@ export default function App() {
             role="status"
             aria-label="Lädt..."
           />
-          <p className="text-sm text-muted-foreground">Lädt...</p>
+          <p className="text-sm text-muted-foreground">Loading...</p>
         </div>
       </main>
     );

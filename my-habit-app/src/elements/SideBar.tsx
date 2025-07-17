@@ -100,7 +100,7 @@ export default function SideBar() {
               className="text-black px-2 py-1"
               onClick={() => setIsOpen(true)}
             >
-              Zeige mehr...
+              Show more...
             </button>
           </li>
         )}
@@ -111,7 +111,7 @@ export default function SideBar() {
               className="text-black px-2 py-1"
               onClick={() => setIsOpen(false)}
             >
-              Weniger anzeigen
+              Show less
             </button>
           </li>
         )}

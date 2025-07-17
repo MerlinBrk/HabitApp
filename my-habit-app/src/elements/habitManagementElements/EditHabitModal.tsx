@@ -109,6 +109,7 @@ export default function EditHabitModal({habitId, isActive, onClose}: EditHabitMo
                     </div>
                     <div className="flex items-center space-x-2 relative">
                         <button
+                            
                             type="button"
                             role="switch"
                             aria-checked={isPublic ? "true" : "false"}

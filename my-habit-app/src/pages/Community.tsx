@@ -87,9 +87,7 @@ export default function CommunityPage() {
   const fetchUserId = async () => {
     const userID = await getUserIdFromSession();
     if (userID) {
-      setUserId(userID); // Set the global userId variable
-    } else {
-      console.error("User ID not found");
+      setUserId(userID); 
     }
   };
 
@@ -107,7 +105,6 @@ export default function CommunityPage() {
   const fetchOwnCommunities = async () => {
     const data = await getCommunitiesByUserId(userId);
     if (!data) {
-      console.error("No communities found for this user.");
       return;
     }
     clearList();
@@ -157,7 +154,7 @@ export default function CommunityPage() {
 
   const fetchCommunityDescriptionById = (communityId: string) => {
     const community = communities.find((c) => c.id === communityId);
-    const communityDescription = community?.description ?? "Unknown Community";
+    const communityDescription = community?.description ?? "";
     setCurrentCommunityDescription(communityDescription);
   };
 
@@ -170,7 +167,7 @@ export default function CommunityPage() {
 
   const getCommunityNameById = (communityId: string) => {
     const community = communities.find((c) => c.id === communityId);
-    const communityTitle = community ? community.title : "Unknown Community";
+    const communityTitle = community ? community.title : "";
     return communityTitle;
   };
 
@@ -220,15 +217,15 @@ export default function CommunityPage() {
 
   return (
     <div className="flex h-screen w-full flex-col bg-white">
-      {/* Sidebar Drawer */}
+      
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 flex">
-          {/* Overlay */}
+          
           <div
             className="fixed inset-0 bg-black opacity-30"
             onClick={() => setSidebarOpen(false)}
           />
-          {/* Sidebar */}
+          
           <div className="relative bg-white w-64 h-full shadow-lg z-50 p-6">
             <button
               onClick={() => setSidebarOpen(false)}
@@ -264,7 +261,7 @@ export default function CommunityPage() {
                     className="text-black px-2 py-1"
                     onClick={() => setFullSidebarOpen(true)}
                   >
-                    Zeige mehr...
+                    Show more...
                   </button>
                 </li>
               )}
@@ -275,7 +272,7 @@ export default function CommunityPage() {
                     className="text-black px-2 py-1"
                     onClick={() => setFullSidebarOpen(false)}
                   >
-                    Weniger anzeigen
+                    Show less
                   </button>
                 </li>
               )}
@@ -286,7 +283,7 @@ export default function CommunityPage() {
 
       <div className="flex-1 flex">
         <div className="flex-1 flex flex-col">
-          {/* Sticky Header */}
+          
           <div className="sticky top-0 z-40 bg-white w-full py-2 px-4 pb-2">
             <div className="sm:hidden flex items-center pt-4 pb-4">
               <button
@@ -304,7 +301,7 @@ export default function CommunityPage() {
             <div className="max-w-7xl mx-auto w-full  pt-6 mb-6 hidden sm:block">
               <h1 className="text-3xl font-bold">Community</h1>
             </div>
-            {/* ... */}
+            
             <div className="hidden sm:flex items-center justify-between w-full">
               <PostButton onClick={() => setStateNewMessageModal(true)} />
               <div className="flex-1 flex justify-center">
@@ -317,7 +314,7 @@ export default function CommunityPage() {
                 onClick={() => setStateNewCommunityModal(true)}
               />
             </div>
-            {/* Mobile layout */}
+            
             <div className="flex flex-col sm:hidden w-full">
               <div className="mb-2">
                 <SearchBar
@@ -362,7 +359,6 @@ export default function CommunityPage() {
                     <p className="mt-2 break-words line-clamp-3">
                       {currentCommunityDescription}
                     </p>
-                    {/* Mobile: Join/Leave Button unterhalb von Title/Description */}
                     <div className="mt-4 sm:hidden">
                       {!partOfCurrentCommunity ? (
                         <JoinLeaveButton
@@ -377,7 +373,6 @@ export default function CommunityPage() {
                       )}
                     </div>
                   </div>
-                  {/* Desktop: Join/Leave Button rechts */}
                   <div className="ml-4 hidden sm:block">
                     {!partOfCurrentCommunity ? (
                       <JoinLeaveButton
@@ -395,12 +390,12 @@ export default function CommunityPage() {
               )}
 
               {communityMessages
-                .slice() // create a shallow copy to avoid mutating state
+                .slice()
                 .sort(
                   (a, b) =>
                     new Date(a.created_at).getTime() -
                     new Date(b.created_at).getTime()
-                ) // sort oldest to newest
+                ) 
                 .map((communityMessage: CommunityMessage) => (
                   <MessageCard
                     key={communityMessage.id}

@@ -59,7 +59,6 @@ export default function ManageHabitCard({
 
     const fetchPercentage = async () => {
         const data = await getPercentageDoneByHabitId(habitId);
-        console.log(data);
         setPercentage(data);
     }
 
@@ -184,7 +183,7 @@ export default function ManageHabitCard({
                         <span>{percentage}%</span>
                     </div>
                     <div
-
+                        title="Progressbar"
                         aria-valuemax={100}
                         aria-valuemin={0}
                         role="progressbar"
