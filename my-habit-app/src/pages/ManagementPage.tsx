@@ -56,9 +56,11 @@ export default function ManagementPage() {
 
     return (
 
-        <div className="bg-white p-6 min-h-screen">
+        <div className="bg-white h-screen overflow-y-auto hide-scrollbar pb-16 md:pb-0">
 
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl  mx-auto">
+                <div className="sticky top-0 z-50 bg-white w-full
+                 p-6">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-3xl font-bold">Habit Management</h1>
                     <button aria-label="Create new habit" onClick={handleOpenNewHabitModal}
@@ -76,7 +78,8 @@ export default function ManagementPage() {
                         ></input>
                     </div>
                 </div>
-                <div>
+                </div>
+                <div className="p-6 pt-0">
                     <div
                         className="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
                         {getFilteredHabits.map((habit) => (

@@ -132,7 +132,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="p-6 md:p-8 max-w-6xl overflow-auto hide-scrollbar h-screen mx-auto bg-white flex flex-col gap-6 bg-background p-6 w-full">
+    <div className="p-6 pb-20 md:pb-0 md:p-8 max-w-6xl overflow-auto hide-scrollbar h-screen mx-auto bg-white flex flex-col gap-6 bg-background p-6 w-full">
       {/* Header */}
       
       <div className="flex items-center justify-between">
