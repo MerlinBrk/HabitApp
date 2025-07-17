@@ -108,7 +108,7 @@ export default function MessageCard({
                 strokeLinejoin="round"
               />
             </svg>
-            <span>Erfolgreich kopiert!</span>
+            <span>Copied successfully!</span>
           </div>
         </div>
       )}
@@ -146,7 +146,7 @@ export default function MessageCard({
       <div className="flex items-start justify-between mt-2">
         <div className="flex-1">
           <p className="text-xl font-bold mb-1">{title}</p>
-          <p className="text-gray-700 break-words w-64">{message}</p>
+          <p className="text-gray-700 break-words ">{message}</p>
           <div className="text-sm text-gray-500 mt-2">
             Community: {communityName}
           </div>
