@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
+  base:'/HabitApp/',
   plugins: [
     react(),
     VitePWA({
@@ -11,7 +12,7 @@ export default defineConfig({
       manifest: {
         name: 'Habit Tracker',
         short_name: 'Habits',
-        start_url: '/',
+        start_url: '/HabitApp/#/',
         display: 'standalone',
         background_color: '#ffffff',
         theme_color: '#42b883',

@@ -149,13 +149,13 @@ export default function CommunityPage() {
 
   const fetchCommunityNameById = (communityId: string) => {
     const community = communities.find((c) => c.id === communityId);
-    const communityTitle = community ? community.title : "Unknown Community";
+    const communityTitle = community ? community.title : "";
    setCurrentCommunityName(communityTitle);
   };
 
   const fetchCommunityDescriptionById = (communityId: string) => {
     const community = communities.find((c) => c.id === communityId);
-    const communityDescription = community?.description ?? "Unknown Community";
+    const communityDescription = community?.description ?? "";
     setCurrentCommunityDescription(communityDescription);
   };
 
@@ -168,7 +168,7 @@ export default function CommunityPage() {
 
   const getCommunityNameById = (communityId: string) => {
     const community = communities.find((c) => c.id === communityId);
-    const communityTitle = community ? community.title : "Unknown Community";
+    const communityTitle = community ? community.title : "";
     return communityTitle;
   };
 

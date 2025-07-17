@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://merlinbrk.github.io/HabitApp/my-habit-app/",
+  "homepage": "https://merlinbrk.github.io/HabitApp/",
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build -b gh-pages -r https://github.com/merlinbrk/HabitApp.git",
+    "deploy": "gh-pages -d dist -b gh-pages -r https://github.com/merlinbrk/HabitApp.git",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

@@ -1,6 +1,7 @@
 import {useStore} from "../lib/store";
 import {useEffect, useState} from "react";
-import {useLocation} from "react-router-dom";
+import {useLocation,Link} from "react-router-dom";
+
 
 export default function SideBar() {
     const list = useStore((state) => state.list);
@@ -30,46 +31,42 @@ export default function SideBar() {
         <div className="fixed top-0 left-0 h-screen w-64 bg-white p-6 shadow-lg">
             <ul className="flex flex-col space-y-4">
                 <li>
-                    <a
-                        href="/#/"
+                    <Link to="/"
                         className={
-                            linkClass("/#/") + " hover:text-white no-underline font-bold"
+                            linkClass("/") + " hover:text-white no-underline font-bold"
                         }
                     >
                         Home
-                    </a>
+                    </Link>
                 </li>
                 <li>
-                    <a
-                        href="/#/management"
+                    <Link to="/management"
                         className={
-                            linkClass("/#/management") +
+                            linkClass("/management") +
                             " hover:text-white no-underline font-bold"
                         }
                     >
                         Habit Management
-                    </a>
+                    </Link>
                 </li>
                 <li>
-                    <a
-                        href="/#/community"
+                    <Link to="/community"
                         className={
-                            linkClass("/#/community") +
+                            linkClass("/community") +
                             " hover:text-white no-underline font-bold"
                         }
                     >
                         Community
-                    </a>
+                    </Link>
                 </li>
                 <li>
-                    <a
-                        href="/#/profile"
+                    <Link to="/profile"
                         className={
-                            linkClass("/#/profile") + " hover:text-white no-underline font-bold"
+                            linkClass("/profile") + " hover:text-white no-underline font-bold"
                         }
                     >
                         Profile
-                    </a>
+                    </Link>
                 </li>
                 {list.length > 0 && (
                     <li>
