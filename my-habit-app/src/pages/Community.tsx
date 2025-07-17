@@ -146,7 +146,7 @@ export default function CommunityPage() {
 
   const fetchCommunityNameById = (communityId: string) => {
     const community = communities.find((c) => c.id === communityId);
-    const communityTitle = community ? community.title : "Unknown Community";
+    const communityTitle = community ? community.title : "";
    setCurrentCommunityName(communityTitle);
   };
 

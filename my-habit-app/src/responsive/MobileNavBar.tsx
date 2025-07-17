@@ -1,11 +1,11 @@
 import { FaHome, FaTasks, FaUsers, FaUser } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
+import { useLocation,Link } from "react-router-dom";
 
 const navItems = [
-    { href: "/#/", icon: <FaHome size={22} />, label: "Home" },
-    { href: "/#/management", icon: <FaTasks size={22} />, label: "Habits" },
-    { href: "/#/community", icon: <FaUsers size={22} />, label: "Community" },
-    { href: "/#/profile", icon: <FaUser size={22} />, label: "Profile" },
+    { href: "/", icon: <FaHome size={22} />, label: "Home" },
+    { href: "/management", icon: <FaTasks size={22} />, label: "Habits" },
+    { href: "/community", icon: <FaUsers size={22} />, label: "Community" },
+    { href: "/profile", icon: <FaUser size={22} />, label: "Profile" },
 ];
 
 export default function MobileNavBar() {
@@ -18,8 +18,7 @@ export default function MobileNavBar() {
                     const isActive = location.pathname === item.href;
                     return (
                         <li key={item.href}>
-                            <a
-                                href={item.href}
+                            <Link to={item.href}
                                 className={`flex flex-col items-center px-3 py-1 no-underline transition-colors ${
                                     isActive
                                         ? "text-black"
@@ -28,7 +27,7 @@ export default function MobileNavBar() {
                             >
                                 {item.icon}
                                 <span className="text-xs mt-1">{item.label}</span>
-                            </a>
+                            </Link>
                         </li>
                     );
                 })}
