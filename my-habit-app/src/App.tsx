@@ -86,8 +86,8 @@ export default function App() {
                 <div
                     className={
                         isMobile
-                            ? " overflow-auto hide-scrollbar "
-                            : "ml-64 overflow-auto hide-scrollbar "
+                            ? ""
+                            : "ml-64 "
                     }
                 >
                     <Routes>
