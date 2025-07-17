@@ -2,11 +2,21 @@ import { supabase } from "../lib/supabase";
 
 export async function addNewMessage(communityId:string, messageTitle:string, description:string, userId:string,habitId:string){
     try{
-        if(habitId.toString() === "") habitId = habitId.toString();
+      console.log("Adding new message with communityId:", communityId, messageTitle, description,userId, habitId);
+        if(!habitId){
+        const {error} = await supabase.from("Community_messages").insert([{community_id: communityId, user_id:userId, title:messageTitle,message:description,habit_id:null }]);
+      if(error){
+            throw error;
+        }  
+      }
+        else{
         const {error} = await supabase.from("Community_messages").insert([{community_id: communityId, user_id:userId, title:messageTitle,message:description,habit_id:habitId }]);
         if(error){
             throw error;
         }
+      }
+        
+
     }
     catch(err){
         console.error("Fehler beim Hinzufügen einer neuen Nachricht",err);

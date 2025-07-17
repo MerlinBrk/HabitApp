@@ -4,7 +4,10 @@ import {
   type CommunityMessage,
   type CommunityComments,
 } from "../../utils/types";
-import { getUsernameById ,getProfileImageUrl} from "../../services/profileServices";
+import {
+  getUsernameById,
+  getProfileImageUrl,
+} from "../../services/profileServices";
 import {
   addNewCommentToMessage,
   getAllCommentsByMessageId,
@@ -23,7 +26,7 @@ export default function CommentModal({
   isActive,
   message_id,
   handleCommentModalClose,
-  userId, 
+  userId,
 }: CommentModalProps) {
   const [message, setMessage] = useState<CommunityMessage>();
   const [username, setUsername] = useState("");
@@ -66,6 +69,12 @@ export default function CommentModal({
     if (message) {
       fetchUserName(message.user_id);
       fetchComments();
+      const interval = setInterval(() => {
+        fetchComments();
+      }, 1000); // jede Sekunde
+
+      return () => clearInterval(interval); // Clean-up beim Unmount
+
       fetchProfileImage(message.user_id);
     }
   }, [message]);

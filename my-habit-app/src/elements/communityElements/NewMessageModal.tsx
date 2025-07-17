@@ -1,17 +1,20 @@
-
-
 import { useState, useEffect } from "react";
 import { type Habit } from "../../lib/db";
 import { getHabits } from "../../services/dexieServices";
-import {type Community} from "../../utils/types";
+import { type Community } from "../../utils/types";
 
 interface NewMessageModalProps {
   isActive: boolean;
-  currentCommunityId:string;
+  currentCommunityId: string;
   onClose: () => void;
   communities: Community[];
-  onAddButton: (communityId: string, title: string, description: string,habitId:string) => void;
-  userId: string; // Optional userId prop
+  onAddButton: (
+    communityId: string,
+    title: string,
+    description: string,
+    habitId: string
+  ) => void;
+  userId: string;
 }
 
 export default function NewMessageModal({
@@ -22,17 +25,20 @@ export default function NewMessageModal({
   onAddButton,
   userId,
 }: NewMessageModalProps) {
-
   const [habits, setHabits] = useState<Habit[]>([]);
   const [messageTitle, setMessageTitle] = useState("");
   const [messageContent, setMessageContent] = useState("");
   const [choosenHabitId, setChoosenHabitId] = useState<string>("");
-  
-  const [choosenCommunityId, setChoosenCommunityId] = useState<string>(currentCommunityId);
+
+  const [choosenCommunityId, setChoosenCommunityId] =
+    useState<string>(currentCommunityId);
+
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   useEffect(() => {
     loadPublicUserHabits();
     setChoosenCommunityId(currentCommunityId);
+    setErrorMessage("");
   }, [isActive]);
 
   const loadPublicUserHabits = async () => {
@@ -41,9 +47,23 @@ export default function NewMessageModal({
   };
 
   const handleAddMessage = async () => {
-      onAddButton(choosenCommunityId,messageTitle, messageContent,choosenHabitId);
-      handleClose();
-    
+    if (!choosenCommunityId) {
+      setErrorMessage("Please select a community.");
+      return;
+    }
+    if (!messageTitle.trim()) {
+      setErrorMessage("Please enter a message title.");
+      return;
+    }
+
+    setErrorMessage("");
+    onAddButton(
+      choosenCommunityId,
+      messageTitle,
+      messageContent,
+      choosenHabitId
+    );
+    handleClose();
   };
 
   const handleClose = () => {
@@ -51,6 +71,7 @@ export default function NewMessageModal({
     setMessageContent("");
     setChoosenHabitId("");
     setChoosenCommunityId("");
+    setErrorMessage("");
     onClose();
   };
 
@@ -65,17 +86,20 @@ export default function NewMessageModal({
       >
         <div className="flex flex-col space-y-1.5 text-center sm:text-left">
           <h2 className="text-lg font-semibold leading-none tracking-tight">
-            Neue Nachricht senden
+            Send New Message
           </h2>
           <p className="text-sm text-muted-foreground">
-            Wähle eine Community und Gewohnheit, gib einen Titel und eine Nachricht ein.
+            Select a community and habit, enter a title and message.{" "}
           </p>
         </div>
 
         <div className="grid gap-4 py-2">
           <div className="grid gap-2">
-            <label htmlFor="community-select" className="text-sm font-medium leading-none">
-              Community auswählen
+            <label
+              htmlFor="community-select"
+              className="text-sm font-medium leading-none"
+            >
+              Select Community <span className="text-red-500">*</span>
             </label>
             <select
               id="community-select"
@@ -90,7 +114,7 @@ export default function NewMessageModal({
                 backgroundSize: "1.25em 1.25em",
               }}
             >
-              <option value="">Bitte eine Community wählen</option>
+              <option value="">Please choose a community</option>
               {communities.map((community) => (
                 <option key={community.id} value={community.id}>
                   {community.title}
@@ -101,34 +125,40 @@ export default function NewMessageModal({
 
           <div className="grid gap-2">
             <label htmlFor="title" className="text-sm font-medium leading-none">
-              Titel der Nachricht
+              Message Title <span className="text-red-500">*</span>
             </label>
             <input
               id="title"
               type="text"
               value={messageTitle}
               onChange={(e) => setMessageTitle(e.target.value)}
-              placeholder="Titel eingeben"
+              placeholder="Enter message title..."
               className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
             />
           </div>
 
           <div className="grid gap-2">
-            <label htmlFor="content" className="text-sm font-medium leading-none">
-              Nachricht
+            <label
+              htmlFor="content"
+              className="text-sm font-medium leading-none"
+            >
+              Message
             </label>
             <textarea
               id="content"
               value={messageContent}
               onChange={(e) => setMessageContent(e.target.value)}
-              placeholder="Nachricht schreiben..."
+              placeholder="Write a message..."
               className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring resize-none"
             />
           </div>
 
           <div className="grid gap-2">
-            <label htmlFor="habit-select" className="text-sm font-medium leading-none">
-              Gewohnheit auswählen
+            <label
+              htmlFor="habit-select"
+              className="text-sm font-medium leading-none"
+            >
+              Select Habit
             </label>
             <select
               id="habit-select"
@@ -143,9 +173,7 @@ export default function NewMessageModal({
                 backgroundSize: "1.25em 1.25em",
               }}
             >
-              <option value="">
-                (Optional)
-              </option>
+              <option value="">(Optional)</option>
               {habits.map((habit) => (
                 <option key={habit.id} value={habit.id}>
                   {habit.title}
@@ -153,33 +181,36 @@ export default function NewMessageModal({
               ))}
             </select>
             <p className="text-xs text-muted-foreground mt-1">
-              Du kannst eine Gewohnheit auswählen, musst aber nicht.
+              You can choose a habit, but you don't have to.
             </p>
           </div>
-        </div>
 
-        
+          {errorMessage && (
+            <p className="text-sm text-red-600 font-semibold mt-1">
+              {errorMessage}
+            </p>
+          )}
+        </div>
 
         <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
           <button
-          aria-label="Abbrechen"
+            aria-label="Cancel"
             type="button"
             onClick={handleClose}
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-bold shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors"
           >
-            Abbrechen
+            Cancel
           </button>
           <button
-          aria-label="Nachricht hinzufügen"
+            aria-label="Add Message"
             type="button"
             onClick={handleAddMessage}
             className="inline-flex items-center justify-center bg-black font-bold text-white rounded-md px-4 py-2 text-sm  hover:text-black shadow hover:bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
           >
-            Hinzufügen
+            Add
           </button>
         </div>
       </div>
     </>
-
   );
 }

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { type Habit } from "../../lib/db";
-import { getUsernameById ,getProfileImageUrl} from "../../services/profileServices";
-import { getHabitByIdFromSupabase } from "../../services/habitServices";
 import {
-  getAllCommentsByMessageId,
-} from "../../services/commentsServices";
-
+  getUsernameById,
+  getProfileImageUrl,
+} from "../../services/profileServices";
+import { getHabitByIdFromSupabase } from "../../services/habitServices";
+import { getAllCommentsByMessageId } from "../../services/commentsServices";
 
 interface MessageCardProps {
   messageId: string;
@@ -36,7 +36,6 @@ export default function MessageCard({
   const [commentAmount, setCommentAmount] = useState(0);
 
   const fetchHabit = async () => {
-    
     const data = await getHabitByIdFromSupabase(habit);
     if (data && data.title) {
       setCurrentHabitName(data.title);
@@ -59,36 +58,43 @@ export default function MessageCard({
     } else {
       console.error("Fehler beim Abrufen des Profilbilds");
     }
-  }
+  };
 
   const fetchUserName = async () => {
     const data = await getUsernameById(userId);
     setUsername(data);
-  }
+  };
   useEffect(() => {
     if (habit != null && habit !== "") {
       fetchHabit();
     }
     fetchUserName();
     fetchProfileImage();
-    fetchCommentAmount();
+    const interval = setInterval(() => {
+      fetchCommentAmount();
+    }, 1000); // jede Sekunde
+
+    return () => clearInterval(interval); // Clean-up beim Unmount
   }, []);
 
   const handleCopy = () => {
     if (curHabit) {
-      handleCopyHabit(curHabit.title, curHabit.description, curHabit.days ?? []);
+      handleCopyHabit(
+        curHabit.title,
+        curHabit.description,
+        curHabit.days ?? []
+      );
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 1500);
     }
   };
-  
+
   const handleCommentClick = () => {
     handleCommentOpen();
   };
 
   return (
     <div className="bg-white border shadow rounded-xl p-4 mb-4 relative">
-        
       {showSuccess && (
         <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
           <div className="bg-green-500 text-white px-6 py-3 rounded-full flex items-center gap-2 shadow-lg animate-fade-in-out">
@@ -121,29 +127,34 @@ export default function MessageCard({
           ) : (
             <span className="text-white font-bold text-lg">
               {username
-          .split(" ")
-          .map((n) => n[0])
-          .join("")
-          .toUpperCase()
-          .slice(0, 2)}
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .toUpperCase()
+                .slice(0, 2)}
             </span>
           )}
         </div>
-        <div onClick={() => alert(`Profil von ${userId}`)} role="button" className="text-gray-800 font-semibold">{username}</div>
+        <div
+          onClick={() => alert(`Profil von ${userId}`)}
+          role="button"
+          className="text-gray-800 font-semibold"
+        >
+          {username}
+        </div>
       </div>
       <div className="flex items-start justify-between mt-2">
         <div className="flex-1">
           <p className="text-xl font-bold mb-1">{title}</p>
-          <p className="text-gray-700">{message}</p>
+          <p className="text-gray-700 break-words w-64">{message}</p>
           <div className="text-sm text-gray-500 mt-2">
             Community: {communityName}
           </div>
         </div>
         <button
-        aria-label="Open comments"
+          aria-label="Open comments"
           onClick={handleCommentClick}
           className="bg-gray-100 hover:bg-gray-200 rounded-full px-4 py-2 shadow transition-colors ml-4 flex items-center gap-2 min-w-[56px]"
-          
         >
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
             <path
@@ -155,7 +166,9 @@ export default function MessageCard({
               fill="none"
             />
           </svg>
-          <span className="text-gray-700 text-sm font-bold">{commentAmount}</span>
+          <span className="text-gray-700 text-sm font-bold">
+            {commentAmount}
+          </span>
         </button>
       </div>
       {curHabit ? (
@@ -166,7 +179,7 @@ export default function MessageCard({
               <p className="text-sm">{curHabit?.days?.join(" ")}</p>
             </div>
             <button
-            aris-label="Copy habit"
+              aris-label="Copy habit"
               onClick={handleCopy}
               className="px-3 py-1 rounded-xl font-semibold transition-colors border-black cursor-pointer bg-white text-black hover:bg-gray-200"
             >

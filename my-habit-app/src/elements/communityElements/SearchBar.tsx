@@ -33,7 +33,7 @@ export default function SearchBar({ data,onClick }: { data: Community[],onClick:
         type="text"
         value={input}
         onChange={handleChange}
-        placeholder="🔍 Suche nach einer Community..."
+        placeholder="🔍 Search for a Community..."
         className="w-full sm:w-[400px] md:w-[500px] lg:w-[600px] text-lg px-4 py-2 rounded-full bg-white/70 backdrop-blur-md shadow-inner border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
       />
       {suggestions.length > 0 && (

@@ -39,9 +39,7 @@ export default function CommunityPage() {
   const [userCommunities, setUserCommunities] = useState<Community[]>([]);
   const [currentCommunityForCommentModal, setCurrentCommunityForCommentModal] =
     useState("");
-  const [communityMessages, setCommunityMessages] = useState<
-    CommunityMessage[]
-  >([]);
+  const [communityMessages, setCommunityMessages] = useState<CommunityMessage[]>([]);
   const [communityTitles, setCommunityTitles] = useState<string[]>([]);
   const [stateNewCommunityModal, setStateNewCommunityModal] = useState(false);
   const [stateNewMessageModal, setStateNewMessageModal] = useState(false);
@@ -62,6 +60,11 @@ export default function CommunityPage() {
   useEffect(() => {
     if(!userId) return;
     fetchAll();
+    const interval = setInterval(() => {
+    fetchAll();
+  }, 1000); 
+
+  return () => clearInterval(interval); 
     clearCommunityId();
     clearList();
   }, [userId]);
@@ -207,6 +210,11 @@ export default function CommunityPage() {
     await deleteCommunityUser(communityId, userId);
     setPartOfCurrentCommunity(false);
     fetchOwnCommunities();
+    clearCommunityId();
+    setCommunityMessages([]);
+    setCurrentCommunityDescription("");
+    setCurrentCommunityName("");
+    setCurrentCommunityForCommentModal("");
   };
   
 

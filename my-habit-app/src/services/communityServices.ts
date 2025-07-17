@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabase";
+import { addNewCommunityUser } from "./commUserServices";
 
 export async function getAllCommunities() {
   try {
@@ -13,6 +14,22 @@ export async function getAllCommunities() {
     return data || [];
   } catch (error) {
     console.error("Fehler beim Abrufen der Communities:", error);
+    return [];
+  }
+}
+
+export async function getAllCommunityTitles() {
+  try {
+    const { data, error } = await supabase
+      .from("Communities")
+      .select("title"); 
+
+    if (error) {
+      throw error;
+    }   
+    return data?.map((community: { title: string }) => community.title) || [];
+  } catch (error) {
+    console.error("Fehler beim Abrufen der Community-Titel:", error);
     return [];
   }
 }
@@ -74,13 +91,19 @@ try{
 
 export async function addNewCommunity(userId: string, newTitle:string, newDescription:string){
   try{
-    const { error } = await supabase
-  .from("Communities")
-  .insert([
-    { owner_id: userId, title: newTitle,description:newDescription },
-  ])
+    const { data, error } = await supabase
+      .from("Communities")
+      .insert([
+        { owner_id: userId, title: newTitle, description: newDescription },
+      ])
+      .select()
+      .single(); // erwartet genau einen Eintrag
   if(error) {
     throw error;
+  }
+  const {error:userError } = await addNewCommunityUser(data.id, userId);
+  if(userError) {
+    throw userError;
   }
 
 }
