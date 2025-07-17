@@ -7,8 +7,6 @@ This project was originally started as a university project for the WebEngineeri
 
 ## 🚀 Features
 
----
-
 - Track your daily habits
 - Visual habit progress with heatmaps
 - Share habits and progress with others
@@ -19,19 +17,7 @@ This project was originally started as a university project for the WebEngineeri
 
 ## 🛠️ Tech Stack
 
----
-
 - **Frontend Framework:** React 19.1.0
-- **Type Safety:** TypeScript 5.8.3
-- **Styling:**
-    - TailwindCSS 3.4.17
-    - Bootstrap 5.3.7
-    - Styled-JSX 5.1.7
-- **State Management:** Zustand 5.0.5
-- **Data Visualization:**
-    - Recharts 2.15.3
-    - Nivo Heatmap
-    - React Calendar Heatmap
 - **Routing:** React Router DOM 7.6.2
 - **Database:** Supabase
 - **Local Storage:** Dexie.js
@@ -39,8 +25,6 @@ This project was originally started as a university project for the WebEngineeri
 - **Icons:** Lucide React & Heroicons
 
 ## 📦 Installation
-
----
 
 1. Make sure you have Node.js (and npm) installed
 2. Clone the repository ```git clone https://github.com/MerlinBrk/HabitApp.git```
