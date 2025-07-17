@@ -60,13 +60,14 @@ export default function CommunityPage() {
   useEffect(() => {
     if(!userId) return;
     fetchAll();
+    clearCommunityId();
+    clearList();
     const interval = setInterval(() => {
     fetchAll();
   }, 1000); 
 
   return () => clearInterval(interval); 
-    clearCommunityId();
-    clearList();
+    
   }, [userId]);
 
   useEffect(() => {
