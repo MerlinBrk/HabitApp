@@ -69,7 +69,7 @@ export default function HabitHeatMap({habitId}: HabitHeatMapProps) {
                 titleForValue={(value) => {
                     if (!value || !value.date) return "";
                     const status = value.count > 0 ? "Completed" : "Not Completed";
-                    return `${value.date}: ${status}`;
+                    return `${value.date.split("T")[0]}: ${status}`;
                 }}
             />
 
