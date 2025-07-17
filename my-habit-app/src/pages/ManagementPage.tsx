@@ -7,12 +7,8 @@ import {syncAll} from "../lib/sync";
 
 import {getUserIdFromSession} from "../lib/auth";
 
-type Tab = "All Habits" | "Daily" | "Weekly" | "Monthly";
-const tabs: Tab[] = ["All Habits", "Daily", "Weekly", "Monthly"];
-
 export default function ManagementPage() {
     const [habits, setHabits] = useState<Habit[]>([]);
-    const [activeTab, setActiveTab] = useState<Tab>("All Habits");
     const [openNewHabitModal, setOpenNewHabitModal] = useState(false);
     const [searchKey, setSearchKey] = useState("");
     const [userId, setUserId] = useState<string>("");
@@ -81,27 +77,6 @@ export default function ManagementPage() {
                     </div>
                 </div>
                 <div>
-                    <div className="inline-flex rounded-full bg-[#f4f6f9] p-1">
-                        {tabs.map((tab) => (
-                            <button
-                                aria-label={`Switch to ${tab} tab`}
-                                type="button"
-                                key={tab}
-                                onClick={() => setActiveTab(tab)}
-                                className={`px-4 py-1.5 rounded-full text-sm transition-colors font-sans ${
-                                    activeTab === tab
-                                        ? "bg-white text-black font-bold hover:border-white"
-                                        : "text-gray-500 bg-[#f4f6f9] hover:text-black hover:bg-white hover:border-white"
-                                }`}
-                                style={{
-                                    ...(activeTab === tab ? {fontWeight: 700} : {}),
-                                    fontFamily: "Helvetica, Arial, sans-serif",
-                                }}
-                            >
-                                {tab}
-                            </button>
-                        ))}
-                    </div>
                     <div
                         className="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
                         {getFilteredHabits.map((habit) => (
