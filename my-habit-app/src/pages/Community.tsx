@@ -214,7 +214,7 @@ export default function CommunityPage() {
   
 
   return (
-    <div className="flex h-screen w-full flex-col bg-white overflow-y-auto pb-16 md:pb-16">
+    <div className="flex h-screen w-full flex-col bg-white overflow-y-auto hide-scrollbar overflpb-16 md:pb-16">
       
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 flex">
