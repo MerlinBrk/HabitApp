@@ -5,17 +5,17 @@ import {WEEKDAYS} from "../utils/constants";
 import {eachDayOfInterval, endOfYear, format, startOfYear} from "date-fns";
 
 
-// Gibt ein Habit anhand der ID zurück
+
 export async function getHabitById(habitId: string) {
     try {
         return await db.habits.where({id: habitId}).first();
     } catch (err) {
-        console.error("Fehler beim Abrufen des Habits:", err);
+        console.error("Error Fetching Habit by ID", err);
         return null;
     }
 }
 
-// Gibt alle Habits eines Benutzers zurück
+
 export async function getHabits(userId: string) {
     try {
         const habits = await db.habits.where({user_id: userId})
@@ -23,12 +23,12 @@ export async function getHabits(userId: string) {
             .toArray();
         return habits;
     } catch (err) {
-        console.error("Fehler beim Abrufen der Habits:", err);
+        console.error("Error Fetching a Habit by User", err);
         return [];
     }
 }
 
-// Gibt alle Habits eines Benutzers zurück, die für den gewählten Tag aktiv sind
+
 export async function getDaysHabitsByUserId(userId: string, date: Date) {
     try {
         const todayWeekday = WEEKDAYS[date.getDay()];
@@ -36,16 +36,15 @@ export async function getDaysHabitsByUserId(userId: string, date: Date) {
             .where("user_id")
             .equals(userId)
             .filter((habit) => !!habit.days?.includes(todayWeekday))
-            .filter((habit) => !habit.deleted) // Filtere gelöschte Habits aus
+            .filter((habit) => !habit.deleted) 
             .toArray();
         return habits;
     } catch (err) {
-        console.error("Fehler beim Abrufen der Habits für heute:", err);
+        console.error("Error Fetching Habits by Date and User", err);
         return [];
     }
 }
 
-// Gibt alle Habits eines Benutzers zurück, die nicht für den gewählten Tag aktiv sind
 export async function getNotDaysHabitsByUserId(userId: string, date: Date) {
     try {
         const todayWeekday = WEEKDAYS[date.getDay()];
@@ -54,41 +53,38 @@ export async function getNotDaysHabitsByUserId(userId: string, date: Date) {
             .where("user_id")
             .equals(userId)
             .filter((habit) => !habit.days?.includes(todayWeekday))
-            .filter((habit) => !habit.deleted) // Filtere gelöschte Habits aus
+            .filter((habit) => !habit.deleted) 
             .toArray();
         return habits;
     } catch (err) {
         console.error(
-            "Fehler beim Abrufen der Habits, die nicht für heute sind:",
+            "Error Fetching False Habit by Date",
             err
         );
         return [];
     }
 }
 
-// Gibt alle HabitLogs eines Benutzers zurück
 export async function getAllHabitLogs(userId: string) {
     try {
         const habitLogs = await db.habit_logs.where({user_id: userId}).toArray();
-        return habitLogs; // Gibt die Liste der HabitLogs zurück
+        return habitLogs; 
     } catch (err) {
-        console.error("Fehler beim Abrufen der HabitLogs:", err);
+        console.error("Error Fetching HabitLogs by User ", err);
         return [];
     }
 }
 
-// Gibt alle HabitLogs eines Benutzers zurück, die zu einem bestimmten Habit gehören
 export async function getHabitLogByHabitId(habitId: string) {
     try {
         const habitLog = await db.habit_logs.where({habit_id: habitId}).toArray();
         return habitLog;
     } catch (err) {
-        console.error("Fehler beim Abrufen des HabitLogs:", err);
+        console.error("Error Fetching HabitLog by Id", err);
         return [];
     }
 }
 
-// Gibt einen HabitLog für einen bestimmten Habit, ein bestimmtes Datum und einen Benutzer zurück
 export async function getHabitLogByHabitIdAndDateAndUserId(
     habitId: string,
     date: Date,
@@ -101,12 +97,11 @@ export async function getHabitLogByHabitIdAndDateAndUserId(
             .first();
         return log;
     } catch (err) {
-        console.error("Fehler beim Abrufen eines HabitLogs", err);
+        console.error("Error Fetching HabitLog By Id, Date and User", err);
         return 0;
     }
 }
 
-// Gibt alle HabitLogs eines Benutzers für einen bestimmten Tag zurück
 export async function getHabitLogsByDateAndUserId(
     userId: string,
     day: Date | string
@@ -121,7 +116,7 @@ export async function getHabitLogsByDateAndUserId(
             .toArray();
         return habitLogs;
     } catch (err) {
-        console.error("Fehler beim Abrufen der HabitLogs:", err);
+        console.error("Error Fetching HabitLog by User and Day", err);
         return [];
     }
 }
@@ -131,7 +126,6 @@ export async function getPercentageDoneByHabitId(
     
 ) {
     try {
-        // Hole das Habit, um die aktiven Wochentage zu bekommen
         const habit = await db.habits.where({id: habitId}).first();
         if (!habit || !habit.days || habit.days.length === 0) return 0;
 
@@ -147,7 +141,6 @@ export async function getPercentageDoneByHabitId(
 
         while (currentDate >= formattedDate) {
             const weekday = WEEKDAYS[currentDate.getDay()];
-            // Prüfe, ob das Habit an diesem Wochentag gemacht werden soll
             if (habit.days.includes(weekday)) {
                 const dayStr =
                     currentDate.toISOString().split("T")[0] + "T00:00:00+00:00";
@@ -170,14 +163,13 @@ export async function getPercentageDoneByHabitId(
             : Math.round(100 * (done / (done + notDone)));
     } catch (err) {
         console.error(
-            "Fehler beim Anfordern der Prozente wie oft das Habit gemacht wurde",
+            "Error Fetch Percentage By Id ",
             err
         );
         return 0.0;
     }
 }
 
-// Gibt den durchschnittlichen Prozentsatz aller Habits eines Users zurück
 export async function getPercentageDoneByUserId(userId: string) {
     try {
         const habits = await db.habits.where({user_id: userId}).toArray();
@@ -187,7 +179,7 @@ export async function getPercentageDoneByUserId(userId: string) {
         let count = 0;
 
         for (const habit of habits) {
-            // Prüfe, ob das Habit überhaupt schon hätte gemacht werden können
+            
             if (!habit.days || habit.days.length === 0) continue;
 
             const createdAt = new Date(habit.created_at);
@@ -198,7 +190,6 @@ export async function getPercentageDoneByUserId(userId: string) {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
-            // Prüfe, ob zwischen Erstellungsdatum und heute ein Tag liegt, an dem das Habit aktiv ist
             while (checkDate <= today) {
                 const weekday = WEEKDAYS[checkDate.getDay()];
                 if (habit.days.includes(weekday)) {
@@ -217,7 +208,7 @@ export async function getPercentageDoneByUserId(userId: string) {
         return count === 0 ? 0 : Math.round(totalPercentage / count);
     } catch (err) {
         console.error(
-            "Fehler beim Berechnen des durchschnittlichen Prozentsatzes für den User",
+            "Error Calculating user Done-Percentage",
             err
         );
         return 0;
@@ -227,15 +218,12 @@ export async function getPercentageDoneByUserId(userId: string) {
 
 export async function getStreakByHabitId(habitId: string) {
     try {
-        // Hole das Habit, um die aktiven Wochentage zu bekommen
         const habit = await db.habits.where({id: habitId}).first();
         if (!habit || !habit.days || habit.days.length === 0) return 0;
 
-        // Hole alle HabitLogs für dieses Habit, die erledigt wurden, sortiert nach Datum absteigend
         const habitLog = await db.habit_logs.where({habit_id: habitId}).toArray();
         const logs = habitLog.filter((log) => log.is_done === true);
 
-        // Sortiere die Logs absteigend nach Datum
         logs.sort((a, b) => b.date.localeCompare(a.date));
 
         let streak = 0;
@@ -244,7 +232,6 @@ export async function getStreakByHabitId(habitId: string) {
 
         while (true) {
             const weekday = WEEKDAYS[currentDate.getDay()];
-            // Prüfe, ob das Habit an diesem Wochentag gemacht werden soll
             if (habit.days.includes(weekday)) {
                 const dayStr = currentDate.toISOString().split("T")[0] + "T00:00:00+00:00";
                 const found = logs.find((log) => log.date === dayStr);
@@ -252,7 +239,6 @@ export async function getStreakByHabitId(habitId: string) {
                 if (found) {
                     streak++;
                 } else {
-                    // Wenn wir heute prüfen und heute kein Log existiert, ignoriere heute und prüfe weiter mit gestern
                     if (!checkedToday) {
                         checkedToday = true;
                         currentDate.setDate(currentDate.getDate() - 1);
@@ -268,12 +254,11 @@ export async function getStreakByHabitId(habitId: string) {
 
         return streak;
     } catch (err) {
-        console.error("Fehler beim Abrufen der Streak", err);
+        console.error("Error Fetching Streak by Habit", err);
         return 0;
     }
 }
 
-// Gibt die niedrigste Streak aller Habits eines Users zurück (User-Streak)
 export async function getUserStreak(userId: string) {
     try {
         const habits = await db.habits.where({user_id: userId}).toArray();
@@ -293,12 +278,11 @@ export async function getUserStreak(userId: string) {
 
         return minStreak === Infinity ? 0 : minStreak;
     } catch (err) {
-        console.error("Fehler beim Berechnen der User-Streak", err);
+        console.error("Error Fetching User Streak", err);
         return 0;
     }
 }
 
-// Hinzufügen eines Habits zur IndexedDB
 export async function addHabitToDB(
     title: string,
     description: string,
@@ -321,11 +305,10 @@ export async function addHabitToDB(
         };
         await db.habits.add(newHabit);
     } catch (err) {
-        console.error("Fehler beim Hinzufügen des Habits:", err);
+        console.error("Error Adding a new Habit to Dexie", err);
     }
 }
 
-//Hinzufügen eines neuen HabitLogs für ein besimmtes Habit
 export async function addHabitLog(
     userId: string,
     habitId: string,
@@ -343,11 +326,10 @@ export async function addHabitLog(
             is_done: isDone,
         });
     } catch (err) {
-        console.error("Fehler beim Hinzufügen eines Habit Logs", err);
+        console.error("Error Adding New HabitLog to Dexie", err);
     }
 }
 
-// Löschen eines Habits
 export async function deleteHabit(habitId: string, userId: string) {
     if (navigator.onLine) {
         try {
@@ -360,34 +342,33 @@ export async function deleteHabit(habitId: string, userId: string) {
                 .eq("user_id", userId);
 
             if (error) {
-                console.error("Fehler beim Löschen des Habits aus Supabase:", error);
+                throw error;
             }
             await deleteHabitLog(habitId, userId);
         } catch (err) {
-            console.error("Fehler beim Löschen des Habits:", err);
+            console.error("Error Deleting Habit:", err);
         }
     } else {
         try {
             const updatedCount = await db.habits.update(habitId, {
                 synced: false,
-                deleted: true, // Markiere das Habit als gelöscht
+                deleted: true, 
             });
             if (updatedCount === 0) {
-                throw new Error("Habit nicht gefunden");
+                throw new Error("Habit not found");
             }
             
         } catch (err) {
-            console.error("Fehler beim Markieren des Habits als gelöscht:", err);
+            console.error("Error Marking Habit as Deleted in Dexie", err);
         }
     }
 }
 
-// Löschen eines Habit Logs aus IndexedDB
 export async function deleteHabitLog(habitId: string, userId: string) {
     try {
         const habitLog = await db.habit_logs.where({habit_id: habitId}).toArray();
         if (!habitLog) {
-            console.error(`HabitLog mit ID ${habitId} nicht gefunden.`);
+
             return;
         }
 
@@ -400,17 +381,15 @@ export async function deleteHabitLog(habitId: string, userId: string) {
                 .eq("user_id", userId);
 
             if (error) {
-                console.error("Fehler beim Löschen des HabitLogs aus Supabase:", error);
-            } else {
-
-            }
+                throw error;
+            } 
         }
     } catch (err) {
-        console.error("Fehler beim Löschen des HabitLogs:", err);
+        console.error("Error Deleting HabitLog by HabitId", err);
+        return;
     }
 }
 
-// Aktualisieren von IsDone-Wert für ein Habit Log
 export async function updateHabitLogIsDoneById(
     habitLogId: string,
     isDone: boolean
@@ -432,7 +411,7 @@ export async function updateHabitLogIsDoneById(
             await recalculateLongestStreak(habitLog.habit_id);
         }
     } catch (err) {
-        console.error("Fehler beim Updaten eines Habit Logs", err);
+        console.error("Error Updating HabitLog IsDone", err);
     }
 }
 
@@ -487,7 +466,7 @@ export async function getLongestStreakByHabitId(habitId: string) {
 
         return longestStreak;
     } catch (err) {
-        console.error("Fehler beim Abrufen der längsten Streak", err);
+        console.error("Error Fetching longest Streak by Habit", err);
         return 0;
     }
 }
@@ -589,7 +568,7 @@ export async function clearHabitDB() {
     try {
         await db.habits.clear();
     } catch (err) {
-        console.error("Fehler beim Clearen der Indexed DB Habits", err);
+        console.error("Error Clearing Habits in Dexie", err);
     }
 }
 
@@ -597,7 +576,7 @@ export async function clearHabitLogsDB() {
     try {
         await db.habit_logs.clear();
     } catch (err) {
-        console.error("Fehler beim Clearen der Indexed DB HabitLogs", err);
+        console.error("Error Clearing HabitLogs in Dexie", err);
     }
 }
 

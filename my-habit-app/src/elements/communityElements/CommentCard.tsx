@@ -26,8 +26,6 @@ export default function CommentCard({ comment }: CommentCardProps) {
     const data = await getProfileImageUrl(userId);
     if (data) {
       setProfileImageUrl(data);
-    } else {
-      console.error("Fehler beim Abrufen des Profilbilds");
     }
   };
 
@@ -42,12 +40,12 @@ export default function CommentCard({ comment }: CommentCardProps) {
     return (
       <div className="bg-white rounded-xl relative" >
         <div className="flex items-start mb-2 mt-0">
-          {/* Avatar */}
+          
           <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center mr-3">
             {profileImageUrl ? (
               <img
                 src={profileImageUrl}
-                alt="Profilbild"
+                alt="Profile Image"
                 className="w-8 h-8 rounded-full object-cover"
               />
             ) : (
@@ -62,8 +60,6 @@ export default function CommentCard({ comment }: CommentCardProps) {
             )}
             
           </div>
-
-          {/* Username, Zeit und Nachricht in einer Spalte */}
           <div className="flex-1">
             <div className="flex items-center mb-1">
               <div className="text-gray-800 font-medium mr-2">{username}</div>
@@ -74,8 +70,6 @@ export default function CommentCard({ comment }: CommentCardProps) {
             <p className="text-gray-700">{comment.message}</p>
           </div>
         </div>
-
-        {/* Trennstrich */}
         <div className="border-t border-gray-200 mt-4" />
       </div>
     );

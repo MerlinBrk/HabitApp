@@ -41,7 +41,7 @@ export default function MessageCard({
       setCurrentHabitName(data.title);
       setCurHabit(data);
     } else {
-      setCurrentHabitName("Unknown Habit");
+      setCurrentHabitName("");
     }
   };
 
@@ -55,8 +55,6 @@ export default function MessageCard({
     const data = await getProfileImageUrl(userId);
     if (data) {
       setProfileImageUrl(data);
-    } else {
-      console.error("Fehler beim Abrufen des Profilbilds");
     }
   };
 
@@ -72,9 +70,9 @@ export default function MessageCard({
     fetchProfileImage();
     const interval = setInterval(() => {
       fetchCommentAmount();
-    }, 1000); // jede Sekunde
+    }, 1000);
 
-    return () => clearInterval(interval); // Clean-up beim Unmount
+    return () => clearInterval(interval); 
   }, []);
 
   const handleCopy = () => {
@@ -108,7 +106,7 @@ export default function MessageCard({
                 strokeLinejoin="round"
               />
             </svg>
-            <span>Erfolgreich kopiert!</span>
+            <span>Successfully Copied</span>
           </div>
         </div>
       )}
@@ -121,7 +119,7 @@ export default function MessageCard({
           {profileImageUrl ? (
             <img
               src={profileImageUrl}
-              alt="Profilbild"
+              alt="Profile Image"
               className="w-10 h-10 rounded-full object-cover"
             />
           ) : (
@@ -136,7 +134,7 @@ export default function MessageCard({
           )}
         </div>
         <div
-          onClick={() => alert(`Profil von ${userId}`)}
+          onClick={() => alert(`Profile for ${username}`)}
           role="button"
           className="text-gray-800 font-semibold"
         >

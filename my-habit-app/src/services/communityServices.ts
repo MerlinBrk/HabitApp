@@ -13,7 +13,7 @@ export async function getAllCommunities() {
 
     return data || [];
   } catch (error) {
-    console.error("Fehler beim Abrufen der Communities:", error);
+    console.error("Error Fetching All Communities", error);
     return [];
   }
 }
@@ -29,7 +29,7 @@ export async function getAllCommunityTitles() {
     }   
     return data?.map((community: { title: string }) => community.title) || [];
   } catch (error) {
-    console.error("Fehler beim Abrufen der Community-Titel:", error);
+    console.error("Error Fetching All Community Titles", error);
     return [];
   }
 }
@@ -48,7 +48,7 @@ export async function getCommunityNameById(communityId: string) {
 
     return data?.title || "";
   } catch (error) {
-    console.error("Fehler beim Abrufen des Community-Namens:", error);
+    console.error("Error Fetching a Community Title", error);
     return "";
   }
 }
@@ -67,7 +67,7 @@ export async function getCommunityDesctiptionById(communityId:string){
 
     return data?.description || "";
   } catch (error) {
-    console.error("Fehler beim Abrufen der Community-Description:", error);
+    console.error("Error Fetching a Community Description", error);
     return "";
   }
 }
@@ -82,7 +82,7 @@ try{
     throw error;
   }
 }catch(err){
-  console.error("Fehler beim Fetchen einer Communtiy mit bestimmtem Titel",err);
+  console.error("Error Fetching Community Id by Title",err);
   return "";
 }
 }
@@ -97,7 +97,7 @@ export async function addNewCommunity(userId: string, newTitle:string, newDescri
         { owner_id: userId, title: newTitle, description: newDescription },
       ])
       .select()
-      .single(); // erwartet genau einen Eintrag
+      .single(); 
   if(error) {
     throw error;
   }
@@ -107,7 +107,7 @@ export async function addNewCommunity(userId: string, newTitle:string, newDescri
 }
 
   catch(err){
-      console.error("Fehler beim Hinzufügen einer neuen Community",err);
+      console.error("Error Adding a New Community",err);
       return;
   }
 }
@@ -144,7 +144,7 @@ export async function getCommunitiesByUserId(userId:string){
     return communities || [];
   }
   catch(err){
-    console.error("Fehler beim Fetchen der subscripten Communities",err);
+    console.error("Error Fetching CommunityIds by User",err);
       return;
   }
 }

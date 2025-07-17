@@ -40,13 +40,13 @@ export default function ProfilePage() {
       const imageUrl = await uploadProfileImage(userId, file);
       setProfileImageUrl(imageUrl);
     } catch (error: any) {
-      console.error("Fehler beim Hochladen des Profilbilds:", error.message);
+      console.error("Error Uploading a Profile Image", error.message);
     }
   };
 
   useEffect(() => {
     const load = async () => {
-      const id = await getUserIdFromSession(); // NEU
+      const id = await getUserIdFromSession(); 
       if (!id) return;
       setUserId(id);
       fetchAllData(id);
@@ -75,7 +75,7 @@ export default function ProfilePage() {
       fetchProfileImage(id),
     ]);
   } catch (error) {
-    console.error("Fehler beim Laden der Profildaten:", error);
+    console.error("Error Fetching User Details:", error);
   } finally {
     setLoading(false);
   }
@@ -101,8 +101,6 @@ export default function ProfilePage() {
     const data = await getProfileImageUrl(id);
     if (data) {
       setProfileImageUrl(data);
-    } else {
-      console.error("Fehler beim Abrufen des Profilbilds");
     }
   };
 if (loading) {
@@ -112,9 +110,9 @@ if (loading) {
         <div
           className="animate-spin h-10 w-10 border-4 border-black border-t-transparent rounded-full mx-auto mb-4"
           role="status"
-          aria-label="Lädt..."
+          aria-label="Loading..."
         />
-        <p className="text-sm text-muted-foreground">Profil wird geladen...</p>
+        <p className="text-sm text-muted-foreground">Profile is loading...</p>
       </div>
     </main>
   );
@@ -132,7 +130,7 @@ if (loading) {
               {profileImageUrl ? (
                 <img
                   src={profileImageUrl}
-                  alt="Profilbild"
+                  alt="Profile Image"
                   className="w-24 h-24 rounded-full object-cover border shadow"
                 />
               ) : (
@@ -175,7 +173,6 @@ if (loading) {
             {userEmail}
           </p>
 
-          {/* Responsive grid: 1 column on mobile, 3 columns on sm+ */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-md">
             <div className="rounded-xl border bg-card text-card-foreground shadow p-4 text-center">
               <p className="text-2xl font-bold">{userHabitAmount}</p>

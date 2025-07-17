@@ -12,9 +12,8 @@ setInterval(() => {
   if (navigator.onLine) {
     syncAll();
   }
-}, 60 * 1000); // jede Minuten
+}, 60 * 1000);
 
-// Bei Internetverbindung
 window.addEventListener('online', () => {
   syncAll();
 });

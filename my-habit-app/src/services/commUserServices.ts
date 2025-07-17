@@ -11,7 +11,7 @@ export async function addNewCommunityUser(communityId:string,userId: string){
 }
 
   catch(err){
-      console.error("Fehler beim Hinzufügen eines neuen Community Users",err);
+      console.error("Error Adding a new Community User",err);
       return;
   }
 }
@@ -28,7 +28,7 @@ export async function deleteCommunityUser(communityId:string,userId:string) {
             throw error;
         }
     } catch (err) {
-        console.error("Fehler beim Löschen eines Community Users", err);
+        console.error("Error Deleting User from Community", err);
         return;
     }
 }
@@ -42,14 +42,14 @@ export async function getIfUserIsPartOfCommunity(communityId: string, userId: st
             .eq("user_id", userId)
             .single();
 
-        if (error && error.code !== "PGRST116") { // PGRST116: No rows found
-            console.error("Fehler beim Überprüfen der Community-Mitgliedschaft", error);
+        if (error && error.code !== "PGRST116") { 
+            throw error;
             return false;
         }
 
         return !!data;
     } catch (err) {
-        console.error("Fehler beim Überprüfen der Community-Mitgliedschaft", err);
+        console.error("Error Fetching Community Subscription", err);
         return false;
     }
 }

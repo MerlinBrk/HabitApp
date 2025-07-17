@@ -18,14 +18,14 @@ export async function syncUserIdToLocalStorage() {
     .maybeSingle();
 
   if (profileError) {
-    console.error("Fehler beim Laden des Profils:", profileError.message);
+    console.error("Error loading profile:", profileError.message);
     return null;
   }
 
   if (!profile) {
-    
     return null;
   }
+
   localStorage.setItem("user_id", userId);
   localStorage.setItem("user_name", profile.username);
   localStorage.setItem("user_email", userEmail ?? "");
@@ -35,13 +35,11 @@ export async function syncAll() {
   const userId = await getUserIdFromSession();
   if (!userId) return;
 
-  await syncHabitsWithSupabase(userId); // Dexie → Supabase
+  await syncHabitsWithSupabase(userId); 
   await syncHabitLogsWithSupabase(userId);
-  //await pullHabitsFromSupabase(userId);   // Supabase → Dexie
-  //await pullHabitLogsFromSupabase(userId);
 }
 
-//Sync Habits from Indexed DB -> SupaBase / only unsynced Habits
+// Sync habits from IndexedDB → Supabase / only unsynced habits
 export async function syncHabitsWithSupabase(userId: string) {
   try {
     const allHabits = await db.habits.where("user_id").equals(userId).toArray();
@@ -57,7 +55,7 @@ export async function syncHabitsWithSupabase(userId: string) {
 
         if (!error) {
           await db.habits.delete(habit.id);
-          await deleteHabitLog(habit.id, userId); // Lösche alle zugehörigen HabitLogs
+          await deleteHabitLog(habit.id, userId); 
         }
       } else {
         const { error } = await supabase
@@ -67,16 +65,16 @@ export async function syncHabitsWithSupabase(userId: string) {
         if (!error) {
           await db.habits.update(habit.id, { synced: true });
         } else {
-          console.error("Fehler beim Sync eines Habits:", error);
+          console.error("Error syncing habit:", error);
         }
       }
     }
   } catch (err) {
-    console.error("Fehler beim Sync mit Supabase:", err);
+    console.error("Error syncing with Supabase:", err);
   }
 }
 
-//Sync HabitLogs from Indexed DB -> SupaBase / only unsynced HabitsLogs
+// Sync habit logs from IndexedDB → Supabase / only unsynced logs
 export async function syncHabitLogsWithSupabase(userId: string) {
   try {
     const unsyncedHabitLogs = await db.habit_logs
@@ -89,22 +87,19 @@ export async function syncHabitLogsWithSupabase(userId: string) {
       const { error } = await supabase
         .from("Habit_logs")
         .upsert([habitLogWithoutSynced], { onConflict: "id" });
+
       if (!error) {
         await db.habit_logs.update(habitLog.id, { synced: true });
       } else {
-        console.error(
-          "Fehler beim Sync eines HabitLogs:",
-          error,
-          habitLogWithoutSynced
-        );
+        console.error("Error syncing habit log:", error, habitLogWithoutSynced);
       }
     }
   } catch (err) {
-    console.error(" Fehler beim Sync mit Supabase:", err);
+    console.error("Error syncing with Supabase:", err);
   }
 }
 
-//Pull Habits from SupaBase -> Indexed DB / all Elements
+// Pull habits from Supabase → IndexedDB / all items
 export async function pullHabitsFromSupabase(userId: string) {
   const { data, error } = await supabase
     .from("Habits")
@@ -112,7 +107,7 @@ export async function pullHabitsFromSupabase(userId: string) {
     .eq("user_id", userId);
 
   if (error) {
-    console.error("Fehler beim Laden der Habits von Supabase:", error);
+    console.error("Error loading habits from Supabase:", error);
     return;
   }
 
@@ -122,12 +117,12 @@ export async function pullHabitsFromSupabase(userId: string) {
     await db.habits.put({
       ...habit,
       synced: true,
-      deleted: false, // Markiere sie lokal als synchronisiert
+      deleted: false, // Mark locally as synced
     });
   }
 }
 
-//Pull HabitLogs from SupaBase -> Indexed DB / all Elements
+// Pull habit logs from Supabase → IndexedDB / all items
 export async function pullHabitLogsFromSupabase(userId: string) {
   const { data, error } = await supabase
     .from("Habit_logs")
@@ -135,7 +130,7 @@ export async function pullHabitLogsFromSupabase(userId: string) {
     .eq("user_id", userId);
 
   if (error) {
-    console.error("Fehler beim Laden der Logs von Supabase:", error);
+    console.error("Error loading logs from Supabase:", error);
     return;
   }
 
