@@ -36,7 +36,6 @@ export default function ManageHabitCard({
         fetchLongestHabitStreak();
     }, [])
 
-
     const handleOpenAnalyticsModal = () => {
         setOpenAnalyticsModal(true);
     }
@@ -55,6 +54,7 @@ export default function ManageHabitCard({
 
     const fetchPercentage = async () => {
         const data = await getPercentageDoneByHabitId(habitId);
+        console.log(data);
         setPercentage(data);
     }
 
@@ -71,7 +71,7 @@ export default function ManageHabitCard({
         <div className="rounded-xl border text-card-foreground shadow bg-card">
             <div className="flex flex-col space-y-1.5 p-6 pb-2">
                 <div className="flex justify-between items-start">
-                    <div className="max-w-xs">
+                    <div className="max-w-[200px]">
                         <h3 className="font-semibold leading-none tracking-tight flex items-center">
                             {habitTitle}
                         </h3>
@@ -163,7 +163,7 @@ export default function ManageHabitCard({
                         <span>{percentage}%</span>
                     </div>
                     <div
-                        title="Progressbar"
+
                         aria-valuemax={100}
                         aria-valuemin={0}
                         role="progressbar"
@@ -201,7 +201,6 @@ export default function ManageHabitCard({
                     {" "}
                     View Detailed Analytics
                 </button>
-
                 {openAnalyticsModal &&
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
                         <div className="bg-white rounded-xl shadow-2xl p-8 relative min-w-[320px]">

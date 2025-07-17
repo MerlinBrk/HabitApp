@@ -62,10 +62,13 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
         <div className="container mx-auto px-4 py-12 flex-1 flex flex-col justify-center">
           <div className="text-center">
             <h1 className="text-5xl font-bold text-gray-900 mb-4">geiler</h1>
+            <p className="text-xl text-black font-bold mb-4 max-w-2xl mx-auto">
+              Gewohnheits-Teiler
+            </p>
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
               Build better habits, track your progress, and connect with a community of like-minded individuals.
             </p>
-            <div className="flex flex-wrap justify-center gap-8">
+            <div className="flex flex-wrap justify-center gap-8 mb-8">
               <div className="flex items-center gap-2">
                 <svg /* check icon */ {...svgProps} className="lucide lucide-circle-check-big h-5 w-5 text-green-500">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
@@ -209,17 +212,11 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
                 <button
                   aria-label="Submit authentication"
                   onClick={handleAuth}
-                  className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition-colors flex justify-center items-center gap-2"
+                  className="w-full bg-black text-white py-2 font-bold rounded-md hover:bg-gray-800 transition-colors flex justify-center items-center gap-2"
                 >
                   {isLogin ? "Sign In" : "Register"} →
                 </button>
-                {isLogin && (
-                  <div className="text-center text-sm mt-1">
-                    <a href="#" className="text-blue-500 hover:underline">
-                      Forgot password?
-                    </a>
-                  </div>
-                )}
+                
               </div>
               {error && <p className="text-red-500 text-sm mt-4 text-center">{error}</p>}
             </div>
