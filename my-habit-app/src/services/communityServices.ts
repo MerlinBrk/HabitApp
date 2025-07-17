@@ -101,10 +101,8 @@ export async function addNewCommunity(userId: string, newTitle:string, newDescri
   if(error) {
     throw error;
   }
-  const {error:userError } = await addNewCommunityUser(data.id, userId);
-  if(userError) {
-    throw userError;
-  }
+  await addNewCommunityUser(data.id, userId);
+  
 
 }
 

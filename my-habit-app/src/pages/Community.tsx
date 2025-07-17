@@ -40,7 +40,6 @@ export default function CommunityPage() {
   const [currentCommunityForCommentModal, setCurrentCommunityForCommentModal] =
     useState("");
   const [communityMessages, setCommunityMessages] = useState<CommunityMessage[]>([]);
-  const [communityTitles, setCommunityTitles] = useState<string[]>([]);
   const [stateNewCommunityModal, setStateNewCommunityModal] = useState(false);
   const [stateNewMessageModal, setStateNewMessageModal] = useState(false);
   const [currentCommunityDescription, setCurrentCommunityDescription] =
@@ -111,7 +110,6 @@ export default function CommunityPage() {
       return;
     }
     clearList();
-    setCommunityTitles(data.map((community) => community.title));
     setUserCommunities(data);
   };
 
@@ -341,7 +339,7 @@ export default function CommunityPage() {
               userId={userId}
             />
             <NewCommunityModal
-              currentTitles={communityTitles}
+              
               isActive={stateNewCommunityModal}
               onClose={() => setStateNewCommunityModal(false)}
               onAddButton={handleAddNewCommunityButton}

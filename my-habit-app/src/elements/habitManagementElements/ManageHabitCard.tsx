@@ -23,7 +23,6 @@ export default function ManageHabitCard({
                                             days,
                                             handleDeleteHabit,
                                         }: ManageHabitProps) {
-    const [openMoreDetails, setOpenMoreDetails] = useState(false);
     const [habitStreak, setHabitStreak] = useState(0);
     const [longestHabitStreak, setLongestHabitStreak] = useState(0);
     const [percentage, setPercentage] = useState(0);
@@ -37,9 +36,7 @@ export default function ManageHabitCard({
         fetchLongestHabitStreak();
     }, [])
 
-    const handleOpenMoreClick = () => {
-        setOpenMoreDetails(!openMoreDetails);
-    };
+    
 
     const handleOpenAnalyticsModal = () => {
         setOpenAnalyticsModal(true);
@@ -222,40 +219,7 @@ export default function ManageHabitCard({
                     {" "}
                     View Detailed Analytics
                 </button>
-                {openMoreDetails &&
-                    (
-                        <>
-                            <div className="mt-4 pt-4 border-t">
-                                <h4 className="text-sm font-medium mb-2">Analytics</h4>
-                                <div className="grid grid-cols-2 grid-rows-2 gap-4">
-                                    <div className="bg-muted/50 p-3 rounded-md border shadow">
-                                        <div className="text-xs text-muted-foreground">
-                                            Current Streak
-                                        </div>
-                                        <div className="text-xl font-bold">{habitStreak}</div>
-                                    </div>
-                                    <div className="bg-muted/50 p-3 rounded-md border shadow">
-                                        <div className="text-xs text-muted-foreground">
-                                            Longest Streak
-                                        </div>
-                                        <div className="text-xl font-bold">{longestHabitStreak}</div>
-                                    </div>
-                                    <div className="bg-muted/50 p-3 rounded-md border shadow">
-                                        <div className="text-xs text-muted-foreground">
-                                            Current Streak
-                                        </div>
-                                        <div className="text-xl font-bold">{habitStreak}</div>
-                                    </div>
-                                    <div className="bg-muted/50 p-3 rounded-md border shadow">
-                                        <div className="text-xs text-muted-foreground">
-                                            Completion Rate
-                                        </div>
-                                        <div className="text-xl font-bold">{percentage}%</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </>
-                    )}
+                
                 {openAnalyticsModal &&
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
                         <div className="bg-white rounded-xl shadow-2xl p-8 relative min-w-[320px]">
