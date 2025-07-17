@@ -2,7 +2,7 @@ import { supabase } from "../lib/supabase";
 
 export async function getUserEmailById(userId: string) {
   if (!userId) {
-    console.error("Keine userId übergeben");
+    console.error("No userId provided");
     return null;
   }
 
@@ -13,16 +13,16 @@ export async function getUserEmailById(userId: string) {
     .single();
 
   if (error) {
-    console.error("Fehler beim Laden der E-Mail:", error.message);
+    console.error("Error loading email:", error.message);
     return null;
   }
 
   return data?.email || null;
 }
 
-export async function getUsernameById(userId:string) {
+export async function getUsernameById(userId: string) {
   if (!userId) {
-    console.error("Keine userId übergeben");
+    console.error("No userId provided");
     return null;
   }
 
@@ -33,7 +33,7 @@ export async function getUsernameById(userId:string) {
     .single();
 
   if (error) {
-    console.error("Fehler beim Laden des Benutzernamens:", error.message);
+    console.error("Error loading username:", error.message);
     return "";
   }
 
@@ -41,43 +41,43 @@ export async function getUsernameById(userId:string) {
 }
 
 export async function uploadProfileImage(userId: string, file: File) {
-  const fileExt = file.name.split('.').pop();
+  const fileExt = file.name.split(".").pop();
   const folderPath = `${userId}/`;
 
-  // Liste alle Dateien im User-Ordner auf
+  // List all files in the user's folder
   const { data: listData, error: listError } = await supabase.storage
-    .from('avatars')
+    .from("avatars")
     .list(folderPath);
 
   if (listError) throw listError;
 
-  // Lösche alle vorhandenen Dateien im User-Ordner
+  // Delete all existing files in the user's folder
   if (listData && listData.length > 0) {
     for (const item of listData) {
       await supabase.storage
-        .from('avatars')
+        .from("avatars")
         .remove([`${folderPath}${item.name}`]);
     }
   }
 
   const filePath = `${userId}/avatar.${fileExt}`;
 
-  // Upload zum Storage
+  // Upload to storage
   const { error: uploadError } = await supabase.storage
-    .from('avatars')
+    .from("avatars")
     .upload(filePath, file, { upsert: true });
 
   if (uploadError) throw uploadError;
 
-  // Bild-URL generieren (entweder öffentlich oder über signierte URL)
-  const { data: { publicUrl } } = supabase.storage
-    .from('avatars')
-    .getPublicUrl(filePath);
+  // Generate image URL (either public or signed)
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from("avatars").getPublicUrl(filePath);
 
   const { error: dbError } = await supabase
-    .from('Profiles')
+    .from("Profiles")
     .update({ avatar_url: publicUrl })
-    .eq('id', userId);
+    .eq("id", userId);
 
   if (dbError) throw dbError;
 
@@ -86,7 +86,7 @@ export async function uploadProfileImage(userId: string, file: File) {
 
 export async function getProfileImageUrl(userId: string) {
   if (!userId) {
-    console.error("Keine userId übergeben");
+    console.error("No userId provided");
     return null;
   }
 
@@ -97,7 +97,7 @@ export async function getProfileImageUrl(userId: string) {
     .single();
 
   if (error) {
-    console.error("Fehler beim Laden des Profilbilds:", error.message);
+    console.error("Error loading profile image:", error.message);
     return null;
   }
 

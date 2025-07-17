@@ -92,29 +92,30 @@ export default function SideBar() {
                     </li>
                 ))}
 
-                {list.length > 5 && !isOpen && (
-                    <li>
-                        <button
-                            aria-label="Show more habits"
-                            className="text-black px-2 py-1"
-                            onClick={() => setIsOpen(true)}
-                        >
-                            Zeige mehr...
-                        </button>
-                    </li>
-                )}
-                {list.length > 5 && isOpen && (
-                    <li>
-                        <button
-                            aria-label="Show less habits"
-                            className="text-black px-2 py-1"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            Weniger anzeigen
-                        </button>
-                    </li>
-                )}
-            </ul>
-        </div>
-    );
+        {list.length > 5 && !isOpen && (
+          <li>
+            <button
+              aria-label="Show more habits"
+              className="text-black px-2 py-1"
+              onClick={() => setIsOpen(true)}
+            >
+              Show more...
+            </button>
+          </li>
+        )}
+        {list.length > 5 && isOpen && (
+          <li>
+            <button
+              aria-label="Show less habits"
+              className="text-black px-2 py-1"
+              onClick={() => setIsOpen(false)}
+            >
+              Show less
+            </button>
+          </li>
+        )}
+      </ul>
+    </div>
+  );
+
 }

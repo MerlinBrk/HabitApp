@@ -5,7 +5,7 @@ import {WEEKDAYS} from "../../utils/constants.tsx";
 interface NewHabitModalProps {
     isActive: boolean;
     onClose: () => void;
-    userId: string; // Optional userId prop
+    userId: string;
 }
 
 export default function NewHabitModal({

@@ -1,30 +1,42 @@
 import { supabase } from "../lib/supabase";
 
-export async function addNewMessage(communityId:string, messageTitle:string, description:string, userId:string,habitId:string){
-    try{
-      console.log("Adding new message with communityId:", communityId, messageTitle, description,userId, habitId);
-        if(!habitId){
-        const {error} = await supabase.from("Community_messages").insert([{community_id: communityId, user_id:userId, title:messageTitle,message:description,habit_id:null }]);
-      if(error){
-            throw error;
-        }  
-      }
-        else{
-        const {error} = await supabase.from("Community_messages").insert([{community_id: communityId, user_id:userId, title:messageTitle,message:description,habit_id:habitId }]);
-        if(error){
-            throw error;
+export async function addNewMessage(communityId: string, messageTitle: string, description: string, userId: string, habitId: string) {
+  try {
+    if (!habitId) {
+      const { error } = await supabase.from("Community_messages").insert([
+        {
+          community_id: communityId,
+          user_id: userId,
+          title: messageTitle,
+          message: description,
+          habit_id: null
         }
+      ]);
+      if (error) {
+        throw error;
       }
-        
+    } else {
+      const { error } = await supabase.from("Community_messages").insert([
+        {
+          community_id: communityId,
+          user_id: userId,
+          title: messageTitle,
+          message: description,
+          habit_id: habitId
+        }
+      ]);
+      if (error) {
+        throw error;
+      }
+    }
 
-    }
-    catch(err){
-        console.error("Fehler beim Hinzufügen einer neuen Nachricht",err);
-        return;
-    }
+  } catch (err) {
+    console.error("Error while adding a new message", err);
+    return;
+  }
 }
 
-export async function getAllCommunityMessages(){
+export async function getAllCommunityMessages() {
   try {
     const { data, error } = await supabase
       .from("Community_messages")
@@ -36,14 +48,14 @@ export async function getAllCommunityMessages(){
 
     return data || [];
   } catch (error) {
-    console.error("Fehler beim Abrufen der Community-Nachrichten:", error);
+    console.error("Error while fetching all community messages:", error);
     return [];
   } 
 }
 
 export async function getAllMessagesByUserCommunities(userId: string) {
   try {
-    // Hole alle Community-IDs, bei denen der User Mitglied ist
+    // Get all community IDs the user is a member of
     const { data: communityUsers, error: communityUsersError } = await supabase
       .from("Community_users")
       .select("community_id")
@@ -59,7 +71,7 @@ export async function getAllMessagesByUserCommunities(userId: string) {
       return [];
     }
 
-    // Hole alle Nachrichten aus diesen Communities
+    // Get all messages from these communities
     const { data: messages, error: messagesError } = await supabase
       .from("Community_messages")
       .select("*")
@@ -71,7 +83,7 @@ export async function getAllMessagesByUserCommunities(userId: string) {
 
     return messages || [];
   } catch (err) {
-    console.error("Fehler beim Abrufen der Nachrichten für die Communities des Users", err);
+    console.error("Error while fetching messages for the user's communities", err);
     return [];
   }
 }
@@ -89,14 +101,14 @@ export async function getAllCommunityMessagesByCommunityId(communityId: string) 
 
     return data || [];
   } catch (err) {
-    console.error("Beim Fetchen der Community Nachrichten mit einer bestimmten Id gab es ein Fehler", err);
+    console.error("Error while fetching messages for the specified community ID", err);
     return [];
   }
 }
 
-export async function getCommunityMessageById(messageId:string){
-  try{
-const { data, error } = await supabase
+export async function getCommunityMessageById(messageId: string) {
+  try {
+    const { data, error } = await supabase
       .from("Community_messages")
       .select("*")
       .eq("id", messageId)
@@ -108,9 +120,7 @@ const { data, error } = await supabase
 
     return data;
   } catch (err) {
-    console.error("Beim Fetchen der Community Nachrichten mit einer bestimmten Id gab es ein Fehler", err);
+    console.error("Error while fetching message by ID", err);
     return;
   }
-  
 }
-

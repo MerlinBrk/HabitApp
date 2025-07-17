@@ -35,14 +35,15 @@ export default function App() {
         return () => subscription.unsubscribe();
     }, []);
 
-    useEffect(() => {
-        if (isLoggedIn) {
-            // Navigiere zur Homepage, sobald eingeloggt
-            fetchUserId();
-            setLoading(true);
 
-        }
-    }, [isLoggedIn]);
+   useEffect(() => {
+    if (isLoggedIn) {
+      fetchUserId();
+      setLoading(true);
+      
+    }
+  }, [isLoggedIn]);
+
 
     useEffect(() => {
         if (!userId) return;
@@ -98,5 +99,6 @@ export default function App() {
                 </div>
             </Layout>
         </Router>
+
     );
 }

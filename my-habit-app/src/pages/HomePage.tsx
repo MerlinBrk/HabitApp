@@ -156,10 +156,9 @@ export default function HomePage() {
       </div>
 
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Linke Seite: Habit Tracker */}
+        
         <div className="flex-1">
           <div className="rounded-xl border bg-card text-card-foreground shadow">
-            {/* ... (Habit Tracker Inhalt bleibt wie gehabt) ... */}
             <div className="flex flex-col space-y-1.5 p-6">
               <h3 className="font-semibold leading-none tracking-tight">
                 Habit Tracker
@@ -211,7 +210,6 @@ export default function HomePage() {
               : ""}
           </div>
         </div>
-        {/* Rechte Seite: Drei Cards untereinander */}
         <div className="flex flex-col gap-6 w-full md:max-w-xs">
           <HomeProgressCard
             title="Daily Completition"
