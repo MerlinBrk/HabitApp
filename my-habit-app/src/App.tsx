@@ -45,9 +45,6 @@ export default function App() {
   }, [isLoggedIn]);
 
 
-        }
-    }, [isLoggedIn]);
-
     useEffect(() => {
         if (!userId) return;
         (async () => {
