@@ -2,14 +2,14 @@ import { useState ,useEffect} from "react";
 import { getAllCommunityTitles } from "../../services/communityServices";
 
 interface NewCommunityModalProps {
-  currentTitles: string[];
+  
   isActive: boolean;
   onClose: () => void;
   onAddButton: (title: string, description: string) => void;
 }
 
 export default function NewCommunityModal({
-  currentTitles,
+  
   isActive,
   onClose,
   onAddButton,

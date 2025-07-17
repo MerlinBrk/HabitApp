@@ -67,13 +67,14 @@ export default function CommentModal({
     if (message) {
       fetchUserName(message.user_id);
       fetchComments();
+      fetchProfileImage(message.user_id);
       const interval = setInterval(() => {
         fetchComments();
       }, 1000);
 
       return () => clearInterval(interval);
 
-      fetchProfileImage(message.user_id);
+      
     }
   }, [message]);
 
