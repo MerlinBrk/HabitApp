@@ -13,7 +13,7 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/HabitApp/",
   "display": "standalone",
   "theme_color": "rgb(248, 254, 255)",
   "background_color": "#ffffff",
