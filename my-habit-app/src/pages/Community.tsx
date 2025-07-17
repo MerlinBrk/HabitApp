@@ -53,20 +53,22 @@ export default function CommunityPage() {
   const [userId, setUserId] = useState<string>("");
 
   useEffect(() => {
-    fetchUserId(); 
+    fetchUserId();
+    clearCommunityId(); 
+  clearList();
   }, []);
 
   useEffect(() => {
     if(!userId) return;
+    clearList();
     fetchAll();
     const interval = setInterval(() => {
-    fetchAll();
-  }, 1000); 
+    fetchMessages();
+  }, 2000); 
 
   return () => clearInterval(interval); 
-    clearCommunityId();
-    clearList();
-  }, [userId]);
+    
+  }, [userId,currentCommunityId]);
 
   useEffect(() => {
     userCommunities.forEach((community) => {
@@ -81,6 +83,7 @@ export default function CommunityPage() {
     if (currentCommunityId) {
       fetchCommunityDetails();
     }
+    
   }, [currentCommunityId]);
 
   const fetchUserId = async () => {
@@ -182,6 +185,7 @@ export default function CommunityPage() {
     description: string
   ) => {
     await addNewCommunity(userId, title, description);
+    fetchCommunities();
   };
 
   const handleAddNewMessageButton = async (
@@ -297,7 +301,7 @@ export default function CommunityPage() {
             </div>
 
             <div className="max-w-7xl mx-auto w-full  pt-6 mb-6 hidden sm:block">
-              <h1 className="text-3xl font-bold">Community</h1>
+              <h1 className="text-3xl font-bold">Community </h1>
             </div>
             
             <div className="hidden sm:flex items-center justify-between w-full">

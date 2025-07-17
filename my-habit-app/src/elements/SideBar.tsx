@@ -18,7 +18,6 @@ export default function SideBar() {
     }, [list]);
 
     function linkClass(path: string) {
-        console.log(location.pathname);
         const isActive = location.pathname === path;
 
         return (
