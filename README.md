@@ -27,7 +27,7 @@ This project was originally started as a university project for the WebEngineeri
 ## 📦 Installation
 
 1. Make sure you have Node.js (and npm) installed
-2. Clone the repository ```git clone https://github.com/MerlinBrk/HabitApp.git```
+2. Clone the repository ```git clone https://github.com/MerlinBrk/geiler.git```
 3. Navigate to project directory ```cd my-habit-app```
 4. Install dependencies ```npm install```
 5. Start development server ```npm run dev```

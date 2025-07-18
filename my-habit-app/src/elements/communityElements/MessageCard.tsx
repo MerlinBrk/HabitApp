@@ -6,6 +6,7 @@ import {
 } from "../../services/profileServices";
 import { getHabitByIdFromSupabase } from "../../services/habitServices";
 import { getAllCommentsByMessageId } from "../../services/commentsServices";
+import {supabase} from "../../lib/supabase";
 
 interface MessageCardProps {
   messageId: string;
@@ -63,17 +64,34 @@ export default function MessageCard({
     setUsername(data);
   };
   useEffect(() => {
-    if (habit != null && habit !== "") {
-      fetchHabit();
-    }
-    fetchUserName();
-    fetchProfileImage();
-    const interval = setInterval(() => {
-      fetchCommentAmount();
-    }, 1000);
+  if (habit != null && habit !== "") {
+    fetchHabit();
+  }
 
-    return () => clearInterval(interval); 
-  }, []);
+  fetchUserName();
+  fetchProfileImage();
+  fetchCommentAmount(); // Initial laden
+
+  const channel = supabase
+    .channel(`realtime-comments-${messageId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'Community_comments',
+        filter: `message_id=eq.${messageId}`,
+      },
+      () => {
+        setCommentAmount((prev) => prev + 1);
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, []);
 
   const handleCopy = () => {
     if (curHabit) {

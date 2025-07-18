@@ -27,6 +27,7 @@ import {
 } from "../services/commUserServices";
 import JoinLeaveButton from "../elements/communityElements/JoinLeaveButton";
 import NewCommunityButton from "../elements/communityElements/NewCommunityButton";
+import {supabase} from "../lib/supabase";
 
 export default function CommunityPage() {
   const clearList = useStore((state) => state.clearList);
@@ -59,16 +60,43 @@ export default function CommunityPage() {
   }, []);
 
   useEffect(() => {
-    if(!userId) return;
-    clearList();
-    fetchAll();
-    const interval = setInterval(() => {
-    fetchMessages();
-  }, 2000); 
+  if (!userId) return;
 
-  return () => clearInterval(interval); 
-    
-  }, [userId,currentCommunityId]);
+  clearList();
+  fetchAll(); 
+
+  const channel = supabase
+    .channel('community_messages_changes')
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'Community_messages',
+      },
+      (payload) => {
+        const newMessage = payload.new as CommunityMessage;
+
+        // Wenn Community-Feed geöffnet ist
+        if (
+          currentCommunityId &&
+          newMessage.community_id === currentCommunityId
+        ) {
+          setCommunityMessages((prev) => [...prev, newMessage]);
+        }
+
+        // Wenn kein Community-Feed aktiv ist (Allgemeiner User-Feed)
+        if (!currentCommunityId) {
+          setCommunityMessages((prev) => [...prev, newMessage]);
+        }
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel); // Clean-up
+  };
+}, [userId, currentCommunityId]);
 
   useEffect(() => {
     userCommunities.forEach((community) => {
@@ -394,8 +422,8 @@ export default function CommunityPage() {
                 .slice()
                 .sort(
                   (a, b) =>
-                    new Date(a.created_at).getTime() -
-                    new Date(b.created_at).getTime()
+                    new Date(b.created_at).getTime() -
+                    new Date(a.created_at).getTime()
                 ) 
                 .map((communityMessage: CommunityMessage) => (
                   <MessageCard
@@ -407,7 +435,7 @@ export default function CommunityPage() {
                     )}
                     title={communityMessage.title}
                     message={
-                      communityMessage.message || "No description available"
+                      communityMessage.message || ""
                     }
                     habit={communityMessage.habit_id}
                     handleCopyHabit={handleCopyHabit}
