@@ -14,6 +14,7 @@ import {
 } from "../../services/commentsServices";
 import NewCommentCard from "./NewCommentCard";
 import CommentCard from "./CommentCard";
+import {supabase} from "../../lib/supabase";
 
 interface CommentModalProps {
   isActive: boolean;
@@ -64,19 +65,34 @@ export default function CommentModal({
   }, [isActive]);
 
   useEffect(() => {
-    if (message) {
-      fetchUserName(message.user_id);
-      fetchComments();
-      fetchProfileImage(message.user_id);
-      const interval = setInterval(() => {
-        fetchComments();
-      }, 1000);
+  if (!message) return;
 
-      return () => clearInterval(interval);
+  fetchUserName(message.user_id);
+  fetchComments();
+  fetchProfileImage(message.user_id);
 
-      
-    }
-  }, [message]);
+  const channel = supabase
+    .channel(`comments_realtime_${message.id}`)
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'Community_comments',
+        filter: `message_id=eq.${message.id}`,
+      },
+      (payload) => {
+        const newComment = payload.new as CommunityComments;
+        setComments((prev) => [...prev, newComment]);
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, [message]);
+
 
   const handleCommentSubmit = async (commentText: string) => {
     await addNewCommentToMessage(message_id, userId, commentText);

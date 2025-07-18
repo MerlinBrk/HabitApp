@@ -57,7 +57,7 @@ export default function ManagementPage() {
 
   return (
     <div className="bg-white h-screen overflow-y-auto hide-scrollbar overflow-x-hidden pb-16 md:pb-0">
-      <div className="max-w-7xl  mx-auto">
+      <div className="w-full">
         <div
           className="sticky top-0 z-40 bg-white w-full
                  p-6"

@@ -3,27 +3,27 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
-  base:'/HabitApp/',
+  base:'/geiler/',
   plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'robots.txt', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Habit Tracker',
-        short_name: 'Habits',
-        start_url: '/HabitApp/#/',
+        name: 'geiler',
+        short_name: 'geiler',
+        start_url: '/geiler/#/',
         display: 'standalone',
         background_color: '#ffffff',
-        theme_color: '#42b883',
+        theme_color: '#ffffffff',
         icons: [
           {
-            src: 'pwa-192x192.png',
+            src: 'icons/Icon.png',
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: 'pwa-512x512.png',
+            src: 'icons/Icon.png',
             sizes: '512x512',
             type: 'image/png',
           },

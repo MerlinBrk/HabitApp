@@ -27,6 +27,7 @@ import {
 } from "../services/commUserServices";
 import JoinLeaveButton from "../elements/communityElements/JoinLeaveButton";
 import NewCommunityButton from "../elements/communityElements/NewCommunityButton";
+import {supabase} from "../lib/supabase";
 
 export default function CommunityPage() {
   const clearList = useStore((state) => state.clearList);
@@ -53,20 +54,49 @@ export default function CommunityPage() {
   const [userId, setUserId] = useState<string>("");
 
   useEffect(() => {
-    fetchUserId(); 
+    fetchUserId();
+    clearCommunityId(); 
+  clearList();
   }, []);
 
   useEffect(() => {
-    if(!userId) return;
-    fetchAll();
-    const interval = setInterval(() => {
-    fetchAll();
-  }, 1000); 
+  if (!userId) return;
 
-  return () => clearInterval(interval); 
-    clearCommunityId();
-    clearList();
-  }, [userId]);
+  clearList();
+  fetchAll(); 
+
+  const channel = supabase
+    .channel('community_messages_changes')
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'Community_messages',
+      },
+      (payload) => {
+        const newMessage = payload.new as CommunityMessage;
+
+        // Wenn Community-Feed geöffnet ist
+        if (
+          currentCommunityId &&
+          newMessage.community_id === currentCommunityId
+        ) {
+          setCommunityMessages((prev) => [...prev, newMessage]);
+        }
+
+        // Wenn kein Community-Feed aktiv ist (Allgemeiner User-Feed)
+        if (!currentCommunityId) {
+          setCommunityMessages((prev) => [...prev, newMessage]);
+        }
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel); // Clean-up
+  };
+}, [userId, currentCommunityId]);
 
   useEffect(() => {
     userCommunities.forEach((community) => {
@@ -81,6 +111,7 @@ export default function CommunityPage() {
     if (currentCommunityId) {
       fetchCommunityDetails();
     }
+    
   }, [currentCommunityId]);
 
   const fetchUserId = async () => {
@@ -296,8 +327,8 @@ export default function CommunityPage() {
               </h1>
             </div>
 
-            <div className="max-w-7xl mx-auto w-full  pt-6 mb-6 hidden sm:block">
-              <h1 className="text-3xl font-bold">Community</h1>
+            <div className="max-w-7xl w-full  pt-6 mb-6 hidden sm:block">
+              <h1 className="text-3xl font-bold">Community </h1>
             </div>
             
             <div className="hidden sm:flex items-center justify-between w-full">
@@ -391,8 +422,8 @@ export default function CommunityPage() {
                 .slice()
                 .sort(
                   (a, b) =>
-                    new Date(a.created_at).getTime() -
-                    new Date(b.created_at).getTime()
+                    new Date(b.created_at).getTime() -
+                    new Date(a.created_at).getTime()
                 ) 
                 .map((communityMessage: CommunityMessage) => (
                   <MessageCard
@@ -404,7 +435,7 @@ export default function CommunityPage() {
                     )}
                     title={communityMessage.title}
                     message={
-                      communityMessage.message || "No description available"
+                      communityMessage.message || ""
                     }
                     habit={communityMessage.habit_id}
                     handleCopyHabit={handleCopyHabit}
