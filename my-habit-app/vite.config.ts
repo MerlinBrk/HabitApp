@@ -15,7 +15,7 @@ export default defineConfig({
         start_url: '/HabitApp/#/',
         display: 'standalone',
         background_color: '#ffffff',
-        theme_color: '#42b883',
+        theme_color: '#ffffffff',
         icons: [
           {
             src: 'pwa-192x192.png',

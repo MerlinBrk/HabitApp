@@ -185,7 +185,6 @@ export default function CommunityPage() {
     description: string
   ) => {
     await addNewCommunity(userId, title, description);
-    fetchCommunities();
   };
 
   const handleAddNewMessageButton = async (
@@ -300,7 +299,7 @@ export default function CommunityPage() {
               </h1>
             </div>
 
-            <div className="max-w-7xl mx-auto w-full  pt-6 mb-6 hidden sm:block">
+            <div className="max-w-7xl w-full  pt-6 mb-6 hidden sm:block">
               <h1 className="text-3xl font-bold">Community </h1>
             </div>
             
