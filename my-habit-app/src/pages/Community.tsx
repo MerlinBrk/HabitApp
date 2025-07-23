@@ -17,7 +17,7 @@ import { type Community, type CommunityMessage } from "../utils/types";
 import PostButton from "../elements/communityElements/PostButton";
 import NewMessageModal from "../elements/communityElements/NewMessageModal";
 import { addNewMessage } from "../services/messageServices";
-import { addHabitToDB} from "../services/dexieServices";
+import { addHabitToDB } from "../services/dexieServices";
 import { useStore } from "../lib/store";
 import { getUserIdFromSession } from "../lib/auth";
 import {
@@ -27,7 +27,7 @@ import {
 } from "../services/commUserServices";
 import JoinLeaveButton from "../elements/communityElements/JoinLeaveButton";
 import NewCommunityButton from "../elements/communityElements/NewCommunityButton";
-import {supabase} from "../lib/supabase";
+import { supabase } from "../lib/supabase";
 
 export default function CommunityPage() {
   const clearList = useStore((state) => state.clearList);
@@ -40,7 +40,9 @@ export default function CommunityPage() {
   const [userCommunities, setUserCommunities] = useState<Community[]>([]);
   const [currentCommunityForCommentModal, setCurrentCommunityForCommentModal] =
     useState("");
-  const [communityMessages, setCommunityMessages] = useState<CommunityMessage[]>([]);
+  const [communityMessages, setCommunityMessages] = useState<
+    CommunityMessage[]
+  >([]);
   const [stateNewCommunityModal, setStateNewCommunityModal] = useState(false);
   const [stateNewMessageModal, setStateNewMessageModal] = useState(false);
   const [currentCommunityDescription, setCurrentCommunityDescription] =
@@ -55,69 +57,70 @@ export default function CommunityPage() {
 
   useEffect(() => {
     fetchUserId();
-    clearCommunityId(); 
-  clearList();
+    clearCommunityId();
+    clearList();
   }, []);
 
   useEffect(() => {
-  if (!userId) return;
+    if (!userId) return;
 
-  clearList();
-  fetchAll(); 
+    clearList();
+    fetchAll();
 
-  const channel = supabase
-    .channel('community_messages_changes')
-    .on(
-      'postgres_changes',
-      {
-        event: '*',
-        schema: 'public',
-        table: 'Community_messages',
-      },
-      (payload) => {
-        const newMessage = payload.new as CommunityMessage;
+    const channel = supabase
+      .channel("community_messages_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "Community_messages",
+        },
+        (payload) => {
+          const newMessage = payload.new as CommunityMessage;
 
-        // Wenn Community-Feed geöffnet ist
-        if (
-          currentCommunityId &&
-          newMessage.community_id === currentCommunityId
-        ) {
-          setCommunityMessages((prev) => [...prev, newMessage]);
+          if (
+            currentCommunityId &&
+            newMessage.community_id === currentCommunityId
+          ) {
+            setCommunityMessages((prev) => {
+              if (prev.some((msg) => msg.id === newMessage.id)) {
+                return prev; // already exists
+              }
+              return [...prev, newMessage];
+            });
+          }
+
+          if (!currentCommunityId) {
+            setCommunityMessages((prev) => [...prev, newMessage]);
+          }
         }
+      )
+      .subscribe();
 
-        // Wenn kein Community-Feed aktiv ist (Allgemeiner User-Feed)
-        if (!currentCommunityId) {
-          setCommunityMessages((prev) => [...prev, newMessage]);
-        }
-      }
-    )
-    .subscribe();
-
-  return () => {
-    supabase.removeChannel(channel); // Clean-up
-  };
-}, [userId, currentCommunityId]);
+    return () => {
+      supabase.removeChannel(channel); // Clean-up
+    };
+  }, [userId, currentCommunityId]);
 
   useEffect(() => {
     userCommunities.forEach((community) => {
-      if (!list.some(item => item.name === community.title)) {
+      if (!list.some((item) => item.name === community.title)) {
         addName(community.id, community.title);
       }
     });
   }, [userCommunities]);
 
   useEffect(() => {
-    
     if (currentCommunityId) {
       fetchCommunityDetails();
     }
-    
   }, [currentCommunityId]);
 
   const fetchUserId = async () => {
     const userID = await getUserIdFromSession();
     if (userID) {
-      setUserId(userID); 
+      setUserId(userID);
     }
   };
 
@@ -162,8 +165,7 @@ export default function CommunityPage() {
     setCommunityMessages(data);
   };
 
-
-  const fetchCommunityDetails = async() => {
+  const fetchCommunityDetails = async () => {
     if (currentCommunityId) {
       setLoadingCommunityInfo(true);
       fetchMessages();
@@ -172,13 +174,12 @@ export default function CommunityPage() {
       fetchCommunityNameById(currentCommunityId);
       setLoadingCommunityInfo(false);
     }
-
-  }
+  };
 
   const fetchCommunityNameById = (communityId: string) => {
     const community = communities.find((c) => c.id === communityId);
     const communityTitle = community ? community.title : "";
-   setCurrentCommunityName(communityTitle);
+    setCurrentCommunityName(communityTitle);
   };
 
   const fetchCommunityDescriptionById = (communityId: string) => {
@@ -204,7 +205,11 @@ export default function CommunityPage() {
     addCommunityId(communityId);
   };
 
-  const handleCopyHabit = async (title: string, description: string, days: string[]) => {
+  const handleCopyHabit = async (
+    title: string,
+    description: string,
+    days: string[]
+  ) => {
     await addHabitToDB(title, description, userId, true, days);
   };
 
@@ -213,6 +218,8 @@ export default function CommunityPage() {
     description: string
   ) => {
     await addNewCommunity(userId, title, description);
+     await fetchCommunities();         
+    await fetchOwnCommunities(); 
   };
 
   const handleAddNewMessageButton = async (
@@ -242,19 +249,16 @@ export default function CommunityPage() {
     setCurrentCommunityName("");
     setCurrentCommunityForCommentModal("");
   };
-  
 
   return (
     <div className="flex h-screen w-full flex-col bg-white overflow-y-auto hide-scrollbar overflpb-16 md:pb-16">
-      
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 flex">
-          
           <div
             className="fixed inset-0 bg-black opacity-30"
             onClick={() => setSidebarOpen(false)}
           />
-          
+
           <div className="relative bg-white w-64 h-full shadow-lg z-50 p-6">
             <button
               onClick={() => setSidebarOpen(false)}
@@ -312,7 +316,6 @@ export default function CommunityPage() {
 
       <div className="flex-1 flex">
         <div className="flex-1 flex flex-col">
-          
           <div className="sticky top-0 z-40 bg-white w-full py-2 px-4 pb-2">
             <div className="sm:hidden flex items-center pt-4 pb-4">
               <button
@@ -330,7 +333,7 @@ export default function CommunityPage() {
             <div className="max-w-7xl w-full  pt-6 mb-6 hidden sm:block">
               <h1 className="text-3xl font-bold">Community </h1>
             </div>
-            
+
             <div className="hidden sm:flex items-center justify-between w-full">
               <PostButton onClick={() => setStateNewMessageModal(true)} />
               <div className="flex-1 flex justify-center">
@@ -343,7 +346,7 @@ export default function CommunityPage() {
                 onClick={() => setStateNewCommunityModal(true)}
               />
             </div>
-            
+
             <div className="flex flex-col sm:hidden w-full">
               <div className="mb-2">
                 <SearchBar
@@ -367,7 +370,6 @@ export default function CommunityPage() {
               userId={userId}
             />
             <NewCommunityModal
-              
               isActive={stateNewCommunityModal}
               onClose={() => setStateNewCommunityModal(false)}
               onAddButton={handleAddNewCommunityButton}
@@ -378,10 +380,10 @@ export default function CommunityPage() {
               communities={userCommunities}
               onClose={() => setStateNewMessageModal(false)}
               onAddButton={handleAddNewMessageButton}
-              userId={userId} 
+              userId={userId}
             />
             <div className="mt-4">
-              {currentCommunityId && !loadingCommunityInfo &&(
+              {currentCommunityId && !loadingCommunityInfo && (
                 <div className="w-full p-6 bg-gray-200 rounded-lg mb-4 mt-4 flex flex-row sm:flex-row flex-col justify-between items-center sm:items-center">
                   <div className="flex flex-col w-full">
                     <h1 className="font-bold">{currentCommunityName}</h1>
@@ -424,7 +426,7 @@ export default function CommunityPage() {
                   (a, b) =>
                     new Date(b.created_at).getTime() -
                     new Date(a.created_at).getTime()
-                ) 
+                )
                 .map((communityMessage: CommunityMessage) => (
                   <MessageCard
                     key={communityMessage.id}
@@ -434,9 +436,7 @@ export default function CommunityPage() {
                       communityMessage.community_id
                     )}
                     title={communityMessage.title}
-                    message={
-                      communityMessage.message || ""
-                    }
+                    message={communityMessage.message || ""}
                     habit={communityMessage.habit_id}
                     handleCopyHabit={handleCopyHabit}
                     handleCommentOpen={() => {
